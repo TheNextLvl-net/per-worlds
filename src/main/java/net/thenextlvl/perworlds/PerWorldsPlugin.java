@@ -26,7 +26,7 @@ import java.util.Set;
 
 @NullMarked
 public class PerWorldsPlugin extends JavaPlugin {
-    public static final String ISSUES = "https://github.com/TheNextLvl-net/worlds/issues/new?template=bug_report.yml";
+    public static final String ISSUES = "https://github.com/TheNextLvl-net/per-worlds/issues/new?template=bug_report.yml";
 
     private final PluginVersionChecker versionChecker = new PluginVersionChecker(this);
     private final Metrics metrics = new Metrics(this, 25295);
