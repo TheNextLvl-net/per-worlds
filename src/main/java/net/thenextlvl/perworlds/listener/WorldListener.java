@@ -1,5 +1,6 @@
 package net.thenextlvl.perworlds.listener;
 
+import io.papermc.paper.event.world.WorldDifficultyChangeEvent;
 import io.papermc.paper.event.world.WorldGameRuleChangeEvent;
 import io.papermc.paper.event.world.border.WorldBorderBoundsChangeEvent;
 import io.papermc.paper.event.world.border.WorldBorderCenterChangeEvent;
@@ -39,10 +40,14 @@ public class WorldListener implements Listener {
                 .updateWorldData(event.getWorld());
     }
 
-    // todo: there is no difficulty change event????
-    // https://github.com/PaperMC/Paper/pull/12471
-
     private final Map<Type, Set<WorldGroup>> lock = new HashMap<>();
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onWorldDifficultyChange(WorldDifficultyChangeEvent event) {
+        processWorldDataUpdate(event.getWorld(), Type.DIFFICULTY, data -> {
+            data.setDifficulty(event.getDifficulty());
+        });
+    }
 
     @SuppressWarnings("unchecked")
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -56,8 +61,9 @@ public class WorldListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onTimeSkip(TimeSkipEvent event) {
-        processWorldDataUpdate(event.getWorld(), Type.TIME, data ->
-                data.time(event.getWorld().getFullTime() + event.getSkipAmount()));
+        processWorldDataUpdate(event.getWorld(), Type.TIME, data -> {
+            data.time(event.getWorld().getFullTime() + event.getSkipAmount());
+        });
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -86,13 +92,13 @@ public class WorldListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onWorldBorderChange(WorldBorderCenterChangeEvent event) {
-        processWorldDataUpdate(event.getWorld(), Type.WORLD_BORDER, data ->
-                data.getWorldBorder().center(event.getNewCenter()));
+        processWorldDataUpdate(event.getWorld(), Type.WORLD_BORDER, data -> {
+            data.getWorldBorder().center(event.getNewCenter());
+        });
     }
 
     private void processWorldDataUpdate(World world, Type type, Consumer<GroupData> process) {
-        var group = provider.getGroup(world)
-                .orElse(provider.getUnownedWorldGroup());
+        var group = provider.getGroup(world).orElse(provider.getUnownedWorldGroup());
         if (!lock.computeIfAbsent(type, ignored -> new HashSet<>()).add(group)) return;
         process.accept(group.getGroupData());
         group.getWorlds()
