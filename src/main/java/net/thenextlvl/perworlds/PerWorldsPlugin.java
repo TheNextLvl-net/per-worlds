@@ -11,6 +11,7 @@ import net.thenextlvl.perworlds.listener.MessageListener;
 import net.thenextlvl.perworlds.listener.RespawnListener;
 import net.thenextlvl.perworlds.listener.TeleportListener;
 import net.thenextlvl.perworlds.listener.WorldListener;
+import net.thenextlvl.perworlds.listener.WorldsListener;
 import net.thenextlvl.perworlds.version.PluginVersionChecker;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
@@ -49,12 +50,6 @@ public class PerWorldsPlugin extends JavaPlugin {
     public void onLoad() {
         versionChecker.checkVersion();
         addCustomCharts();
-
-
-        provider.getLogger().warn("PerWorlds is nearing the end of beta");
-        provider.getLogger().warn("Although pretty stable, please be sure to always use the latest version");
-        provider.getLogger().warn("We still suggest taking backups of your player data before using this plugin");
-        provider.getLogger().warn("Please report any issues you encounter to {}", ISSUES);
         registerServices();
         loadGroups();
     }
@@ -82,6 +77,9 @@ public class PerWorldsPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new RespawnListener(provider), this);
         getServer().getPluginManager().registerEvents(new TeleportListener(provider), this);
         getServer().getPluginManager().registerEvents(new WorldListener(provider), this);
+
+        if (getServer().getPluginManager().getPlugin("Worlds") == null) return;
+        getServer().getPluginManager().registerEvents(new WorldsListener(provider), this);
     }
 
     private void warnWorldManager() {
@@ -93,7 +91,7 @@ public class PerWorldsPlugin extends JavaPlugin {
         getComponentLogger().warn("Download at: https://modrinth.com/project/gBIw3Gvy");
         getComponentLogger().warn("Since Worlds already ships with PerWorlds, you have to uninstall this plugin when switching");
     }
-    
+
     private void loadGroups() {
         var suffix = ".dat";
         var files = provider.getDataFolder().listFiles((file, name) -> name.endsWith(suffix));
@@ -103,7 +101,7 @@ public class PerWorldsPlugin extends JavaPlugin {
             if (!provider.hasGroup(name)) provider.createGroup(name);
         }
     }
-    
+
     private void persistGroups() {
         var groups = new ArrayList<>(provider.getGroups());
         groups.add(provider.getUnownedWorldGroup());
@@ -118,7 +116,8 @@ public class PerWorldsPlugin extends JavaPlugin {
                 event.registrar().register(WorldCommand.create(this)));
     }
 
-    final Set<String> knownWorldManagers = Set.of( // list ordered by likelihood of a plugin being used
+    private final Set<String> knownWorldManagers = Set.of( // list ordered by likelihood of a plugin being used
+            "Worlds", // https://github.com/TheNextLvl-net/worlds
             "Multiverse-Core", // https://github.com/Multiverse/Multiverse-Core/
             "My_Worlds", // https://github.com/bergerhealer/MyWorlds
             "MultiWorld", // https://dev.bukkit.org/projects/multiworld-v-2-0 // https://modrinth.com/plugin/multiworld-bukkit

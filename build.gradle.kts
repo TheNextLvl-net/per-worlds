@@ -1,10 +1,10 @@
 import io.papermc.hangarpublishplugin.model.Platforms
 import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
+import net.minecrell.pluginyml.paper.PaperPluginDescription
 
 plugins {
     id("idea")
     id("java")
-    id("java-library")
     id("com.gradleup.shadow") version "9.0.0-rc2"
     id("com.modrinth.minotaur") version "2.+"
     id("de.eldoria.plugin-yml.paper") version "0.7.1"
@@ -32,13 +32,14 @@ repositories {
 dependencies {
     paperweight.paperDevBundle("1.21.8-R0.1-SNAPSHOT")
 
-    api("org.bstats:bstats-bukkit:3.1.1-SNAPSHOT")
+    compileOnly("net.thenextlvl:worlds:3.2.5")
 
-    api("net.thenextlvl.core:adapters:2.0.2")
-    api("net.thenextlvl.core:i18n:3.2.0")
-    api("net.thenextlvl.core:paper:2.2.1")
+    implementation("net.thenextlvl.core:adapters:2.0.2")
+    implementation("net.thenextlvl.core:i18n:3.2.0")
+    implementation("net.thenextlvl.core:paper:2.2.1")
+    implementation("org.bstats:bstats-bukkit:3.1.1-SNAPSHOT")
 
-    api(project(":api"))
+    implementation(project(":api"))
 
     testImplementation(platform("org.junit:junit-bom:6.0.0-SNAPSHOT"))
     testImplementation("org.junit.jupiter:junit-jupiter")
@@ -62,7 +63,6 @@ sourceSets.main {
 
 tasks.shadowJar {
     archiveBaseName.set("per-worlds")
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     relocate("org.bstats", "net.thenextlvl.perworlds.bstats")
 }
 
@@ -109,6 +109,13 @@ paper {
         register("perworlds.command.group.spawn.unset") { children = listOf("perworlds.command.group.spawn") }
         register("perworlds.command.group.teleport") { children = listOf("perworlds.command.group") }
     }
+
+    serverDependencies {
+        register("Worlds") {
+            load = PaperPluginDescription.RelativeLoadOrder.BEFORE
+            required = false
+        }
+    }
 }
 
 val versionString: String = project.version as String
@@ -128,6 +135,9 @@ hangarPublish { // docs - https://docs.papermc.io/misc/hangar-publishing
         platforms.register(Platforms.PAPER) {
             jar.set(tasks.shadowJar.flatMap { it.archiveFile })
             platformVersions.set(versions)
+            dependencies {
+                hangar("Worlds") { required.set(false) }
+            }
         }
     }
 }
@@ -140,4 +150,7 @@ modrinth {
     uploadFile.set(tasks.shadowJar)
     gameVersions.set(versions)
     loaders.add("paper")
+    dependencies {
+        optional.project("worlds-1")
+    }
 }
