@@ -84,12 +84,12 @@ public class PerWorldsPlugin extends JavaPlugin {
 
     private void warnWorldManager() {
         if (knownWorldManagers.stream()
+                .filter(name -> !name.equals("Worlds"))
                 .map(getServer().getPluginManager()::getPlugin)
                 .noneMatch(Objects::nonNull)) return;
         getComponentLogger().warn("It appears you are using a third party world management plugin");
-        getComponentLogger().warn("Please consider switching to 'Worlds' for first hand support");
+        getComponentLogger().warn("Consider switching to 'Worlds' for first hand support");
         getComponentLogger().warn("Download at: https://modrinth.com/project/gBIw3Gvy");
-        getComponentLogger().warn("Since Worlds already ships with PerWorlds, you have to uninstall this plugin when switching");
     }
 
     private void loadGroups() {
@@ -136,9 +136,10 @@ public class PerWorldsPlugin extends JavaPlugin {
     );
 
     private void addCustomCharts() {
-        metrics.addCustomChart(new SimplePie("world_management_plugin", () -> knownWorldManagers.stream()
+        var worldManager = knownWorldManagers.stream()
                 .filter(name -> getServer().getPluginManager().getPlugin(name) != null)
-                .findAny().orElse("None")));
+                .findAny().orElse("None");
+        metrics.addCustomChart(new SimplePie("world_management_plugin", () -> worldManager));
     }
 
     public GroupProvider groupProvider() {
