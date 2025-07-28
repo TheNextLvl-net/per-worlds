@@ -112,8 +112,16 @@ public class PerWorldsPlugin extends JavaPlugin {
     }
 
     private void registerCommands() {
-        getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event ->
-                event.registrar().register(WorldCommand.create(this)));
+        getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event -> {
+            var command = WorldCommand.create(this);
+            var world = event.registrar().getDispatcher().getRoot().getChild("world");
+            if (world != null) {
+                world.getChildren().forEach(command::addChild);
+                var requirement = command.getRequirement();
+                command.requirement = source -> requirement.test(source) || world.canUse(source);
+            }
+            event.registrar().register(command);
+        });
     }
 
     private final Set<String> knownWorldManagers = Set.of( // list ordered by likelihood of a plugin being used
