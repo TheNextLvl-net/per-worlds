@@ -1,5 +1,7 @@
 package net.thenextlvl.perworlds;
 
+import org.jetbrains.annotations.ApiStatus;
+
 /**
  * Represents the configurable settings of a group.
  * <p>
@@ -7,7 +9,10 @@ package net.thenextlvl.perworlds;
  * <p>
  * When interacting with a group, ensure to verify whether it is {@link #enabled()}
  * before performing any operations.
+ *
+ * @since 0.1.0
  */
+@ApiStatus.NonExtendable
 public interface GroupSettings {
     /**
      * Determines whether the associated group is enabled.
