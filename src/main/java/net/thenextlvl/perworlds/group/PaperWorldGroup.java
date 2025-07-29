@@ -23,10 +23,10 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
 import java.io.EOFException;
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -50,48 +50,49 @@ public class PaperWorldGroup implements WorldGroup {
     public static final String LOADING_METADATA_KEY = "perworlds_loading_data";
     protected final PaperGroupProvider provider;
 
-    private final File dataFolder;
-    private final File configFile;
-    private final File configFileBackup;
+    private final Path dataFolder;
+    private final Path configFile;
+    private final Path configFileBackup;
     private final GroupConfig config;
     private final String name;
 
     public PaperWorldGroup(PaperGroupProvider provider, String name, GroupData data, GroupSettings settings, Set<World> worlds) {
         this.name = name;
         this.provider = provider;
-        this.dataFolder = new File(provider.getDataFolder(), name);
-        this.configFile = new File(provider.getDataFolder(), name + ".dat");
-        this.configFileBackup = new File(provider.getDataFolder(), name + ".dat_old");
-        this.config = readConfig().orElseGet(() -> new GroupConfig(
-                worlds.stream().map(Keyed::key).collect(Collectors.toSet()), data, settings
-        ));
+        this.dataFolder = provider.getDataFolder().resolve(name);
+        this.configFile = provider.getDataFolder().resolve(name + ".dat");
+        this.configFileBackup = provider.getDataFolder().resolve(name + ".dat_old");
+        this.config = readConfig().orElseGet(() -> {
+            return new GroupConfig(worlds.stream().map(Keyed::key)
+                    .collect(Collectors.toSet()), data, settings);
+        });
     }
 
     private Optional<GroupConfig> readConfig() {
         try {
             return readFile(configFile, configFileBackup, GroupConfig.class);
         } catch (EOFException e) {
-            provider.getLogger().error("The world group config file {} is irrecoverably broken", configFile.getPath());
+            provider.getLogger().error("The world group config file {} is irrecoverably broken", configFile);
             return Optional.empty();
         } catch (Exception e) {
-            provider.getLogger().error("Failed to load world group data from {}", configFile.getPath(), e);
+            provider.getLogger().error("Failed to load world group data from {}", configFile, e);
             provider.getLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
             return Optional.empty();
         }
     }
 
     @Override
-    public File getDataFolder() {
+    public Path getDataFolder() {
         return dataFolder;
     }
 
     @Override
-    public File getConfigFile() {
+    public Path getConfigFile() {
         return configFile;
     }
 
     @Override
-    public File getConfigFileBackup() {
+    public Path getConfigFileBackup() {
         return configFileBackup;
     }
 
@@ -180,8 +181,8 @@ public class PaperWorldGroup implements WorldGroup {
     public boolean addWorld(World world) {
         if (provider.hasGroup(world)) return false;
         var previous = provider.getGroup(world).orElse(provider.getUnownedWorldGroup());
-        if (!config.worlds().add(world.key())) return false;
         world.getPlayers().forEach(previous::persistPlayerData);
+        if (!config.worlds().add(world.key())) return false;
         world.getPlayers().forEach(this::loadPlayerData);
         updateWorldData(world);
         return true;
@@ -194,24 +195,32 @@ public class PaperWorldGroup implements WorldGroup {
 
     @Override
     public boolean delete() {
-        return provider.removeGroup(this) | configFile.delete() | configFileBackup.delete() | delete(dataFolder);
+        return provider.removeGroup(this) | delete(configFile) | delete(configFileBackup) | delete(dataFolder);
     }
 
     @Override
     public boolean hasPlayerData(OfflinePlayer player) {
-        return new File(getDataFolder(), player.getUniqueId() + ".dat").exists();
+        return Files.exists(getDataFolder().resolve(player.getUniqueId() + ".dat"));
     }
 
-    protected boolean delete(File file) {
-        var files = file.listFiles();
-        return (files == null || Arrays.stream(files).allMatch(this::delete)) | file.delete();
+    protected boolean delete(Path path) {
+        try {
+            if (!Files.isDirectory(path)) return Files.deleteIfExists(path);
+            else try (var files = Files.list(path)) {
+                files.forEach(this::delete);
+                return Files.deleteIfExists(path);
+            }
+        } catch (IOException e) {
+            getGroupProvider().getLogger().warn("Failed to delete {}", path, e);
+            return false;
+        }
     }
 
     @Override
     public boolean persist() {
         try {
             var file = IO.of(configFile);
-            if (file.exists()) Files.move(file.getPath(), configFileBackup.toPath(), REPLACE_EXISTING);
+            if (file.exists()) Files.move(file.getPath(), configFileBackup, REPLACE_EXISTING);
             else file.createParents();
             try (var outputStream = new NBTOutputStream(
                     file.outputStream(WRITE, CREATE, TRUNCATE_EXISTING),
@@ -221,13 +230,13 @@ public class PaperWorldGroup implements WorldGroup {
                 return true;
             }
         } catch (Throwable t) {
-            if (configFileBackup.exists()) try {
-                Files.copy(configFileBackup.toPath(), configFile.toPath(), REPLACE_EXISTING);
-                provider.getLogger().warn("Recovered {} from potential data loss", configFile.getPath());
+            if (Files.exists(configFileBackup)) try {
+                Files.copy(configFileBackup, configFile, REPLACE_EXISTING);
+                provider.getLogger().warn("Recovered {} from potential data loss", configFile);
             } catch (IOException e) {
-                provider.getLogger().error("Failed to recover world group config {}", configFile.getPath(), e);
+                provider.getLogger().error("Failed to recover world group config {}", configFile, e);
             }
-            provider.getLogger().error("Failed to save world group config {}", configFile.getPath(), t);
+            provider.getLogger().error("Failed to save world group config {}", configFile, t);
             provider.getLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
             return false;
         }
@@ -249,14 +258,14 @@ public class PaperWorldGroup implements WorldGroup {
 
     @Override
     public Optional<PaperPlayerData> readPlayerData(OfflinePlayer player) {
-        var file = new File(getDataFolder(), player.getUniqueId() + ".dat");
+        var file = getDataFolder().resolve(player.getUniqueId() + ".dat");
         try {
             return readPlayerData(file);
         } catch (EOFException e) {
-            provider.getLogger().error("The player data file {} is irrecoverably broken", file.getPath());
+            provider.getLogger().error("The player data file {} is irrecoverably broken", file);
             return Optional.empty();
         } catch (Exception e) {
-            provider.getLogger().error("Failed to load player data from {}", file.getPath(), e);
+            provider.getLogger().error("Failed to load player data from {}", file, e);
             provider.getLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
             return Optional.empty();
         }
@@ -276,8 +285,8 @@ public class PaperWorldGroup implements WorldGroup {
                 "Failed to persist player data: World mismatch between group '%s' and player '%s'. Expected any of %s but got %s",
                 getName(), player.getName(), getPersistedWorlds(), online.getWorld().getKey());
 
-        var file = IO.of(getDataFolder(), player.getUniqueId() + ".dat");
-        var backup = IO.of(getDataFolder(), player.getUniqueId() + ".dat_old");
+        var file = IO.of(getDataFolder().resolve(player.getUniqueId() + ".dat"));
+        var backup = IO.of(getDataFolder().resolve(player.getUniqueId() + ".dat_old"));
         try {
             if (file.exists()) Files.move(file.getPath(), backup.getPath(), REPLACE_EXISTING);
             else file.createParents();
@@ -332,7 +341,7 @@ public class PaperWorldGroup implements WorldGroup {
     public void updateWorldData(World world, GroupData.Type type) {
         if (isEnabled(type)) switch (type) {
             case DIFFICULTY -> world.setDifficulty(getGroupData().getDifficulty());
-            case TIME -> world.setFullTime(getGroupData().time());
+            case TIME -> world.setFullTime(getGroupData().getTime());
             case GAME_RULE -> applyGameRules(world);
             case WORLD_BORDER -> applyWorldBorder(world);
             case HARDCORE -> {
@@ -405,19 +414,19 @@ public class PaperWorldGroup implements WorldGroup {
         writePlayerData(player, playerData);
     }
 
-    private Optional<PaperPlayerData> readPlayerData(File file) throws IOException {
-        return readFile(file, new File(file.getPath() + "_old"), PaperPlayerData.class)
+    private Optional<PaperPlayerData> readPlayerData(Path file) throws IOException {
+        return readFile(file, file.resolveSibling(file.getFileName() + "_old"), PaperPlayerData.class)
                 .map(paperPlayerData -> paperPlayerData.group(this));
     }
 
-    private <T> Optional<T> readFile(File file, File backup, Class<T> type) throws IOException {
-        if (!file.exists()) return Optional.empty();
+    private <T> Optional<T> readFile(Path file, Path backup, Class<T> type) throws IOException {
+        if (!Files.exists(file)) return Optional.empty();
         try (var inputStream = stream(IO.of(file))) {
             return Optional.of(inputStream.readTag()).map(tag -> provider.nbt().fromTag(tag, type));
         } catch (Exception e) {
-            if (!backup.exists()) throw e;
-            provider.getLogger().warn("Failed to load data from {}", file.getPath(), e);
-            provider.getLogger().warn("Falling back to {}", backup.getPath());
+            if (!Files.exists(backup)) throw e;
+            provider.getLogger().warn("Failed to load data from {}", file, e);
+            provider.getLogger().warn("Falling back to {}", backup);
             try (var inputStream = stream(IO.of(backup))) {
                 return Optional.of(inputStream.readTag()).map(tag -> provider.nbt().fromTag(tag, type));
             }

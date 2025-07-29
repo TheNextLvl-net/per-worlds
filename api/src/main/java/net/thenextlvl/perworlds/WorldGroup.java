@@ -6,10 +6,11 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -20,30 +21,33 @@ import java.util.stream.Stream;
 /**
  * Represents a group of worlds, providing functionality to manage and interact
  * with world-specific and player-specific data, as well as group settings.
+ *
+ * @since 0.1.0
  */
 @NullMarked
+@ApiStatus.NonExtendable
 public interface WorldGroup {
     /**
      * Retrieves the data folder of the specific group, used to store persistent data.
      *
-     * @return the file object pointing to the data folder for the current group
+     * @return the path pointing to the data folder for the current group
      */
-    File getDataFolder();
+    Path getDataFolder();
 
     /**
      * Retrieves the configuration file associated with this group.
      * The configuration file contains information such as settings, group name, and associated worlds.
      *
-     * @return the configuration file.
+     * @return the path to the configuration file.
      */
-    File getConfigFile();
+    Path getConfigFile();
 
     /**
      * Retrieves the backup file for the configuration settings.
      *
-     * @return the backup configuration file.
+     * @return the path to the configuration file backup.
      */
-    File getConfigFileBackup();
+    Path getConfigFileBackup();
 
     /**
      * Retrieves the group data associated with this group.

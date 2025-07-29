@@ -53,7 +53,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
@@ -64,7 +64,7 @@ import java.util.function.Consumer;
 
 @NullMarked
 public class PaperGroupProvider implements GroupProvider {
-    private final File dataFolder;
+    private final Path dataFolder;
     private final Set<WorldGroup> groups = new HashSet<>();
     private final NBT nbt;
     private final PerWorldsPlugin plugin;
@@ -72,7 +72,7 @@ public class PaperGroupProvider implements GroupProvider {
 
     public PaperGroupProvider(PerWorldsPlugin plugin) {
         this.plugin = plugin;
-        this.dataFolder = new File(plugin.getDataFolder(), "groups");
+        this.dataFolder = plugin.getDataPath().resolve("groups");
         this.nbt = new NBT.Builder()
                 .registerTypeHierarchyAdapter(AdvancementData.class, new AdvancementDataAdapter(getServer()))
                 .registerTypeHierarchyAdapter(Attribute.class, new AttributeAdapter())
@@ -114,7 +114,7 @@ public class PaperGroupProvider implements GroupProvider {
     }
 
     @Override
-    public File getDataFolder() {
+    public Path getDataFolder() {
         return dataFolder;
     }
 

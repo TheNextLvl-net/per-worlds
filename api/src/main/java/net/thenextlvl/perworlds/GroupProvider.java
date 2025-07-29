@@ -2,10 +2,11 @@ package net.thenextlvl.perworlds;
 
 import org.bukkit.Server;
 import org.bukkit.World;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
@@ -15,16 +16,19 @@ import java.util.function.Consumer;
  * Represents a provider responsible for managing and interacting with {@link WorldGroup world groups}.
  * A group contains multiple worlds and is defined alongside its settings and associated data.
  * This interface provides various functionalities to create, retrieve, verify, and remove groups.
+ *
+ * @since 0.1.0
  */
 @NullMarked
+@ApiStatus.NonExtendable
 public interface GroupProvider {
     /**
      * Retrieves the data folder associated with the group provider.
      * The data folder is used for storing persistent data relevant to groups.
      *
-     * @return the file object pointing to the data folder used by the group provider
+     * @return the path pointing to the data folder used by the group provider
      */
-    File getDataFolder();
+    Path getDataFolder();
 
     /**
      * Retrieves an unmodifiable set of all world groups managed by this provider.
@@ -166,7 +170,7 @@ public interface GroupProvider {
      * @return whether the group was successfully removed from the provider
      */
     boolean removeGroup(WorldGroup group);
-    
+
     /**
      * Retrieves the {@link Server} instance associated with the group provider.
      *
