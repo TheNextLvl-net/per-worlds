@@ -41,8 +41,10 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.spigotmc.SpigotConfig;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -196,10 +198,28 @@ public class PaperPlayerData implements PlayerData {
         var progress = getProgress(handle, handle.getAdvancements());
         var data = new HashSet<AdvancementData>();
         progress.forEach((key, value) -> {
-            var advancementData = new PaperAdvancementData(key, value);
-            if (advancementData.shouldSerialize()) data.add(advancementData);
+            if (!value.hasProgress() || !isEnabled(key.id())) return;
+
+            var awardedCriteria = new HashMap<String, Instant>();
+            var remainingCriteria = new HashSet<String>();
+
+            value.getCompletedCriteria().forEach(criteria -> {
+                var criterion = value.getCriterion(criteria);
+                var obtained = criterion != null ? criterion.getObtained() : null;
+                if (obtained != null) awardedCriteria.put(criteria, obtained);
+            });
+            value.getRemainingCriteria().forEach(remainingCriteria::add);
+            data.add(AdvancementData.of(key.toBukkit(), awardedCriteria, remainingCriteria));
         });
         return data;
+    }
+
+    private boolean isEnabled(ResourceLocation location) {
+        var disabled = SpigotConfig.disabledAdvancements;
+        if (disabled == null || disabled.isEmpty()) return true;
+        if (disabled.contains("*")) return false;
+        if (disabled.contains(location.toString())) return false;
+        return !disabled.contains(location.getNamespace());
     }
 
     @SuppressWarnings("PatternValidation")
