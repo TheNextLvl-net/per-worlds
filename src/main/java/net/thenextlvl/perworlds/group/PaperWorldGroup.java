@@ -180,8 +180,8 @@ public class PaperWorldGroup implements WorldGroup {
     public boolean addWorld(World world) {
         if (provider.hasGroup(world)) return false;
         var previous = provider.getGroup(world).orElse(provider.getUnownedWorldGroup());
-        if (!config.worlds().add(world.key())) return false;
         world.getPlayers().forEach(previous::persistPlayerData);
+        if (!config.worlds().add(world.key())) return false;
         world.getPlayers().forEach(this::loadPlayerData);
         updateWorldData(world);
         return true;
