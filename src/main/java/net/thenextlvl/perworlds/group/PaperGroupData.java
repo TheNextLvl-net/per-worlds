@@ -4,7 +4,6 @@ import net.kyori.adventure.util.TriState;
 import net.thenextlvl.perworlds.GroupData;
 import net.thenextlvl.perworlds.GroupProvider;
 import net.thenextlvl.perworlds.data.WorldBorderData;
-import net.thenextlvl.perworlds.model.PaperWorldBorderData;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;
@@ -23,7 +22,7 @@ public class PaperGroupData implements GroupData {
     private final Map<GameRule<?>, Object> gameRules = new HashMap<>();
     private @Nullable GameMode defaultGameMode = null;
     private @Nullable Location spawnLocation = null;
-    private WorldBorderData worldBorder = new PaperWorldBorderData();
+    private WorldBorderData worldBorder = WorldBorderData.DEFAULT;
     private Difficulty difficulty = Difficulty.NORMAL;
     private TriState hardcore = TriState.NOT_SET;
     private boolean raining = false;

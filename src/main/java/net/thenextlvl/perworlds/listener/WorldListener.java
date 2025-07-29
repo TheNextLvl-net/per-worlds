@@ -85,15 +85,14 @@ public class WorldListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onWorldBorderChange(WorldBorderBoundsChangeEvent event) {
         processWorldDataUpdate(event.getWorld(), Type.WORLD_BORDER, data -> {
-            data.getWorldBorder().size(event.getNewSize());
-            data.getWorldBorder().duration(event.getDuration());
+            data.setWorldBorder(data.getWorldBorder().size(event.getNewSize()).duration(event.getDuration()));
         });
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onWorldBorderChange(WorldBorderCenterChangeEvent event) {
         processWorldDataUpdate(event.getWorld(), Type.WORLD_BORDER, data -> {
-            data.getWorldBorder().center(event.getNewCenter());
+            data.setWorldBorder(data.getWorldBorder().center(event.getNewCenter()));
         });
     }
 
