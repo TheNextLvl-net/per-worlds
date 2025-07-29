@@ -19,6 +19,8 @@ import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -94,11 +96,15 @@ public class PerWorldsPlugin extends JavaPlugin {
 
     private void loadGroups() {
         var suffix = ".dat";
-        var files = provider.getDataFolder().listFiles((file, name) -> name.endsWith(suffix));
-        if (files != null) for (var file : files) {
-            var name = file.getName();
-            name = name.substring(0, name.length() - suffix.length());
-            if (!provider.hasGroup(name)) provider.createGroup(name);
+        try (var files = Files.list(provider.getDataFolder())) {
+            files.map(path -> path.getFileName().toString())
+                    .filter(name -> name.endsWith(suffix))
+                    .forEach(name -> {
+                        var trimmed = name.substring(0, name.length() - suffix.length());
+                        if (!provider.hasGroup(trimmed)) provider.createGroup(trimmed);
+                    });
+        } catch (IOException e) {
+            getComponentLogger().error("Failed to load groups", e);
         }
     }
 
