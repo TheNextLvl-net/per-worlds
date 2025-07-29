@@ -7,7 +7,6 @@ import core.nbt.serialization.TagSerializationContext;
 import core.nbt.tag.CompoundTag;
 import core.nbt.tag.Tag;
 import net.thenextlvl.perworlds.data.AttributeData;
-import net.thenextlvl.perworlds.model.PaperAttributeData;
 import org.bukkit.attribute.Attribute;
 import org.jspecify.annotations.NullMarked;
 
@@ -18,7 +17,7 @@ public class AttributeDataAdapter implements TagAdapter<AttributeData> {
         var root = tag.getAsCompound();
         var attribute = context.deserialize(root.get("id"), Attribute.class);
         var value = root.get("base").getAsDouble();
-        return new PaperAttributeData(attribute, value);
+        return AttributeData.of(attribute, value);
     }
 
     @Override

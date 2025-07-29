@@ -186,7 +186,7 @@ public class PaperPlayerData implements PlayerData {
         return Registry.ATTRIBUTE.stream()
                 .map(player::getAttribute)
                 .filter(Objects::nonNull)
-                .map(PaperAttributeData::new)
+                .map(AttributeData::of)
                 .collect(Collectors.toSet());
     }
 
@@ -328,8 +328,13 @@ public class PaperPlayerData implements PlayerData {
     }
 
     private void applyAttributes(Player player, GroupSettings settings) {
-        if (settings.attributes()) attributes.forEach(data -> data.apply(player));
-        else DEFAULT_ATTRIBUTES.forEach(data -> data.apply(player));
+        if (settings.attributes()) attributes.forEach(data -> applyAttribute(player, data));
+        else DEFAULT_ATTRIBUTES.forEach(data -> applyAttribute(player, data));
+    }
+
+    private void applyAttribute(Player player, AttributeData data) {
+        var instance = player.getAttribute(data.attribute());
+        if (instance != null) instance.setBaseValue(data.baseValue());
     }
 
     private void updateTablistVisibility(Player player, WorldGroup group) {
@@ -952,7 +957,7 @@ public class PaperPlayerData implements PlayerData {
         return Registry.ATTRIBUTE.stream()
                 .map(defaults::getAttribute)
                 .filter(Objects::nonNull)
-                .map(PaperAttributeData::new)
+                .map(AttributeData::of)
                 .collect(Collectors.toSet());
     }
 }
