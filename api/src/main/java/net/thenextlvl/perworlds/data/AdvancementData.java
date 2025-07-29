@@ -1,20 +1,20 @@
 package net.thenextlvl.perworlds.data;
 
 import org.bukkit.advancement.Advancement;
-import org.bukkit.advancement.AdvancementProgress;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.time.Instant;
-import java.util.Date;
 import java.util.Set;
 
 /**
  * The individual data of an advancement.
  */
 @NullMarked
-public interface AdvancementData extends AdvancementProgress {
+@ApiStatus.NonExtendable
+public interface AdvancementData {
     /**
      * Retrieves the associated advancement.
      *
@@ -62,32 +62,6 @@ public interface AdvancementData extends AdvancementProgress {
      * @return {@code true} if the date was successfully set, {@code false} if the criteria does not exist or is already awarded
      */
     boolean setTimeAwarded(String criteria, Instant instant);
-
-    /**
-     * Get the date the specified criteria was awarded.
-     *
-     * @param criteria the criteria to check
-     * @return date awarded or {@code null} if unawarded or criteria does not exist
-     * @deprecated use {@link #getTimeAwarded(String)}
-     */
-    @Deprecated(forRemoval = true, since = "0.2.6")
-    default @Nullable Date getDateAwarded(String criteria) {
-        var timeAwarded = getTimeAwarded(criteria);
-        return timeAwarded != null ? Date.from(timeAwarded) : null;
-    }
-
-    /**
-     * Sets the date the specified criteria was awarded.
-     *
-     * @param criteria the criteria to set the date for
-     * @param date     the date to associate with the awarded criteria
-     * @return {@code true} if the date was successfully set, {@code false} if the criteria does not exist or is already awarded
-     * @deprecated use {@link #setTimeAwarded(String, Instant)}
-     */
-    @Deprecated(forRemoval = true, since = "0.2.6")
-    default boolean setDateAwarded(String criteria, Date date) {
-        return setTimeAwarded(criteria, date.toInstant());
-    }
 
     /**
      * Get the criteria which have not been awarded.
