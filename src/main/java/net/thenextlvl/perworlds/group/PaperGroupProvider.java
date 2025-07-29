@@ -11,7 +11,6 @@ import net.thenextlvl.perworlds.GroupData;
 import net.thenextlvl.perworlds.GroupProvider;
 import net.thenextlvl.perworlds.GroupSettings;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
-import net.thenextlvl.perworlds.UnownedWorldGroup;
 import net.thenextlvl.perworlds.WorldGroup;
 import net.thenextlvl.perworlds.adapter.AdvancementDataAdapter;
 import net.thenextlvl.perworlds.adapter.AttributeAdapter;
@@ -69,7 +68,7 @@ public class PaperGroupProvider implements GroupProvider {
     private final Set<WorldGroup> groups = new HashSet<>();
     private final NBT nbt;
     private final PerWorldsPlugin plugin;
-    private final UnownedWorldGroup unownedWorldGroup;
+    private final WorldGroup unownedWorldGroup;
 
     public PaperGroupProvider(PerWorldsPlugin plugin) {
         this.plugin = plugin;
@@ -151,7 +150,7 @@ public class PaperGroupProvider implements GroupProvider {
     }
 
     @Override
-    public UnownedWorldGroup getUnownedWorldGroup() {
+    public WorldGroup getUnownedWorldGroup() {
         return unownedWorldGroup;
     }
 

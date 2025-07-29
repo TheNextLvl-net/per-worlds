@@ -66,12 +66,11 @@ public interface GroupProvider {
     /**
      * Retrieves the unowned world group.
      * <p>
-     * The {@link UnownedWorldGroup} represents worlds that do not belong
-     * to any explicitly defined {@link WorldGroup}.
+     * The {@link WorldGroup} represents worlds that do not belong to any explicitly defined group.
      *
-     * @return the {@link UnownedWorldGroup} instance representing unassociated worlds
+     * @return the {@link WorldGroup} instance representing unassociated worlds
      */
-    UnownedWorldGroup getUnownedWorldGroup();
+    WorldGroup getUnownedWorldGroup();
 
     /**
      * Creates a new {@link WorldGroup} with the specified name, data, settings, and a collection of worlds.

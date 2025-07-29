@@ -1,7 +1,6 @@
 package net.thenextlvl.perworlds.group;
 
 import net.kyori.adventure.key.Key;
-import net.thenextlvl.perworlds.UnownedWorldGroup;
 import org.bukkit.World;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
@@ -11,14 +10,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @NullMarked
-public class PaperUnownedWorldGroup extends PaperWorldGroup implements UnownedWorldGroup {
+public class PaperUnownedWorldGroup extends PaperWorldGroup {
     public PaperUnownedWorldGroup(PaperGroupProvider provider) {
         super(provider, "unowned", new PaperGroupData(provider), new PaperGroupSettings(), Set.of());
     }
 
     @Override
     public boolean delete() {
-        var deleted = getConfigFile().delete() | getConfigFileBackup().delete() | delete(getDataFolder());
+        var deleted = delete(getConfigFile()) | delete(getConfigFileBackup()) | delete(getDataFolder());
         if (deleted) getPlayers().forEach(this::loadPlayerData);
         return deleted;
     }
