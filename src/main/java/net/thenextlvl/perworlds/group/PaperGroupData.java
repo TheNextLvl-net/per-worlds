@@ -107,22 +107,22 @@ public class PaperGroupData implements GroupData {
     }
 
     @Override
-    public boolean raining() {
+    public boolean isRaining() {
         return raining;
     }
 
     @Override
-    public void raining(boolean raining) {
+    public void setRaining(boolean raining) {
         this.raining = raining;
     }
 
     @Override
-    public boolean thundering() {
+    public boolean isThundering() {
         return thundering;
     }
 
     @Override
-    public void thundering(boolean thundering) {
+    public void setThundering(boolean thundering) {
         this.thundering = thundering;
     }
 
@@ -137,32 +137,32 @@ public class PaperGroupData implements GroupData {
     }
 
     @Override
-    public int thunderDuration() {
+    public int getThunderDuration() {
         return thunderDuration;
     }
 
     @Override
-    public void thunderDuration(int duration) {
+    public void setThunderDuration(int duration) {
         this.thunderDuration = duration;
     }
 
     @Override
-    public int rainDuration() {
+    public int getRainDuration() {
         return rainDuration;
     }
 
     @Override
-    public void rainDuration(int duration) {
+    public void setRainDuration(int duration) {
         this.rainDuration = duration;
     }
 
     @Override
-    public long time() {
+    public long getTime() {
         return time;
     }
 
     @Override
-    public void time(long time) {
+    public void setTime(long time) {
         this.time = time;
     }
 

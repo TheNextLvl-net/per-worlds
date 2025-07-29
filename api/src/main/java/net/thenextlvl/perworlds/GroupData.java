@@ -8,12 +8,17 @@ import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
+/**
+ * @since 0.1.0
+ */
+@ApiStatus.NonExtendable
 public interface GroupData {
     /**
      * Iterates over each {@link GameRule} associated with the group and applies the given action.
@@ -140,7 +145,7 @@ public interface GroupData {
      * @return true if it is raining, false otherwise
      * @see World#setStorm(boolean)
      */
-    boolean raining();
+    boolean isRaining();
 
     /**
      * Sets the rain state for the group.
@@ -149,7 +154,7 @@ public interface GroupData {
      * @param raining true to enable rain, false to disable it
      * @see World#setStorm(boolean)
      */
-    void raining(boolean raining);
+    void setRaining(boolean raining);
 
     /**
      * Checks whether it is currently thundering within the group's environment.
@@ -157,7 +162,7 @@ public interface GroupData {
      * @return true if it is thundering, false otherwise
      * @see World#setThundering(boolean)
      */
-    boolean thundering();
+    boolean isThundering();
 
     /**
      * Sets the thunder state for the group.
@@ -166,7 +171,7 @@ public interface GroupData {
      * @param thundering true to enable thundering, false to disable it
      * @see World#setThundering(boolean)
      */
-    void thundering(boolean thundering);
+    void setThundering(boolean thundering);
 
     /**
      * Retrieves the duration for which the weather will remain clear in the group.
@@ -194,7 +199,7 @@ public interface GroupData {
      * @return the remaining duration of the thunderstorm in ticks
      * @see World#getThunderDuration()
      */
-    int thunderDuration();
+    int getThunderDuration();
 
     /**
      * Sets the duration for thundering in the group.
@@ -204,7 +209,7 @@ public interface GroupData {
      * @param duration the number of ticks for the thundering duration
      * @see World#setThunderDuration(int)
      */
-    void thunderDuration(int duration);
+    void setThunderDuration(int duration);
 
     /**
      * Retrieves the duration for which it will continue raining in the group.
@@ -213,7 +218,7 @@ public interface GroupData {
      * @return the remaining duration of the rain in ticks
      * @see World#getWeatherDuration()
      */
-    int rainDuration();
+    int getRainDuration();
 
     /**
      * Sets the duration for raining in the group.
@@ -223,7 +228,7 @@ public interface GroupData {
      * @param duration the number of ticks for the raining duration
      * @see World#setWeatherDuration(int)
      */
-    void rainDuration(int duration);
+    void setRainDuration(int duration);
 
     /**
      * Retrieves the current time value associated with the group.
@@ -231,7 +236,7 @@ public interface GroupData {
      * @return the current time as a long
      * @see World#getFullTime()
      */
-    long time();
+    long getTime();
 
     /**
      * Sets the current time value for the group.
@@ -240,7 +245,7 @@ public interface GroupData {
      * @param time the time value to be set, represented as a long
      * @see World#setFullTime(long)
      */
-    void time(long time);
+    void setTime(long time);
 
     /**
      * Retrieves the current instance of the GroupProvider.

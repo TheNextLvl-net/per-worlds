@@ -365,11 +365,11 @@ public class PaperWorldGroup implements WorldGroup {
     }
 
     private void applyWeather(World world) {
-        world.setStorm(getGroupData().raining());
-        world.setThundering(getGroupData().thundering());
+        world.setStorm(getGroupData().isRaining());
+        world.setThundering(getGroupData().isThundering());
         world.setClearWeatherDuration(getGroupData().clearWeatherDuration());
-        world.setThunderDuration(getGroupData().thunderDuration());
-        world.setWeatherDuration(getGroupData().rainDuration());
+        world.setThunderDuration(getGroupData().getThunderDuration());
+        world.setWeatherDuration(getGroupData().getRainDuration());
     }
 
     @SuppressWarnings("unchecked")
