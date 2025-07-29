@@ -8,7 +8,7 @@ import core.nbt.tag.CompoundTag;
 import core.nbt.tag.ListTag;
 import core.nbt.tag.StringTag;
 import core.nbt.tag.Tag;
-import net.thenextlvl.perworlds.model.PaperAdvancementData;
+import net.thenextlvl.perworlds.data.AdvancementData;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
 import org.jspecify.annotations.NullMarked;
@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 
 @NullMarked
-public class AdvancementDataAdapter implements TagAdapter<PaperAdvancementData> {
+public class AdvancementDataAdapter implements TagAdapter<AdvancementData> {
     private final Server server;
 
     public AdvancementDataAdapter(Server server) {
@@ -26,7 +26,7 @@ public class AdvancementDataAdapter implements TagAdapter<PaperAdvancementData> 
     }
 
     @Override
-    public PaperAdvancementData deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
+    public AdvancementData deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
         var root = tag.getAsCompound();
         var key = context.deserialize(root.get("advancement"), NamespacedKey.class);
         var advancement = server.getAdvancement(key);
@@ -34,15 +34,15 @@ public class AdvancementDataAdapter implements TagAdapter<PaperAdvancementData> 
         var awarded = new HashMap<String, Instant>();
         root.getAsCompound("awarded").forEach((criteria, instant) -> awarded.put(criteria, context.deserialize(instant, Instant.class)));
         var remaining = root.getAsList("remaining").stream().map(Tag::getAsString).collect(Collectors.toSet());
-        return new PaperAdvancementData(advancement, awarded, remaining);
+        return AdvancementData.of(advancement, awarded, remaining);
     }
 
     @Override
-    public Tag serialize(PaperAdvancementData data, TagSerializationContext context) throws ParserException {
+    public Tag serialize(AdvancementData data, TagSerializationContext context) throws ParserException {
         var tag = new CompoundTag();
         var awarded = new CompoundTag();
         data.awardedCriteria().forEach((criteria, date) -> {
-            if (date != null) awarded.add(criteria, context.serialize(date));
+            awarded.add(criteria, context.serialize(date));
         });
         tag.add("advancement", context.serialize(data.getAdvancement().key()));
         tag.add("awarded", awarded);

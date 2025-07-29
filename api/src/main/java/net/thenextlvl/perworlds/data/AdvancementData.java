@@ -2,15 +2,20 @@ package net.thenextlvl.perworlds.data;
 
 import org.bukkit.advancement.Advancement;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.time.Instant;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * The individual data of an advancement.
+ *
+ * @since 0.1.0
  */
 @NullMarked
 @ApiStatus.NonExtendable
@@ -20,6 +25,7 @@ public interface AdvancementData {
      *
      * @return the {@link Advancement} associated with this data
      */
+    @Contract(pure = true)
     Advancement getAdvancement();
 
     /**
@@ -28,6 +34,14 @@ public interface AdvancementData {
      * @return {@code true} if this advancement is done, otherwise {@code false}
      */
     boolean isDone();
+
+    /**
+     * Checks if there is progress for this advancement.
+     *
+     * @return {@code true} if there is progress in this advancement, otherwise {@code false}
+     * @since 1.0.0
+     */
+    boolean hasProgress();
 
     /**
      * Mark the specified criteria as awarded at the current time.
@@ -50,6 +64,7 @@ public interface AdvancementData {
      *
      * @param criteria the criteria to check
      * @return time awarded or {@code null} if unawarded or criteria does not exist
+     * @since 0.2.0
      */
     @Nullable
     Instant getTimeAwarded(String criteria);
@@ -60,6 +75,7 @@ public interface AdvancementData {
      * @param criteria the criteria to set the date for
      * @param instant  the time to associate with the awarded criteria
      * @return {@code true} if the date was successfully set, {@code false} if the criteria does not exist or is already awarded
+     * @since 0.2.0
      */
     boolean setTimeAwarded(String criteria, Instant instant);
 
@@ -79,10 +95,34 @@ public interface AdvancementData {
     @Unmodifiable
     Set<String> getAwardedCriteria();
 
+    @Unmodifiable
+    @ApiStatus.Internal
+    Map<String, Instant> awardedCriteria();
+
     /**
-     * Determines whether the advancement data should be serialized.
+     * Creates an {@link AdvancementData} instance based on the provided {@link Advancement}.
      *
-     * @return {@code true} if the advancement data should be serialized, otherwise {@code false}
+     * @param advancement the advancement to associate with the data
+     * @return a new instance of {@code AdvancementData} using the specified advancement
+     * @since 1.0.0
      */
-    boolean shouldSerialize();
+    @Contract(value = "_ -> new", pure = true)
+    static AdvancementData of(Advancement advancement) {
+        return new AdvancementDataImpl(advancement, Map.of(), advancement.getCriteria());
+    }
+
+    /**
+     * Creates an {@link AdvancementData} instance with the specified advancement,
+     * awarded criteria, and remaining criteria.
+     *
+     * @param advancement       the advancement associated with the data
+     * @param awardedCriteria   a map of criteria to the time they were awarded
+     * @param remainingCriteria a collection of criteria that are yet to be completed
+     * @return an instance of {@code AdvancementData} representing the specified parameters
+     * @since 1.0.0
+     */
+    @Contract(value = "_, _, _ -> new", pure = true)
+    static AdvancementData of(Advancement advancement, Map<String, Instant> awardedCriteria, Collection<String> remainingCriteria) {
+        return new AdvancementDataImpl(advancement, awardedCriteria, remainingCriteria);
+    }
 }
