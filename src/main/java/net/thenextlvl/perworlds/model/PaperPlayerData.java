@@ -66,7 +66,7 @@ public class PaperPlayerData implements PlayerData {
     private static final TriState DEFAULT_MAY_FLY = TriState.NOT_SET;
     private static final TriState DEFAULT_VISUAL_FIRE = TriState.NOT_SET;
     private static final Vector DEFAULT_VELOCITY = new Vector(0, 0, 0);
-    private static final WardenSpawnTracker DEFAULT_WARDEN_SPAWN_TRACKER = new PaperWardenSpawnTracker();
+    private static final WardenSpawnTracker DEFAULT_WARDEN_SPAWN_TRACKER = WardenSpawnTracker.create();
     private static final boolean DEFAULT_GLIDING = false;
     private static final boolean DEFAULT_INVULNERABLE = false;
     private static final boolean DEFAULT_LOCK_FREEZE_TICKS = false;
@@ -146,7 +146,7 @@ public class PaperPlayerData implements PlayerData {
                 .invulnerable(((CraftPlayer) player).getHandle().isInvulnerable())
                 .portalCooldown(player.getPortalCooldown())
                 .gliding(player.isGliding())
-                .wardenSpawnTracker(PaperWardenSpawnTracker.of(player))
+                .wardenSpawnTracker(WardenSpawnTracker.of(player))
                 .lastDeathLocation(player.getLastDeathLocation())
                 .lastLocation(player.getLocation())
                 .velocity(player.getVelocity())
