@@ -5,12 +5,14 @@ import org.bukkit.block.BlockType;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemType;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Map;
 
 @NullMarked
+@ApiStatus.NonExtendable
 public interface Stats {
     @Unmodifiable
     Map<Statistic, Stat<?>> getStatistics();
@@ -31,7 +33,9 @@ public interface Stats {
 
     void setStatistic(Statistic statistic, int value);
 
+    @ApiStatus.Internal
     void apply(Player player);
 
+    @ApiStatus.Internal
     void clear(Player player);
 }
