@@ -89,6 +89,13 @@ public interface GroupData {
     WorldBorderData getWorldBorder();
 
     /**
+     * Sets the world border configuration for the group.
+     *
+     * @param worldBorder the new world border configuration
+     */
+    void setWorldBorder(@NonNull WorldBorderData worldBorder);
+
+    /**
      * Retrieves the spawn location associated with the group.
      *
      * @return the {@link Location} representing the group's spawn location,
