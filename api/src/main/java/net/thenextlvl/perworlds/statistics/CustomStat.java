@@ -1,6 +1,7 @@
 package net.thenextlvl.perworlds.statistics;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -11,5 +12,6 @@ import org.jspecify.annotations.NullMarked;
 public interface CustomStat extends Stat<Void> {
     int getValue();
 
+    @Contract(mutates = "this")
     void setValue(int value);
 }

@@ -7,6 +7,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -140,6 +141,7 @@ public interface WorldGroup {
      * @return whether any changes were applied and persisted.
      * @since 0.2.4
      */
+    @Contract(mutates = "io")
     boolean editPlayerData(OfflinePlayer player, Consumer<PlayerData> data);
 
     /**
@@ -176,6 +178,7 @@ public interface WorldGroup {
      * @return {@code true} if the world was successfully added to the group,
      * {@code false} if the world is already part of a group
      */
+    @Contract(mutates = "this")
     boolean addWorld(World world);
 
     /**
@@ -193,6 +196,7 @@ public interface WorldGroup {
      *
      * @return {@code true} if the group was successfully deleted, {@code false} if nothing was changed
      */
+    @Contract(mutates = "io")
     boolean delete();
 
     /**
@@ -214,6 +218,7 @@ public interface WorldGroup {
      * {@code false} if the world is not part of this group
      * @see #removeWorld(Key)
      */
+    @Contract(mutates = "this")
     boolean removeWorld(World world);
 
     /**
@@ -226,6 +231,7 @@ public interface WorldGroup {
      * @return true if the world was successfully removed, false otherwise.
      * @see #removeWorld(World)
      */
+    @Contract(mutates = "this")
     boolean removeWorld(Key key);
 
     /**
@@ -235,6 +241,7 @@ public interface WorldGroup {
      * @param data   the player data to be stored
      * @return {@code true} if the player's data was successfully written, {@code false} otherwise
      */
+    @Contract(mutates = "io")
     boolean writePlayerData(OfflinePlayer player, PlayerData data);
 
     /**
@@ -246,6 +253,7 @@ public interface WorldGroup {
      * @param player the player for whom data is to be loaded
      * @see #loadPlayerData(Player, boolean)
      */
+    @Contract(mutates = "param1")
     CompletableFuture<Boolean> loadPlayerData(Player player);
 
     /**
@@ -258,6 +266,7 @@ public interface WorldGroup {
      * @param player   the player for whom data is to be loaded
      * @param position whether to load the player's position data
      */
+    @Contract(mutates = "param1")
     CompletableFuture<Boolean> loadPlayerData(Player player, boolean position);
 
     /**
@@ -266,6 +275,7 @@ public interface WorldGroup {
      * @param world the world whose data is to be updated
      * @throws IllegalArgumentException thrown if the specified world is not part of this group
      */
+    @Contract(mutates = "param1")
     void updateWorldData(World world) throws IllegalArgumentException;
 
     /**
@@ -277,6 +287,7 @@ public interface WorldGroup {
      * @param type  the type of update to apply to the world's data
      * @throws IllegalArgumentException if the specified world is not part of this group
      */
+    @Contract(mutates = "param1")
     void updateWorldData(World world, GroupData.Type type) throws IllegalArgumentException;
 
     /**
@@ -292,6 +303,7 @@ public interface WorldGroup {
      *
      * @return whether the group could be successfully saved
      */
+    @Contract(mutates = "io")
     boolean persist();
 
     /**
@@ -299,6 +311,7 @@ public interface WorldGroup {
      * This method ensures that any unsaved player-specific data is written to disk,
      * helping to maintain the integrity and consistency of player data across sessions.
      */
+    @Contract(mutates = "io")
     void persistPlayerData();
 
     /**
@@ -306,6 +319,7 @@ public interface WorldGroup {
      *
      * @param player the player whose data is to be persisted
      */
+    @Contract(mutates = "io")
     void persistPlayerData(Player player);
 
     /**
@@ -316,5 +330,6 @@ public interface WorldGroup {
      * @param player the player whose data is to be persisted and modified
      * @param data   a {@link Consumer} that manipulates the {@link PlayerData} object
      */
+    @Contract(mutates = "io")
     void persistPlayerData(Player player, Consumer<PlayerData> data);
 }

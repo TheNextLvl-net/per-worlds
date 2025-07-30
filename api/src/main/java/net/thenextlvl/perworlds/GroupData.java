@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
@@ -48,6 +49,7 @@ public interface GroupData {
      * @see World#setGameRule(GameRule, Object)
      * @since 0.2.2
      */
+    @Contract(mutates = "this")
     <T> boolean setGameRule(@NonNull GameRule<T> rule, @Nullable T value);
 
     /**
@@ -69,6 +71,7 @@ public interface GroupData {
      * @see World#setDifficulty(Difficulty)
      * @since 0.2.2
      */
+    @Contract(mutates = "this")
     void setDifficulty(@NonNull Difficulty difficulty);
 
     /**
@@ -88,6 +91,7 @@ public interface GroupData {
      * @see #getDefaultGameMode()
      * @since 0.2.2
      */
+    @Contract(mutates = "this")
     void setDefaultGameMode(@Nullable GameMode gameMode);
 
     /**
@@ -106,6 +110,7 @@ public interface GroupData {
      * @param worldBorder the new world border configuration
      * @since 1.0.0
      */
+    @Contract(mutates = "this")
     void setWorldBorder(@NonNull WorldBorderData worldBorder);
 
     /**
@@ -129,6 +134,7 @@ public interface GroupData {
      * @see #getSpawnLocation()
      * @since 0.2.2
      */
+    @Contract(mutates = "this")
     void setSpawnLocation(@Nullable Location location);
 
     /**
@@ -148,6 +154,7 @@ public interface GroupData {
      * @see World#setHardcore(boolean)
      * @since 0.2.2
      */
+    @Contract(mutates = "this")
     void setHardcore(TriState hardcore);
 
     /**
@@ -168,6 +175,7 @@ public interface GroupData {
      * @see World#setStorm(boolean)
      * @since 1.0.0
      */
+    @Contract(mutates = "this")
     void setRaining(boolean raining);
 
     /**
@@ -187,6 +195,7 @@ public interface GroupData {
      * @see World#setThundering(boolean)
      * @since 1.0.0
      */
+    @Contract(mutates = "this")
     void setThundering(boolean thundering);
 
     /**
@@ -208,6 +217,7 @@ public interface GroupData {
      * @see World#setClearWeatherDuration(int)
      * @since 1.0.0
      */
+    @Contract(mutates = "this")
     void clearWeatherDuration(int duration);
 
     /**
@@ -229,6 +239,7 @@ public interface GroupData {
      * @see World#setThunderDuration(int)
      * @since 1.0.0
      */
+    @Contract(mutates = "this")
     void setThunderDuration(int duration);
 
     /**
@@ -250,6 +261,7 @@ public interface GroupData {
      * @see World#setWeatherDuration(int)
      * @since 1.0.0
      */
+    @Contract(mutates = "this")
     void setRainDuration(int duration);
 
     /**
@@ -269,6 +281,7 @@ public interface GroupData {
      * @see World#setFullTime(long)
      * @since 1.0.0
      */
+    @Contract(mutates = "this")
     void setTime(long time);
 
     /**

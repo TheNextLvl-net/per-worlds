@@ -2,6 +2,7 @@ package net.thenextlvl.perworlds;
 
 import org.bukkit.World;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -88,6 +89,7 @@ public interface GroupProvider {
      * @throws IllegalStateException if a group with the specified name already exists,
      *                               or if a given world is already part of another group.
      */
+    @Contract(value = "_, _, _, _ -> new")
     WorldGroup createGroup(String name, Consumer<GroupData> data, Consumer<GroupSettings> settings, Collection<World> worlds) throws IllegalStateException;
 
     /**
@@ -100,6 +102,7 @@ public interface GroupProvider {
      * @throws IllegalStateException if a group with the specified name already exists,
      *                               or if a given world is already part of another group.
      */
+    @Contract(value = "_, _ -> new")
     WorldGroup createGroup(String name, Collection<World> worlds) throws IllegalStateException;
 
     /**
@@ -114,6 +117,7 @@ public interface GroupProvider {
      * @throws IllegalStateException if a group with the specified name already exists,
      *                               or if a given world is already part of another group.
      */
+    @Contract(value = "_, _, _, _ -> new")
     WorldGroup createGroup(String name, Consumer<GroupData> data, Consumer<GroupSettings> settings, World... worlds) throws IllegalStateException;
 
     /**
@@ -126,6 +130,7 @@ public interface GroupProvider {
      * @throws IllegalStateException if a group with the specified name already exists,
      *                               or if a given world is already part of another group.
      */
+    @Contract(value = "_, _ -> new")
     WorldGroup createGroup(String name, World... worlds) throws IllegalStateException;
 
     /**
@@ -159,6 +164,7 @@ public interface GroupProvider {
      * @return {@code true} if the group was successfully removed, {@code false} otherwise
      * @see #removeGroup(WorldGroup)
      */
+    @Contract(mutates = "this")
     boolean removeGroup(String name);
 
     /**
@@ -169,5 +175,6 @@ public interface GroupProvider {
      * @param group the {@link WorldGroup} to be removed
      * @return whether the group was successfully removed from the provider
      */
+    @Contract(mutates = "this")
     boolean removeGroup(WorldGroup group);
 }

@@ -6,6 +6,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -28,17 +29,23 @@ public interface Stats {
 
     int getStatistic(Statistic statistic, ItemType type);
 
+    @Contract(mutates = "this")
     void setStatistic(Statistic statistic, BlockType type, int value);
 
+    @Contract(mutates = "this")
     void setStatistic(Statistic statistic, EntityType type, int value);
 
+    @Contract(mutates = "this")
     void setStatistic(Statistic statistic, ItemType type, int value);
 
+    @Contract(mutates = "this")
     void setStatistic(Statistic statistic, int value);
 
     @ApiStatus.Internal
+    @Contract(mutates = "param1")
     void apply(Player player);
 
     @ApiStatus.Internal
+    @Contract(mutates = "param1")
     void clear(Player player);
 }

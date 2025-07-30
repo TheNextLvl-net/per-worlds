@@ -1,6 +1,7 @@
 package net.thenextlvl.perworlds;
 
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 
 /**
  * Represents the configurable settings of a group.
@@ -26,6 +27,7 @@ public interface GroupSettings {
      *
      * @param enabled {@code true} to enable the group, or {@code false} to disable it
      */
+    @Contract(mutates = "this")
     void enabled(boolean enabled);
 
     ///
@@ -39,6 +41,7 @@ public interface GroupSettings {
      */
     boolean advancementMessages();
 
+    @Contract(mutates = "this")
     void advancementMessages(boolean enabled);
 
     /**
@@ -48,6 +51,7 @@ public interface GroupSettings {
      */
     boolean deathMessages();
 
+    @Contract(mutates = "this")
     void deathMessages(boolean enabled);
 
     /**
@@ -57,6 +61,7 @@ public interface GroupSettings {
      */
     boolean joinMessages();
 
+    @Contract(mutates = "this")
     void joinMessages(boolean enabled);
 
     /**
@@ -66,6 +71,7 @@ public interface GroupSettings {
      */
     boolean quitMessages();
 
+    @Contract(mutates = "this")
     void quitMessages(boolean enabled);
 
     ///
@@ -79,6 +85,7 @@ public interface GroupSettings {
      */
     boolean chat();
 
+    @Contract(mutates = "this")
     void chat(boolean enabled);
 
     /**
@@ -88,6 +95,7 @@ public interface GroupSettings {
      */
     boolean difficulty();
 
+    @Contract(mutates = "this")
     void difficulty(boolean enabled);
 
     /**
@@ -97,6 +105,7 @@ public interface GroupSettings {
      */
     boolean gameRules();
 
+    @Contract(mutates = "this")
     void gameRules(boolean enabled);
 
     /**
@@ -106,6 +115,7 @@ public interface GroupSettings {
      */
     boolean tabList();
 
+    @Contract(mutates = "this")
     void tabList(boolean enabled);
 
     /**
@@ -115,6 +125,7 @@ public interface GroupSettings {
      */
     boolean time();
 
+    @Contract(mutates = "this")
     void time(boolean enabled);
 
     /**
@@ -124,6 +135,7 @@ public interface GroupSettings {
      */
     boolean weather();
 
+    @Contract(mutates = "this")
     void weather(boolean enabled);
 
     /**
@@ -133,6 +145,7 @@ public interface GroupSettings {
      */
     boolean worldBorder();
 
+    @Contract(mutates = "this")
     void worldBorder(boolean enabled);
 
     ///
@@ -148,6 +161,7 @@ public interface GroupSettings {
      */
     boolean absorption();
 
+    @Contract(mutates = "this")
     void absorption(boolean enabled);
 
     /**
@@ -159,6 +173,7 @@ public interface GroupSettings {
      */
     boolean advancements();
 
+    @Contract(mutates = "this")
     void advancements(boolean enabled);
 
     /**
@@ -170,6 +185,7 @@ public interface GroupSettings {
      */
     boolean arrowsInBody();
 
+    @Contract(mutates = "this")
     void arrowsInBody(boolean enabled);
 
     /**
@@ -181,6 +197,7 @@ public interface GroupSettings {
      */
     boolean attributes();
 
+    @Contract(mutates = "this")
     void attributes(boolean enabled);
 
     /**
@@ -192,6 +209,7 @@ public interface GroupSettings {
      */
     boolean beeStingersInBody();
 
+    @Contract(mutates = "this")
     void beeStingersInBody(boolean enabled);
 
     /**
@@ -204,6 +222,7 @@ public interface GroupSettings {
      */
     boolean endCredits();
 
+    @Contract(mutates = "this")
     void endCredits(boolean enabled);
 
     /**
@@ -215,6 +234,7 @@ public interface GroupSettings {
      */
     boolean enderChest();
 
+    @Contract(mutates = "this")
     void enderChest(boolean enabled);
 
     /**
@@ -226,6 +246,7 @@ public interface GroupSettings {
      */
     boolean exhaustion();
 
+    @Contract(mutates = "this")
     void exhaustion(boolean enabled);
 
     /**
@@ -237,6 +258,7 @@ public interface GroupSettings {
      */
     boolean experience();
 
+    @Contract(mutates = "this")
     void experience(boolean enabled);
 
     /**
@@ -248,6 +270,7 @@ public interface GroupSettings {
      */
     boolean fallDistance();
 
+    @Contract(mutates = "this")
     void fallDistance(boolean enabled);
 
     /**
@@ -259,6 +282,7 @@ public interface GroupSettings {
      */
     boolean fireTicks();
 
+    @Contract(mutates = "this")
     void fireTicks(boolean enabled);
 
     /**
@@ -270,6 +294,7 @@ public interface GroupSettings {
      */
     boolean flySpeed();
 
+    @Contract(mutates = "this")
     void flySpeed(boolean enabled);
 
     /**
@@ -281,6 +306,7 @@ public interface GroupSettings {
      */
     boolean flyState();
 
+    @Contract(mutates = "this")
     void flyState(boolean enabled);
 
     /**
@@ -292,6 +318,7 @@ public interface GroupSettings {
      */
     boolean foodLevel();
 
+    @Contract(mutates = "this")
     void foodLevel(boolean enabled);
 
     /**
@@ -303,6 +330,7 @@ public interface GroupSettings {
      */
     boolean freezeTicks();
 
+    @Contract(mutates = "this")
     void freezeTicks(boolean enabled);
 
     /**
@@ -314,6 +342,7 @@ public interface GroupSettings {
      */
     boolean gameMode();
 
+    @Contract(mutates = "this")
     void gameMode(boolean enabled);
 
     /**
@@ -325,6 +354,7 @@ public interface GroupSettings {
      */
     boolean gliding();
 
+    @Contract(mutates = "this")
     void gliding(boolean enabled);
 
     /**
@@ -336,6 +366,7 @@ public interface GroupSettings {
      */
     boolean health();
 
+    @Contract(mutates = "this")
     void health(boolean enabled);
 
     /**
@@ -347,6 +378,7 @@ public interface GroupSettings {
      */
     boolean hotbarSlot();
 
+    @Contract(mutates = "this")
     void hotbarSlot(boolean enabled);
 
     /**
@@ -358,6 +390,7 @@ public interface GroupSettings {
      */
     boolean inventory();
 
+    @Contract(mutates = "this")
     void inventory(boolean enabled);
 
     /**
@@ -369,6 +402,7 @@ public interface GroupSettings {
      */
     boolean invulnerable();
 
+    @Contract(mutates = "this")
     void invulnerable(boolean enabled);
 
     /**
@@ -380,6 +414,7 @@ public interface GroupSettings {
      */
     boolean lastDeathLocation();
 
+    @Contract(mutates = "this")
     void lastDeathLocation(boolean enabled);
 
     /**
@@ -391,6 +426,7 @@ public interface GroupSettings {
      */
     boolean lastLocation();
 
+    @Contract(mutates = "this")
     void lastLocation(boolean enabled);
 
     /**
@@ -402,6 +438,7 @@ public interface GroupSettings {
      */
     boolean lockFreezeTicks();
 
+    @Contract(mutates = "this")
     void lockFreezeTicks(boolean enabled);
 
     /**
@@ -413,6 +450,7 @@ public interface GroupSettings {
      */
     boolean portalCooldown();
 
+    @Contract(mutates = "this")
     void portalCooldown(boolean enabled);
 
     /**
@@ -424,6 +462,7 @@ public interface GroupSettings {
      */
     boolean potionEffects();
 
+    @Contract(mutates = "this")
     void potionEffects(boolean enabled);
 
     /**
@@ -435,6 +474,7 @@ public interface GroupSettings {
      */
     boolean recipes();
 
+    @Contract(mutates = "this")
     void recipes(boolean enabled);
 
     /**
@@ -446,6 +486,7 @@ public interface GroupSettings {
      */
     boolean remainingAir();
 
+    @Contract(mutates = "this")
     void remainingAir(boolean enabled);
 
     /**
@@ -457,6 +498,7 @@ public interface GroupSettings {
      */
     boolean respawnLocation();
 
+    @Contract(mutates = "this")
     void respawnLocation(boolean enabled);
 
     /**
@@ -468,6 +510,7 @@ public interface GroupSettings {
      */
     boolean saturation();
 
+    @Contract(mutates = "this")
     void saturation(boolean enabled);
 
     /**
@@ -479,6 +522,7 @@ public interface GroupSettings {
      */
     boolean score();
 
+    @Contract(mutates = "this")
     void score(boolean enabled);
 
     /**
@@ -490,6 +534,7 @@ public interface GroupSettings {
      */
     boolean statistics();
 
+    @Contract(mutates = "this")
     void statistics(boolean enabled);
 
     /**
@@ -501,6 +546,7 @@ public interface GroupSettings {
      */
     boolean velocity();
 
+    @Contract(mutates = "this")
     void velocity(boolean enabled);
 
     /**
@@ -512,6 +558,7 @@ public interface GroupSettings {
      */
     boolean visualFire();
 
+    @Contract(mutates = "this")
     void visualFire(boolean enabled);
 
     /**
@@ -523,6 +570,7 @@ public interface GroupSettings {
      */
     boolean walkSpeed();
 
+    @Contract(mutates = "this")
     void walkSpeed(boolean enabled);
 
     /**
@@ -534,5 +582,6 @@ public interface GroupSettings {
      */
     boolean wardenSpawnTracker();
 
+    @Contract(mutates = "this")
     void wardenSpawnTracker(boolean enabled);
 }
