@@ -19,6 +19,8 @@ public interface WorldBorderData {
     /**
      * A default instance of {@link WorldBorderData} that serves as the standard,
      * preset configuration for a world border.
+     *
+     * @since 1.0.0
      */
     WorldBorderData DEFAULT = new WorldBorderDataImpl();
 
@@ -38,6 +40,7 @@ public interface WorldBorderData {
      * @return the current WorldBorderData instance for chaining
      * @throws IllegalArgumentException if the absolute value of {@code x}
      *                                  is higher than {@link #getMaxCenterCoordinate()}
+     * @since 0.2.2
      */
     @Contract(value = "_ -> new", pure = true)
     WorldBorderData centerX(double x) throws IllegalArgumentException;
@@ -58,6 +61,7 @@ public interface WorldBorderData {
      * @return the current WorldBorderData instance for chaining
      * @throws IllegalArgumentException if the absolute value of {@code z}
      *                                  is higher than {@link #getMaxCenterCoordinate()}
+     * @since 0.2.2
      */
     @Contract(value = "_ -> new", pure = true)
     WorldBorderData centerZ(double z) throws IllegalArgumentException;
@@ -77,6 +81,7 @@ public interface WorldBorderData {
      * @return the current WorldBorderData instance for chaining
      * @throws IllegalArgumentException if the absolute value of {@link Position#x()} or {@link Position#z()}
      *                                  is higher than {@link #getMaxCenterCoordinate()}
+     * @since 0.2.2
      */
     @Contract(value = "_ -> new", pure = true)
     WorldBorderData center(Position position) throws IllegalArgumentException;
@@ -89,6 +94,7 @@ public interface WorldBorderData {
      * @return the current WorldBorderData instance for chaining
      * @throws IllegalArgumentException if the absolute value of {@code x} or {@code z}
      *                                  is higher than {@link #getMaxCenterCoordinate()}
+     * @since 0.2.2
      */
     @Contract(value = "_, _ -> new", pure = true)
     WorldBorderData center(double x, double z) throws IllegalArgumentException;
@@ -109,6 +115,7 @@ public interface WorldBorderData {
      * @return the current WorldBorderData instance for chaining
      * @throws IllegalArgumentException if {@code size} is less than {@link #getMinSize()} or greater than {@link #getMaxSize()}
      * @see WorldBorder#setSize(double)
+     * @since 0.2.2
      */
     @Contract(value = "_ -> new", pure = true)
     WorldBorderData size(double size) throws IllegalArgumentException;
@@ -129,6 +136,7 @@ public interface WorldBorderData {
      * @return the current WorldBorderData instance for chaining
      * @throws IllegalArgumentException if the duration is less than 0
      * @see WorldBorder#setSize(double, TimeUnit, long)
+     * @since 0.2.2
      */
     @Contract(value = "_ -> new", pure = true)
     WorldBorderData duration(long duration) throws IllegalArgumentException;
@@ -148,6 +156,7 @@ public interface WorldBorderData {
      * @param damage The amount of damage.
      * @return the current WorldBorderData instance for chaining
      * @see WorldBorder#setDamageAmount(double)
+     * @since 0.2.2
      */
     @Contract(value = "_ -> new", pure = true)
     WorldBorderData damageAmount(double damage);
@@ -157,6 +166,7 @@ public interface WorldBorderData {
      *
      * @return The current border damage buffer.
      * @see WorldBorder#getDamageBuffer()
+     * @since 0.2.2
      */
     @Contract(pure = true)
     double damageBuffer();
@@ -186,6 +196,7 @@ public interface WorldBorderData {
      * @param blocks The distance in blocks.
      * @return the current WorldBorderData instance for chaining
      * @see WorldBorder#setWarningDistance(int)
+     * @since 0.2.2
      */
     @Contract(value = "_ -> new", pure = true)
     WorldBorderData warningDistance(int blocks);
@@ -205,6 +216,7 @@ public interface WorldBorderData {
      * @param seconds The amount of time in seconds.
      * @return the current WorldBorderData instance for chaining
      * @see WorldBorder#setWarningTime(int)
+     * @since 0.2.2
      */
     @Contract(value = "_ -> new", pure = true)
     WorldBorderData warningTime(int seconds);
@@ -214,6 +226,7 @@ public interface WorldBorderData {
      *
      * @return the maximum size of the border
      * @see WorldBorder#getMaxSize()
+     * @since 1.0.0
      */
     @Contract(pure = true)
     static double getMaxSize() {
@@ -224,6 +237,7 @@ public interface WorldBorderData {
      * Retrieves the minimum allowed size of the border.
      *
      * @return the minimum size of the border
+     * @since 1.0.0
      */
     @Contract(pure = true)
     static double getMinSize() {
@@ -235,6 +249,7 @@ public interface WorldBorderData {
      *
      * @return the maximum center coordinate value that can be set for the border
      * @see WorldBorder#getMaxCenterCoordinate()
+     * @since 1.0.0
      */
     @Contract(pure = true)
     static double getMaxCenterCoordinate() {

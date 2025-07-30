@@ -64,7 +64,7 @@ public interface AdvancementData {
      *
      * @param criteria the criteria to check
      * @return time awarded or {@code null} if unawarded or criteria does not exist
-     * @since 0.2.0
+     * @since 0.2.6
      */
     @Nullable
     Instant getTimeAwarded(String criteria);
@@ -75,7 +75,7 @@ public interface AdvancementData {
      * @param criteria the criteria to set the date for
      * @param instant  the time to associate with the awarded criteria
      * @return {@code true} if the date was successfully set, {@code false} if the criteria does not exist or is already awarded
-     * @since 0.2.0
+     * @since 0.2.6
      */
     boolean setTimeAwarded(String criteria, Instant instant);
 

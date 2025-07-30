@@ -34,6 +34,7 @@ public interface GroupData {
      * @param <T>  the GameRule's type
      * @return an {@link Optional} containing the current gamerule value
      * @see World#getGameRuleValue(GameRule)
+     * @since 0.2.2
      */
     @NonNull
     <T> Optional<T> getGameRule(@NonNull GameRule<T> rule);
@@ -45,6 +46,7 @@ public interface GroupData {
      * @param <T>  the value type of the GameRule
      * @return true if the value was successfully set
      * @see World#setGameRule(GameRule, Object)
+     * @since 0.2.2
      */
     <T> boolean setGameRule(@NonNull GameRule<T> rule, @Nullable T value);
 
@@ -53,6 +55,7 @@ public interface GroupData {
      *
      * @return the current {@link Difficulty} of the group
      * @see World#getDifficulty()
+     * @since 0.2.2
      */
     @NonNull
     Difficulty getDifficulty();
@@ -64,6 +67,7 @@ public interface GroupData {
      *
      * @param difficulty the new {@link Difficulty} to be set
      * @see World#setDifficulty(Difficulty)
+     * @since 0.2.2
      */
     void setDifficulty(@NonNull Difficulty difficulty);
 
@@ -72,6 +76,7 @@ public interface GroupData {
      *
      * @return an {@link Optional} containing the default {@link GameMode} for the group
      * @see #setDefaultGameMode(GameMode)
+     * @since 0.2.2
      */
     Optional<GameMode> getDefaultGameMode();
 
@@ -81,6 +86,7 @@ public interface GroupData {
      * @param gameMode the {@link GameMode} to be set as the default for the group,
      *                 {@code null} to delegate to {@link Server#getDefaultGameMode()}
      * @see #getDefaultGameMode()
+     * @since 0.2.2
      */
     void setDefaultGameMode(@Nullable GameMode gameMode);
 
@@ -89,6 +95,7 @@ public interface GroupData {
      *
      * @return the {@link WorldBorderData} instance representing the world's border configuration
      * @see World#getWorldBorder()
+     * @since 0.2.2
      */
     @NonNull
     WorldBorderData getWorldBorder();
@@ -97,6 +104,7 @@ public interface GroupData {
      * Sets the world border configuration for the group.
      *
      * @param worldBorder the new world border configuration
+     * @since 1.0.0
      */
     void setWorldBorder(@NonNull WorldBorderData worldBorder);
 
@@ -106,6 +114,7 @@ public interface GroupData {
      * @return the {@link Location} representing the group's spawn location,
      * or {@code null} if no spawn location is defined
      * @see #setSpawnLocation(Location)
+     * @since 0.2.2
      */
     @NonNull
     Optional<Location> getSpawnLocation();
@@ -118,6 +127,7 @@ public interface GroupData {
      * @param location the {@link Location} to set as the group's spawn location.
      *                 Can be {@code null} to unset or clear the spawn location.
      * @see #getSpawnLocation()
+     * @since 0.2.2
      */
     void setSpawnLocation(@Nullable Location location);
 
@@ -126,6 +136,7 @@ public interface GroupData {
      *
      * @return a {@link TriState} indicating whether the group is in hardcore mode
      * @see World#isHardcore()
+     * @since 0.2.2
      */
     TriState getHardcore();
 
@@ -135,6 +146,7 @@ public interface GroupData {
      * @param hardcore {@link TriState#TRUE} to enable hardcore mode, {@link TriState#FALSE} to disable it,
      *                 and {@link TriState#NOT_SET} to delegate to {@link Server#isHardcore()}
      * @see World#setHardcore(boolean)
+     * @since 0.2.2
      */
     void setHardcore(TriState hardcore);
 
@@ -144,6 +156,7 @@ public interface GroupData {
      *
      * @return true if it is raining, false otherwise
      * @see World#setStorm(boolean)
+     * @since 1.0.0
      */
     boolean isRaining();
 
@@ -153,6 +166,7 @@ public interface GroupData {
      *
      * @param raining true to enable rain, false to disable it
      * @see World#setStorm(boolean)
+     * @since 1.0.0
      */
     void setRaining(boolean raining);
 
@@ -161,6 +175,7 @@ public interface GroupData {
      *
      * @return true if it is thundering, false otherwise
      * @see World#setThundering(boolean)
+     * @since 1.0.0
      */
     boolean isThundering();
 
@@ -170,6 +185,7 @@ public interface GroupData {
      *
      * @param thundering true to enable thundering, false to disable it
      * @see World#setThundering(boolean)
+     * @since 1.0.0
      */
     void setThundering(boolean thundering);
 
@@ -179,6 +195,7 @@ public interface GroupData {
      *
      * @return the remaining duration of clear weather in ticks
      * @see World#getClearWeatherDuration()
+     * @since 1.0.0
      */
     int clearWeatherDuration();
 
@@ -189,6 +206,7 @@ public interface GroupData {
      *
      * @param duration the number of ticks for the clear weather duration
      * @see World#setClearWeatherDuration(int)
+     * @since 1.0.0
      */
     void clearWeatherDuration(int duration);
 
@@ -198,6 +216,7 @@ public interface GroupData {
      *
      * @return the remaining duration of the thunderstorm in ticks
      * @see World#getThunderDuration()
+     * @since 1.0.0
      */
     int getThunderDuration();
 
@@ -208,6 +227,7 @@ public interface GroupData {
      *
      * @param duration the number of ticks for the thundering duration
      * @see World#setThunderDuration(int)
+     * @since 1.0.0
      */
     void setThunderDuration(int duration);
 
@@ -217,6 +237,7 @@ public interface GroupData {
      *
      * @return the remaining duration of the rain in ticks
      * @see World#getWeatherDuration()
+     * @since 1.0.0
      */
     int getRainDuration();
 
@@ -227,6 +248,7 @@ public interface GroupData {
      *
      * @param duration the number of ticks for the raining duration
      * @see World#setWeatherDuration(int)
+     * @since 1.0.0
      */
     void setRainDuration(int duration);
 
@@ -235,6 +257,7 @@ public interface GroupData {
      *
      * @return the current time as a long
      * @see World#getFullTime()
+     * @since 1.0.0
      */
     long getTime();
 
@@ -244,6 +267,7 @@ public interface GroupData {
      *
      * @param time the time value to be set, represented as a long
      * @see World#setFullTime(long)
+     * @since 1.0.0
      */
     void setTime(long time);
 

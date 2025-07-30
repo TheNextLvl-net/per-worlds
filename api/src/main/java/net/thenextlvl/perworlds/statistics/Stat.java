@@ -9,6 +9,9 @@ import org.jspecify.annotations.NullMarked;
 
 import java.util.Map;
 
+/**
+ * @since 0.1.0
+ */
 @NullMarked
 @ApiStatus.NonExtendable
 public interface Stat<T> extends TagSerializable {

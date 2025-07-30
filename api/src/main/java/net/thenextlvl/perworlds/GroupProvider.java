@@ -27,6 +27,7 @@ public interface GroupProvider {
      * The data folder is used for storing persistent data relevant to groups.
      *
      * @return the path pointing to the data folder used by the group provider
+     * @since 1.0.0
      */
     Path getDataFolder();
 

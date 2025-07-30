@@ -29,6 +29,9 @@ import java.util.concurrent.CompletableFuture;
 @NullMarked
 @ApiStatus.NonExtendable
 public interface PlayerData {
+    /**
+     * @since 0.2.4
+     */
     WorldGroup group();
 
     @Nullable
@@ -55,6 +58,9 @@ public interface PlayerData {
     @Nullable
     Location respawnLocation();
 
+    /**
+     * @since 0.2.6
+     */
     @Nullable
     Key lastAdvancementTab();
 
@@ -104,6 +110,9 @@ public interface PlayerData {
 
     PlayerData lastLocation(@Nullable Location location);
 
+    /**
+     * @since 0.2.6
+     */
     PlayerData lastAdvancementTab(@Nullable Key key);
 
     PlayerData level(int level);
@@ -132,6 +141,9 @@ public interface PlayerData {
 
     PlayerData velocity(Vector velocity);
 
+    /**
+     * @since 0.2.0
+     */
     PlayerData visualFire(TriState visualFire);
 
     PlayerData walkSpeed(@Range(from = -1, to = 1) float speed);
@@ -153,6 +165,9 @@ public interface PlayerData {
 
     TriState mayFly();
 
+    /**
+     * @since 0.2.0
+     */
     TriState visualFire();
 
     Vector velocity();
@@ -211,6 +226,7 @@ public interface PlayerData {
      *
      * @param player   the player whose data is being loaded
      * @param position defines whether position-related settings should be applied
+     * @since 0.2.4
      */
     CompletableFuture<Boolean> load(Player player, boolean position);
 }

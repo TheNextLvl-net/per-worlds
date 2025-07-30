@@ -31,6 +31,7 @@ public interface WorldGroup {
      * Retrieves the data folder of the specific group, used to store persistent data.
      *
      * @return the path pointing to the data folder for the current group
+     * @since 1.0.0
      */
     Path getDataFolder();
 
@@ -39,6 +40,7 @@ public interface WorldGroup {
      * The configuration file contains information such as settings, group name, and associated worlds.
      *
      * @return the path to the configuration file.
+     * @since 1.0.0
      */
     Path getConfigFile();
 
@@ -46,6 +48,7 @@ public interface WorldGroup {
      * Retrieves the backup file for the configuration settings.
      *
      * @return the path to the configuration file backup.
+     * @since 1.0.0
      */
     Path getConfigFileBackup();
 
@@ -135,6 +138,7 @@ public interface WorldGroup {
      * @param player the player whose data is to be edited.
      * @param data   the consumer function that will be applied to the player's data.
      * @return whether any changes were applied and persisted.
+     * @since 0.2.4
      */
     boolean editPlayerData(OfflinePlayer player, Consumer<PlayerData> data);
 
