@@ -1,6 +1,5 @@
 package net.thenextlvl.perworlds;
 
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Unmodifiable;
@@ -171,11 +170,4 @@ public interface GroupProvider {
      * @return whether the group was successfully removed from the provider
      */
     boolean removeGroup(WorldGroup group);
-
-    /**
-     * Retrieves the {@link Server} instance associated with the group provider.
-     *
-     * @return the {@link Server} instance representing the server environment this provider operates in
-     */
-    Server getServer();
 }

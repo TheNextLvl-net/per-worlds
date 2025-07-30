@@ -104,7 +104,6 @@ public class PaperGroupProvider implements GroupProvider {
         return plugin.getComponentLogger();
     }
 
-    @Override
     public Server getServer() {
         return plugin.getServer();
     }
