@@ -9,28 +9,28 @@ import core.nbt.tag.CompoundTag;
 import core.nbt.tag.Tag;
 import net.kyori.adventure.util.TriState;
 import net.thenextlvl.perworlds.GroupData;
-import net.thenextlvl.perworlds.GroupProvider;
 import net.thenextlvl.perworlds.data.WorldBorderData;
 import net.thenextlvl.perworlds.group.PaperGroupData;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
+import org.bukkit.Server;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public class GroupDataAdapter implements TagAdapter<GroupData> {
-    private final GroupProvider provider;
+    private final Server server;
 
-    public GroupDataAdapter(GroupProvider provider) {
-        this.provider = provider;
+    public GroupDataAdapter(Server server) {
+        this.server = server;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public GroupData deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
         var root = tag.getAsCompound();
-        var data = new PaperGroupData(provider);
+        var data = new PaperGroupData();
         root.optional("defaultGameMode").map(tag1 -> context.deserialize(tag1, GameMode.class)).ifPresent(data::setDefaultGameMode);
         root.optional("difficulty").map(tag1 -> context.deserialize(tag1, Difficulty.class)).ifPresent(data::setDifficulty);
         root.optional("spawnLocation").map(tag1 -> context.deserialize(tag1, Location.class)).ifPresent(data::setSpawnLocation);
@@ -38,7 +38,7 @@ public class GroupDataAdapter implements TagAdapter<GroupData> {
         root.optional("hardcore").map(tag1 -> {
             if (!(tag1 instanceof ByteTag)) return context.deserialize(tag1, TriState.class);
             var value = tag1.getAsBoolean();
-            return value == provider.getServer().isHardcore() ? TriState.NOT_SET : TriState.byBoolean(value);
+            return value == server.isHardcore() ? TriState.NOT_SET : TriState.byBoolean(value);
         }).ifPresent(data::setHardcore);
         root.optional("raining").map(Tag::getAsBoolean).ifPresent(data::setRaining);
         root.optional("thundering").map(Tag::getAsBoolean).ifPresent(data::setThundering);

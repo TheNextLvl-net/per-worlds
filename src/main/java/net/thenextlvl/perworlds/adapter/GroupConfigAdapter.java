@@ -32,7 +32,7 @@ public class GroupConfigAdapter implements TagAdapter<GroupConfig> {
         var root = tag.getAsCompound();
         var data = root.optional("data")
                 .map(tag1 -> context.deserialize(tag1, GroupData.class))
-                .orElseGet(() -> new PaperGroupData(provider));
+                .orElseGet(PaperGroupData::new);
         var settings = root.optional("settings")
                 .map(tag1 -> context.deserialize(tag1, GroupSettings.class))
                 .orElseGet(PaperGroupSettings::new);

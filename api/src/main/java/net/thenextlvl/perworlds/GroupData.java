@@ -272,13 +272,6 @@ public interface GroupData {
     void setTime(long time);
 
     /**
-     * Retrieves the current instance of the GroupProvider.
-     *
-     * @return the GroupProvider associated with this object
-     */
-    GroupProvider getGroupProvider();
-
-    /**
      * Represents various types of group data that can be manipulated within the game.
      * Each enum constant corresponds to a specific configurable or retrievable attribute within a {@link WorldGroup}.
      */

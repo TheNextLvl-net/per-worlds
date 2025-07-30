@@ -2,7 +2,6 @@ package net.thenextlvl.perworlds.group;
 
 import net.kyori.adventure.util.TriState;
 import net.thenextlvl.perworlds.GroupData;
-import net.thenextlvl.perworlds.GroupProvider;
 import net.thenextlvl.perworlds.data.WorldBorderData;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
@@ -31,12 +30,6 @@ public class PaperGroupData implements GroupData {
     private int rainDuration;
     private int thunderDuration;
     private long time = 0;
-
-    private final GroupProvider provider;
-
-    public PaperGroupData(GroupProvider provider) {
-        this.provider = provider;
-    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -164,10 +157,5 @@ public class PaperGroupData implements GroupData {
     @Override
     public void setTime(long time) {
         this.time = time;
-    }
-
-    @Override
-    public GroupProvider getGroupProvider() {
-        return provider;
     }
 }

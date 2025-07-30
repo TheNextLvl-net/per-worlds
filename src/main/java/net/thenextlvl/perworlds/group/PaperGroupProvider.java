@@ -80,7 +80,7 @@ public class PaperGroupProvider implements GroupProvider {
                 .registerTypeHierarchyAdapter(Difficulty.class, new EnumAdapter<>(Difficulty.class))
                 .registerTypeHierarchyAdapter(GameMode.class, new EnumAdapter<>(GameMode.class))
                 .registerTypeHierarchyAdapter(GroupConfig.class, new GroupConfigAdapter(this))
-                .registerTypeHierarchyAdapter(GroupData.class, new GroupDataAdapter(this))
+                .registerTypeHierarchyAdapter(GroupData.class, new GroupDataAdapter(getServer()))
                 .registerTypeHierarchyAdapter(GroupSettings.class, new GroupSettingsAdapter())
                 .registerTypeHierarchyAdapter(Instant.class, new InstantAdapter())
                 .registerTypeHierarchyAdapter(ItemStack[].class, new ItemStackArrayAdapter())
@@ -160,7 +160,7 @@ public class PaperGroupProvider implements GroupProvider {
         Preconditions.checkState(invalid.isEmpty(), "Worlds cannot be in multiple groups: {}", String.join(", ", invalid));
 
         var groupSettings = new PaperGroupSettings();
-        var groupData = new PaperGroupData(this);
+        var groupData = new PaperGroupData();
         settings.accept(groupSettings);
         data.accept(groupData);
 
