@@ -79,7 +79,7 @@ public class PaperGroupProvider implements GroupProvider {
                 .registerTypeHierarchyAdapter(AttributeData.class, new AttributeDataAdapter())
                 .registerTypeHierarchyAdapter(Difficulty.class, new EnumAdapter<>(Difficulty.class))
                 .registerTypeHierarchyAdapter(GameMode.class, new EnumAdapter<>(GameMode.class))
-                .registerTypeHierarchyAdapter(GroupConfig.class, new GroupConfigAdapter(this))
+                .registerTypeHierarchyAdapter(GroupConfig.class, new GroupConfigAdapter())
                 .registerTypeHierarchyAdapter(GroupData.class, new GroupDataAdapter(getServer()))
                 .registerTypeHierarchyAdapter(GroupSettings.class, new GroupSettingsAdapter())
                 .registerTypeHierarchyAdapter(Instant.class, new InstantAdapter())

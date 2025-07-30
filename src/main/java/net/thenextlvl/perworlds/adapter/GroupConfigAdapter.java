@@ -9,7 +9,6 @@ import core.nbt.tag.ListTag;
 import core.nbt.tag.Tag;
 import net.kyori.adventure.key.Key;
 import net.thenextlvl.perworlds.GroupData;
-import net.thenextlvl.perworlds.GroupProvider;
 import net.thenextlvl.perworlds.GroupSettings;
 import net.thenextlvl.perworlds.group.PaperGroupData;
 import net.thenextlvl.perworlds.group.PaperGroupSettings;
@@ -21,12 +20,6 @@ import java.util.stream.Collectors;
 
 @NullMarked
 public class GroupConfigAdapter implements TagAdapter<GroupConfig> {
-    private final GroupProvider provider;
-
-    public GroupConfigAdapter(GroupProvider provider) {
-        this.provider = provider;
-    }
-
     @Override
     public GroupConfig deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
         var root = tag.getAsCompound();
