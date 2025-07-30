@@ -22,15 +22,14 @@ import java.util.stream.Collectors;
 public class GroupConfigAdapter implements TagAdapter<GroupConfig> {
     @Override
     public GroupConfig deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
-        var root = tag.getAsCompound();
-        var data = root.optional("data")
+        var data = tag.getAsCompound().optional("data")
                 .map(tag1 -> context.deserialize(tag1, GroupData.class))
                 .orElseGet(PaperGroupData::new);
-        var settings = root.optional("settings")
+        var settings = tag.getAsCompound().optional("settings")
                 .map(tag1 -> context.deserialize(tag1, GroupSettings.class))
                 .orElseGet(PaperGroupSettings::new);
-        var worlds = root.optional("worlds").map(Tag::getAsList)
-                .map(tags -> tags.stream()
+        var worlds = tag.getAsCompound().optional("worlds")
+                .map(Tag::getAsList).map(tags -> tags.stream()
                         .map(world -> context.deserialize(world, Key.class))
                         .collect(Collectors.toSet()))
                 .orElseGet(HashSet::new);
