@@ -332,6 +332,7 @@ public class PaperWorldGroup implements WorldGroup {
 
     @Override
     public void updateWorldData(World world) {
+        if (!getSettings().enabled()) return;
         provider.getServer().getGlobalRegionScheduler().run(provider.getPlugin(), task -> {
             for (var type : GroupData.Type.values()) updateWorldData(world, type);
         });
