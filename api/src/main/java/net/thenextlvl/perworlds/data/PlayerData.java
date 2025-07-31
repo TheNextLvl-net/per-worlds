@@ -213,6 +213,7 @@ public interface PlayerData {
     @Contract(pure = true)
     Set<NamespacedKey> discoveredRecipes();
 
+    @ApiStatus.Experimental
     Stats stats();
 
     @Contract(pure = true)
