@@ -81,12 +81,12 @@ public class PaperGroupData implements GroupData {
 
     @Override
     public @NonNull Optional<Location> getSpawnLocation() {
-        return Optional.ofNullable(spawnLocation);
+        return Optional.ofNullable(spawnLocation).map(Location::clone);
     }
 
     @Override
     public void setSpawnLocation(@Nullable Location location) {
-        this.spawnLocation = location;
+        this.spawnLocation = location != null ? location.clone() : null;
     }
 
     @Override

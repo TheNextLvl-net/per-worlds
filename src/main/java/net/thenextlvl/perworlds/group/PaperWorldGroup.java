@@ -135,7 +135,8 @@ public class PaperWorldGroup implements WorldGroup {
     @Override
     public Optional<Location> getSpawnLocation() {
         return getGroupData().getSpawnLocation()
-                .or(() -> getSpawnWorld().map(World::getSpawnLocation));
+                .or(() -> getSpawnWorld().map(World::getSpawnLocation))
+                .map(Location::clone);
     }
 
     @Override
@@ -257,7 +258,7 @@ public class PaperWorldGroup implements WorldGroup {
     }
 
     @Override
-    public Optional<PaperPlayerData> readPlayerData(OfflinePlayer player) {
+    public Optional<PlayerData> readPlayerData(OfflinePlayer player) {
         var file = getDataFolder().resolve(player.getUniqueId() + ".dat");
         try {
             return readPlayerData(file);
@@ -415,7 +416,7 @@ public class PaperWorldGroup implements WorldGroup {
         writePlayerData(player, playerData);
     }
 
-    private Optional<PaperPlayerData> readPlayerData(Path file) throws IOException {
+    private Optional<PlayerData> readPlayerData(Path file) throws IOException {
         return readFile(file, file.resolveSibling(file.getFileName() + "_old"), PaperPlayerData.class)
                 .map(paperPlayerData -> paperPlayerData.group(this));
     }

@@ -531,12 +531,12 @@ public class PaperPlayerData implements PlayerData {
 
     @Override
     public @Nullable ItemStack[] enderChest() {
-        return enderChest;
+        return enderChest.clone();
     }
 
     @Override
     public @Nullable ItemStack[] inventory() {
-        return inventory;
+        return inventory.clone();
     }
 
     @Override
@@ -556,17 +556,17 @@ public class PaperPlayerData implements PlayerData {
 
     @Override
     public @Nullable Location lastDeathLocation() {
-        return lastDeathLocation;
+        return lastDeathLocation != null ? lastDeathLocation.clone() : null;
     }
 
     @Override
     public @Nullable Location lastLocation() {
-        return lastLocation;
+        return lastLocation != null ? lastLocation.clone() : null;
     }
 
     @Override
     public @Nullable Location respawnLocation() {
-        return respawnLocation;
+        return respawnLocation != null ? respawnLocation.clone() : null;
     }
 
     @Override
@@ -710,13 +710,13 @@ public class PaperPlayerData implements PlayerData {
 
     @Override
     public PaperPlayerData lastDeathLocation(@Nullable Location location) {
-        this.lastDeathLocation = location == null || group == null || group.containsWorld(location.getWorld()) ? location : null;
+        this.lastDeathLocation = location != null && group != null && group.containsWorld(location.getWorld()) ? location.clone() : null;
         return this;
     }
 
     @Override
     public PaperPlayerData lastLocation(@Nullable Location location) {
-        this.lastLocation = location == null || group == null || group.containsWorld(location.getWorld()) ? location : null;
+        this.lastLocation = location != null && group != null && group.containsWorld(location.getWorld()) ? location.clone() : null;
         return this;
     }
 
@@ -734,7 +734,7 @@ public class PaperPlayerData implements PlayerData {
 
     @Override
     public PaperPlayerData velocity(Vector velocity) {
-        this.velocity = velocity;
+        this.velocity = velocity.clone();
         return this;
     }
 
@@ -806,7 +806,7 @@ public class PaperPlayerData implements PlayerData {
 
     @Override
     public PaperPlayerData respawnLocation(@Nullable Location location) {
-        this.respawnLocation = location == null || group == null || group.containsWorld(location.getWorld()) ? location : null;
+        this.respawnLocation = location != null && group != null && group.containsWorld(location.getWorld()) ? location.clone() : null;
         return this;
     }
 
@@ -854,7 +854,7 @@ public class PaperPlayerData implements PlayerData {
 
     @Override
     public Vector velocity() {
-        return velocity;
+        return velocity.clone();
     }
 
     @Override

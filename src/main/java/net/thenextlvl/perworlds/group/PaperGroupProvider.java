@@ -190,8 +190,8 @@ public class PaperGroupProvider implements GroupProvider {
 
     @Override
     public boolean hasGroup(String name) {
-        return groups.stream().anyMatch(group -> group.getName().equals(name))
-               || unownedWorldGroup.getName().equals(name);
+        return unownedWorldGroup.getName().equals(name)
+               || groups.stream().anyMatch(group -> group.getName().equals(name));
     }
 
     @Override
