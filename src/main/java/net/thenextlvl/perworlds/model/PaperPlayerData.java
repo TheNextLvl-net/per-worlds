@@ -342,9 +342,7 @@ public class PaperPlayerData implements PlayerData {
         player.setWardenWarningCooldown(tracker.cooldownTicks());
         player.setWardenWarningLevel(tracker.warningLevel());
 
-        var now = System.currentTimeMillis();
         applyStatistics(player, settings);
-        System.out.println("Loaded stats for " + player.getName() + " in " + (System.currentTimeMillis() - now) + "ms");
 
         updateTablistVisibility(player, group);
 
