@@ -1,8 +1,6 @@
 package net.thenextlvl.perworlds.statistics;
 
 import core.nbt.serialization.TagSerializable;
-import org.bukkit.Statistic;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
@@ -28,8 +26,4 @@ public interface Stat<T> extends TagSerializable {
 
     @Contract(mutates = "this")
     void setValue(T type, int value);
-
-    @ApiStatus.Internal
-    @Contract(mutates = "param2")
-    void apply(Statistic statistic, Player player);
 }

@@ -4,8 +4,6 @@ import core.nbt.serialization.ParserException;
 import core.nbt.tag.IntTag;
 import core.nbt.tag.Tag;
 import net.thenextlvl.perworlds.statistics.CustomStat;
-import org.bukkit.Statistic;
-import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -43,11 +41,6 @@ public class PaperCustomStat implements CustomStat {
     @Override
     public void setValue(Void type, int value) {
         setValue(value);
-    }
-
-    @Override
-    public void apply(Statistic statistic, Player player) {
-        player.setStatistic(statistic, getValue());
     }
 
     @Override

@@ -20,6 +20,10 @@ import net.thenextlvl.perworlds.data.AttributeData;
 import net.thenextlvl.perworlds.data.PlayerData;
 import net.thenextlvl.perworlds.data.WardenSpawnTracker;
 import net.thenextlvl.perworlds.group.PaperWorldGroup;
+import net.thenextlvl.perworlds.statistics.BlockTypeStat;
+import net.thenextlvl.perworlds.statistics.CustomStat;
+import net.thenextlvl.perworlds.statistics.EntityTypeStat;
+import net.thenextlvl.perworlds.statistics.ItemTypeStat;
 import net.thenextlvl.perworlds.statistics.Stats;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -338,13 +342,46 @@ public class PaperPlayerData implements PlayerData {
         player.setWardenWarningCooldown(tracker.cooldownTicks());
         player.setWardenWarningLevel(tracker.warningLevel());
 
-        if (settings.statistics()) stats.apply(player);
-        else stats.clear(player);
+        var now = System.currentTimeMillis();
+        applyStatistics(player, settings);
+        System.out.println("Loaded stats for " + player.getName() + " in " + (System.currentTimeMillis() - now) + "ms");
 
         updateTablistVisibility(player, group);
 
         applyAdvancements(player, settings);
         applyRecipes(player, settings);
+    }
+
+    // fixme: awful code
+    @SuppressWarnings({"DataFlowIssue", "deprecation"})
+    private void applyStatistics(Player player, GroupSettings settings) {
+        clearStatistics(player, settings.statistics());
+        if (settings.statistics()) stats.forEachStatistic((statistic, stat) -> {
+            switch (stat) {
+                case CustomStat customStat -> player.setStatistic(statistic, customStat.getValue());
+                case ItemTypeStat itemStat ->
+                        itemStat.forEachValue((type, value) -> player.setStatistic(statistic, type.asMaterial(), value));
+                case BlockTypeStat blockStat ->
+                        blockStat.forEachValue((type, value) -> player.setStatistic(statistic, type.asMaterial(), value));
+                case EntityTypeStat entityStat ->
+                        entityStat.forEachValue((type, value) -> player.setStatistic(statistic, type, value));
+                default -> throw new IllegalStateException("Unexpected stat type: " + stat.getClass().getName());
+            }
+        });
+    }
+
+    // fixme: awful code
+    @SuppressWarnings({"DataFlowIssue", "deprecation"})
+    private void clearStatistics(Player player, boolean filter) {
+        Registry.STATISTIC.forEach(statistic -> {
+            if (filter && stats.hasData(statistic)) return;
+            switch (statistic.getType()) {
+                case UNTYPED -> player.setStatistic(statistic, 0);
+                case ITEM -> Registry.ITEM.forEach(type -> player.setStatistic(statistic, type.asMaterial(), 0));
+                case BLOCK -> Registry.BLOCK.forEach(type -> player.setStatistic(statistic, type.asMaterial(), 0));
+                case ENTITY -> Registry.ENTITY_TYPE.forEach(type -> player.setStatistic(statistic, type, 0));
+            }
+        });
     }
 
     private void applyAttributes(Player player, GroupSettings settings) {

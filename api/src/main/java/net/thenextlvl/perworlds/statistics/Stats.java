@@ -3,7 +3,6 @@ package net.thenextlvl.perworlds.statistics;
 import org.bukkit.Statistic;
 import org.bukkit.block.BlockType;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemType;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
@@ -11,6 +10,7 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 /**
  * @since 0.1.0
@@ -46,11 +46,7 @@ public interface Stats {
     @Contract(mutates = "this")
     void setStatistic(Statistic statistic, int value);
 
-    @ApiStatus.Internal
-    @Contract(mutates = "param1")
-    void apply(Player player);
+    boolean hasData(Statistic statistic);
 
-    @ApiStatus.Internal
-    @Contract(mutates = "param1")
-    void clear(Player player);
+    void forEachStatistic(BiConsumer<Statistic, Stat<?>> action);
 }
