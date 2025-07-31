@@ -41,7 +41,7 @@ public class AdvancementDataAdapter implements TagAdapter<AdvancementData> {
     public Tag serialize(AdvancementData data, TagSerializationContext context) throws ParserException {
         var tag = new CompoundTag();
         var awarded = new CompoundTag();
-        data.awardedCriteria().forEach((criteria, date) -> {
+        data.forEachAwardedCriteria((criteria, date) -> {
             awarded.add(criteria, context.serialize(date));
         });
         tag.add("advancement", context.serialize(data.getAdvancement().key()));

@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 /**
  * The individual data of an advancement.
@@ -103,9 +104,12 @@ public interface AdvancementData {
     @Contract(pure = true)
     Set<String> getAwardedCriteria();
 
-    @Unmodifiable
-    @ApiStatus.Internal
-    Map<String, Instant> awardedCriteria();
+    /**
+     * Performs an operation for each awarded criterion along with its associated time of award.
+     *
+     * @param action a {@link BiConsumer} that accepts the criterion's name and the time it was awarded
+     */
+    void forEachAwardedCriteria(BiConsumer<String, Instant> action);
 
     /**
      * Creates an {@link AdvancementData} instance based on the provided {@link Advancement}.
