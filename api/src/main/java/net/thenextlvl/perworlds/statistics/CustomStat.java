@@ -10,6 +10,7 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @ApiStatus.NonExtendable
 public interface CustomStat extends Stat<Void> {
+    @Contract(pure = true)
     int getValue();
 
     @Contract(mutates = "this")

@@ -29,6 +29,7 @@ public interface GroupProvider {
      * @return the path pointing to the data folder used by the group provider
      * @since 1.0.0
      */
+    @Contract(pure = true)
     Path getDataFolder();
 
     /**
@@ -89,7 +90,7 @@ public interface GroupProvider {
      * @throws IllegalStateException if a group with the specified name already exists,
      *                               or if a given world is already part of another group.
      */
-    @Contract(value = "_, _, _, _ -> new")
+    @Contract(value = "_, _, _, _ -> new", mutates = "this")
     WorldGroup createGroup(String name, Consumer<GroupData> data, Consumer<GroupSettings> settings, Collection<World> worlds) throws IllegalStateException;
 
     /**
@@ -102,7 +103,7 @@ public interface GroupProvider {
      * @throws IllegalStateException if a group with the specified name already exists,
      *                               or if a given world is already part of another group.
      */
-    @Contract(value = "_, _ -> new")
+    @Contract(value = "_, _ -> new", mutates = "this")
     WorldGroup createGroup(String name, Collection<World> worlds) throws IllegalStateException;
 
     /**
@@ -117,7 +118,7 @@ public interface GroupProvider {
      * @throws IllegalStateException if a group with the specified name already exists,
      *                               or if a given world is already part of another group.
      */
-    @Contract(value = "_, _, _, _ -> new")
+    @Contract(value = "_, _, _, _ -> new", mutates = "this")
     WorldGroup createGroup(String name, Consumer<GroupData> data, Consumer<GroupSettings> settings, World... worlds) throws IllegalStateException;
 
     /**
@@ -130,7 +131,7 @@ public interface GroupProvider {
      * @throws IllegalStateException if a group with the specified name already exists,
      *                               or if a given world is already part of another group.
      */
-    @Contract(value = "_, _ -> new")
+    @Contract(value = "_, _ -> new", mutates = "this")
     WorldGroup createGroup(String name, World... worlds) throws IllegalStateException;
 
     /**
@@ -139,6 +140,7 @@ public interface GroupProvider {
      * @param name the name of the group to check for existence
      * @return {@code true} if a group with the specified name exists, {@code false} otherwise
      */
+    @Contract(pure = true)
     boolean hasGroup(String name);
 
     /**
@@ -147,6 +149,7 @@ public interface GroupProvider {
      * @param world the {@link World} to check for group membership
      * @return {@code true} if the specified world is part of a group, {@code false} otherwise
      */
+    @Contract(pure = true)
     boolean hasGroup(World world);
 
     /**
@@ -155,6 +158,7 @@ public interface GroupProvider {
      * @param group the {@link WorldGroup} to check for management
      * @return {@code true} if this provider manages the specified group, {@code false} otherwise
      */
+    @Contract(pure = true)
     boolean hasGroup(WorldGroup group);
 
     /**

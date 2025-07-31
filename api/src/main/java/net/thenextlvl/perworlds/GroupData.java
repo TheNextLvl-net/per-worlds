@@ -38,6 +38,7 @@ public interface GroupData {
      * @since 0.2.2
      */
     @NonNull
+    @Contract(pure = true)
     <T> Optional<T> getGameRule(@NonNull GameRule<T> rule);
 
     /**
@@ -60,6 +61,7 @@ public interface GroupData {
      * @since 0.2.2
      */
     @NonNull
+    @Contract(pure = true)
     Difficulty getDifficulty();
 
     /**
@@ -81,6 +83,7 @@ public interface GroupData {
      * @see #setDefaultGameMode(GameMode)
      * @since 0.2.2
      */
+    @Contract(pure = true)
     Optional<GameMode> getDefaultGameMode();
 
     /**
@@ -102,6 +105,7 @@ public interface GroupData {
      * @since 0.2.2
      */
     @NonNull
+    @Contract(pure = true)
     WorldBorderData getWorldBorder();
 
     /**
@@ -122,6 +126,7 @@ public interface GroupData {
      * @since 0.2.2
      */
     @NonNull
+    @Contract(pure = true)
     Optional<Location> getSpawnLocation();
 
     /**
@@ -144,6 +149,7 @@ public interface GroupData {
      * @see World#isHardcore()
      * @since 0.2.2
      */
+    @Contract(pure = true)
     TriState getHardcore();
 
     /**
@@ -165,6 +171,7 @@ public interface GroupData {
      * @see World#setStorm(boolean)
      * @since 1.0.0
      */
+    @Contract(pure = true)
     boolean isRaining();
 
     /**
@@ -185,6 +192,7 @@ public interface GroupData {
      * @see World#setThundering(boolean)
      * @since 1.0.0
      */
+    @Contract(pure = true)
     boolean isThundering();
 
     /**
@@ -206,6 +214,7 @@ public interface GroupData {
      * @see World#getClearWeatherDuration()
      * @since 1.0.0
      */
+    @Contract(pure = true)
     int clearWeatherDuration();
 
     /**
@@ -228,6 +237,7 @@ public interface GroupData {
      * @see World#getThunderDuration()
      * @since 1.0.0
      */
+    @Contract(pure = true)
     int getThunderDuration();
 
     /**
@@ -250,6 +260,7 @@ public interface GroupData {
      * @see World#getWeatherDuration()
      * @since 1.0.0
      */
+    @Contract(pure = true)
     int getRainDuration();
 
     /**
@@ -271,6 +282,7 @@ public interface GroupData {
      * @see World#getFullTime()
      * @since 1.0.0
      */
+    @Contract(pure = true)
     long getTime();
 
     /**

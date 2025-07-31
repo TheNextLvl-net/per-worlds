@@ -33,6 +33,7 @@ public interface AdvancementData {
      *
      * @return {@code true} if this advancement is done, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean isDone();
 
     /**
@@ -41,6 +42,7 @@ public interface AdvancementData {
      * @return {@code true} if there is progress in this advancement, otherwise {@code false}
      * @since 1.0.0
      */
+    @Contract(pure = true)
     boolean hasProgress();
 
     /**
@@ -49,6 +51,7 @@ public interface AdvancementData {
      * @param criteria the criteria to mark
      * @return {@code true} if awarded, {@code false} if criteria does not exist or already awarded.
      */
+    @Contract(mutates = "this")
     boolean awardCriteria(String criteria);
 
     /**
@@ -57,6 +60,7 @@ public interface AdvancementData {
      * @param criteria the criteria to mark
      * @return {@code true} if removed, {@code false} if criteria does not exist or not awarded
      */
+    @Contract(mutates = "this")
     boolean revokeCriteria(String criteria);
 
     /**
@@ -67,6 +71,7 @@ public interface AdvancementData {
      * @since 0.2.6
      */
     @Nullable
+    @Contract(pure = true)
     Instant getTimeAwarded(String criteria);
 
     /**
@@ -77,6 +82,7 @@ public interface AdvancementData {
      * @return {@code true} if the date was successfully set, {@code false} if the criteria does not exist or is already awarded
      * @since 0.2.6
      */
+    @Contract(mutates = "this")
     boolean setTimeAwarded(String criteria, Instant instant);
 
     /**
@@ -85,6 +91,7 @@ public interface AdvancementData {
      * @return an unmodifiable set of the remaining criteria
      */
     @Unmodifiable
+    @Contract(pure = true)
     Set<String> getRemainingCriteria();
 
     /**
@@ -93,6 +100,7 @@ public interface AdvancementData {
      * @return an unmodifiable set of the awarded criteria
      */
     @Unmodifiable
+    @Contract(pure = true)
     Set<String> getAwardedCriteria();
 
     @Unmodifiable

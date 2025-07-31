@@ -17,11 +17,13 @@ import java.util.Map;
 @ApiStatus.NonExtendable
 public interface Stat<T> extends TagSerializable {
     @Unmodifiable
+    @Contract(pure = true)
     Map<T, Integer> getValues();
 
     @ApiStatus.Internal
     boolean shouldSerialize();
 
+    @Contract(pure = true)
     int getValue(T type);
 
     @Contract(mutates = "this")

@@ -36,33 +36,42 @@ public interface PlayerData {
     WorldGroup group();
 
     @Nullable
+    @Contract(pure = true)
     ItemStack[] enderChest();
 
     @Nullable
+    @Contract(pure = true)
     ItemStack[] inventory();
 
     @Unmodifiable
+    @Contract(pure = true)
     List<PotionEffect> potionEffects();
 
     @Nullable
+    @Contract(pure = true)
     GameMode gameMode();
 
     @Nullable
+    @Contract(pure = true)
     GameMode previousGameMode();
 
     @Nullable
+    @Contract(pure = true)
     Location lastDeathLocation();
 
     @Nullable
+    @Contract(pure = true)
     Location lastLocation();
 
     @Nullable
+    @Contract(pure = true)
     Location respawnLocation();
 
     /**
      * @since 0.2.6
      */
     @Nullable
+    @Contract(pure = true)
     Key lastAdvancementTab();
 
     @Contract(mutates = "this")
@@ -173,6 +182,7 @@ public interface PlayerData {
     @Contract(mutates = "this")
     PlayerData seenCredits(boolean seenCredits);
 
+    @ApiStatus.Experimental
     @Contract(mutates = "this")
     PlayerData stats(Stats stats);
 
@@ -192,71 +202,101 @@ public interface PlayerData {
     PlayerData wardenSpawnTracker(WardenSpawnTracker tracker);
 
     @Unmodifiable
+    @Contract(pure = true)
     Set<AdvancementData> advancements();
 
     @Unmodifiable
+    @Contract(pure = true)
     Set<AttributeData> attributes();
 
     @Unmodifiable
+    @Contract(pure = true)
     Set<NamespacedKey> discoveredRecipes();
 
     Stats stats();
 
+    @Contract(pure = true)
     TriState flying();
 
+    @Contract(pure = true)
     TriState mayFly();
 
     /**
      * @since 0.2.0
      */
+    @Contract(pure = true)
     TriState visualFire();
 
+    @Contract(value = " -> new", pure = true)
     Vector velocity();
 
+    @Contract(pure = true)
     WardenSpawnTracker wardenSpawnTracker();
 
+    @Contract(pure = true)
     boolean gliding();
 
+    @Contract(pure = true)
     boolean invulnerable();
 
+    @Contract(pure = true)
     boolean lockFreezeTicks();
 
+    @Contract(pure = true)
     boolean seenCredits();
 
+    @Contract(pure = true)
     double absorption();
 
+    @Contract(pure = true)
     double health();
 
+    @Contract(pure = true)
     float exhaustion();
 
+    @Contract(pure = true)
     float experience();
 
+    @Contract(pure = true)
     float fallDistance();
 
+    @Contract(pure = true)
     float flySpeed();
 
+    @Contract(pure = true)
     float saturation();
 
+    @Contract(pure = true)
     float walkSpeed();
 
+    @Contract(pure = true)
     int arrowsInBody();
 
+    @Contract(pure = true)
     int beeStingersInBody();
 
+    @Contract(pure = true)
     int fireTicks();
 
+    @Contract(pure = true)
     int foodLevel();
 
+    @Contract(pure = true)
     int freezeTicks();
 
+    @Contract(pure = true)
     int heldItemSlot();
 
+    @Contract(pure = true)
     int level();
 
+    @Contract(pure = true)
     int portalCooldown();
 
+    @Contract(pure = true)
     int remainingAir();
 
+    @Contract(pure = true)
     int score();
 
     /**

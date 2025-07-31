@@ -19,14 +19,19 @@ import java.util.Map;
 @ApiStatus.NonExtendable
 public interface Stats {
     @Unmodifiable
+    @Contract(pure = true)
     Map<Statistic, Stat<?>> getStatistics();
 
+    @Contract(pure = true)
     int getStatistic(Statistic statistic);
 
+    @Contract(pure = true)
     int getStatistic(Statistic statistic, BlockType type);
 
+    @Contract(pure = true)
     int getStatistic(Statistic statistic, EntityType type);
 
+    @Contract(pure = true)
     int getStatistic(Statistic statistic, ItemType type);
 
     @Contract(mutates = "this")

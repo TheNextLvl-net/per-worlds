@@ -20,6 +20,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the group is enabled, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean enabled();
 
     /**
@@ -39,6 +40,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if advancement messages are restricted to the current group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean advancementMessages();
 
     @Contract(mutates = "this")
@@ -49,6 +51,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if death messages are restricted to the current group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean deathMessages();
 
     @Contract(mutates = "this")
@@ -59,6 +62,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if join messages are restricted to the current group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean joinMessages();
 
     @Contract(mutates = "this")
@@ -69,6 +73,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if quit messages are restricted to the current group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean quitMessages();
 
     @Contract(mutates = "this")
@@ -83,6 +88,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if chat messages are restricted to the current group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean chat();
 
     @Contract(mutates = "this")
@@ -93,6 +99,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the difficulty is synchronized across all worlds in the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean difficulty();
 
     @Contract(mutates = "this")
@@ -103,6 +110,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the game-rules are synchronized across all worlds in the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean gameRules();
 
     @Contract(mutates = "this")
@@ -113,6 +121,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the tablist is synchronized across all worlds in the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean tabList();
 
     @Contract(mutates = "this")
@@ -123,6 +132,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the time is synchronized across all worlds in the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean time();
 
     @Contract(mutates = "this")
@@ -133,6 +143,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the weather is synchronized across all worlds in the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean weather();
 
     @Contract(mutates = "this")
@@ -143,6 +154,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the world-border is synchronized across all worlds in the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean worldBorder();
 
     @Contract(mutates = "this")
@@ -159,6 +171,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's absorption data should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean absorption();
 
     @Contract(mutates = "this")
@@ -171,6 +184,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's advancements should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean advancements();
 
     @Contract(mutates = "this")
@@ -183,6 +197,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's arrows stuck in body should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean arrowsInBody();
 
     @Contract(mutates = "this")
@@ -195,6 +210,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's attributes should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean attributes();
 
     @Contract(mutates = "this")
@@ -207,6 +223,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's bee stingers stuck in body should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean beeStingersInBody();
 
     @Contract(mutates = "this")
@@ -220,6 +237,7 @@ public interface GroupSettings {
      * @return {@code true} if the player's state having seen the win screen should be restored for the group context,
      * otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean endCredits();
 
     @Contract(mutates = "this")
@@ -232,6 +250,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's enderchest should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean enderChest();
 
     @Contract(mutates = "this")
@@ -244,6 +263,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's exhaustion should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean exhaustion();
 
     @Contract(mutates = "this")
@@ -256,6 +276,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's experience should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean experience();
 
     @Contract(mutates = "this")
@@ -268,6 +289,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's fall distance should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean fallDistance();
 
     @Contract(mutates = "this")
@@ -280,6 +302,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's fire ticks should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean fireTicks();
 
     @Contract(mutates = "this")
@@ -292,6 +315,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's fly speed should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean flySpeed();
 
     @Contract(mutates = "this")
@@ -304,6 +328,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's fly state should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean flyState();
 
     @Contract(mutates = "this")
@@ -316,6 +341,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's food level should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean foodLevel();
 
     @Contract(mutates = "this")
@@ -328,6 +354,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's freeze ticks should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean freezeTicks();
 
     @Contract(mutates = "this")
@@ -340,6 +367,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's gamemode should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean gameMode();
 
     @Contract(mutates = "this")
@@ -352,6 +380,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's gliding state should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean gliding();
 
     @Contract(mutates = "this")
@@ -364,6 +393,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's health should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean health();
 
     @Contract(mutates = "this")
@@ -376,6 +406,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's selected hotbar slot should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean hotbarSlot();
 
     @Contract(mutates = "this")
@@ -388,6 +419,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's inventory should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean inventory();
 
     @Contract(mutates = "this")
@@ -400,6 +432,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's invulnerability should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean invulnerable();
 
     @Contract(mutates = "this")
@@ -412,6 +445,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's last death location should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean lastDeathLocation();
 
     @Contract(mutates = "this")
@@ -424,6 +458,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's last location should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean lastLocation();
 
     @Contract(mutates = "this")
@@ -436,6 +471,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's freeze-ticks-lock should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean lockFreezeTicks();
 
     @Contract(mutates = "this")
@@ -448,6 +484,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's portal cooldown should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean portalCooldown();
 
     @Contract(mutates = "this")
@@ -460,6 +497,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's potion effects should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean potionEffects();
 
     @Contract(mutates = "this")
@@ -472,6 +510,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's discovered recipes should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean recipes();
 
     @Contract(mutates = "this")
@@ -484,6 +523,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's remaining air should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean remainingAir();
 
     @Contract(mutates = "this")
@@ -496,6 +536,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's respawn location should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean respawnLocation();
 
     @Contract(mutates = "this")
@@ -508,6 +549,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's saturation should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean saturation();
 
     @Contract(mutates = "this")
@@ -520,6 +562,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's death screen score should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean score();
 
     @Contract(mutates = "this")
@@ -532,6 +575,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's statistics should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean statistics();
 
     @Contract(mutates = "this")
@@ -544,6 +588,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's velocity should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean velocity();
 
     @Contract(mutates = "this")
@@ -556,6 +601,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's visual fire state should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean visualFire();
 
     @Contract(mutates = "this")
@@ -568,6 +614,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's walk speed should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean walkSpeed();
 
     @Contract(mutates = "this")
@@ -580,6 +627,7 @@ public interface GroupSettings {
      *
      * @return {@code true} if the player's warden spawn tracker should be restored for the group context, otherwise {@code false}
      */
+    @Contract(pure = true)
     boolean wardenSpawnTracker();
 
     @Contract(mutates = "this")

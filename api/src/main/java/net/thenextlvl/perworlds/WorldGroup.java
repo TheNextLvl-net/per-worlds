@@ -34,6 +34,7 @@ public interface WorldGroup {
      * @return the path pointing to the data folder for the current group
      * @since 1.0.0
      */
+    @Contract(pure = true)
     Path getDataFolder();
 
     /**
@@ -43,6 +44,7 @@ public interface WorldGroup {
      * @return the path to the configuration file.
      * @since 1.0.0
      */
+    @Contract(pure = true)
     Path getConfigFile();
 
     /**
@@ -51,6 +53,7 @@ public interface WorldGroup {
      * @return the path to the configuration file backup.
      * @since 1.0.0
      */
+    @Contract(pure = true)
     Path getConfigFileBackup();
 
     /**
@@ -95,6 +98,7 @@ public interface WorldGroup {
      * @param player the offline player for whom the spawn location is being determined
      * @return an {@link Optional} containing the {@link Location} where the player should spawn
      */
+    @Contract(pure = true)
     Optional<Location> getSpawnLocation(OfflinePlayer player);
 
     /**
@@ -106,6 +110,7 @@ public interface WorldGroup {
      *             used to determine the spawn location
      * @return an {@link Optional} containing the {@link Location} where the player should spawn
      */
+    @Contract(pure = true)
     Optional<Location> getSpawnLocation(PlayerData data);
 
     /**
@@ -113,6 +118,7 @@ public interface WorldGroup {
      *
      * @return an {@link Optional} containing the spawn {@link Location}
      */
+    @Contract(pure = true)
     Optional<Location> getSpawnLocation();
 
     /**
@@ -131,7 +137,8 @@ public interface WorldGroup {
      * @param player the offline player whose data is to be read
      * @return an {@link Optional} containing the player's data if it exists, or an empty {@link Optional} otherwise
      */
-    Optional<? extends PlayerData> readPlayerData(OfflinePlayer player);
+    @Contract(pure = true)
+    Optional<PlayerData> readPlayerData(OfflinePlayer player);
 
     /**
      * Edits the data associated with a given player by applying the specified consumer function to the player's data.
@@ -152,6 +159,7 @@ public interface WorldGroup {
      * @return an unmodifiable set of keys representing the persisted worlds in the group
      */
     @Unmodifiable
+    @Contract(pure = true)
     Set<Key> getPersistedWorlds();
 
     /**
@@ -167,6 +175,7 @@ public interface WorldGroup {
      *
      * @return the name of the group as a string
      */
+    @Contract(pure = true)
     String getName();
 
     /**
@@ -178,7 +187,7 @@ public interface WorldGroup {
      * @return {@code true} if the world was successfully added to the group,
      * {@code false} if the world is already part of a group
      */
-    @Contract(mutates = "this")
+    @Contract(mutates = "this,param1")
     boolean addWorld(World world);
 
     /**
@@ -187,6 +196,7 @@ public interface WorldGroup {
      * @param world the {@link World} to check for membership in the group
      * @return whether the world is a member of this group
      */
+    @Contract(pure = true)
     boolean containsWorld(World world);
 
     /**
@@ -205,6 +215,7 @@ public interface WorldGroup {
      * @param player the offline player to check for associated data
      * @return {@code true} if the player has persistent data in the group, {@code false} otherwise
      */
+    @Contract(pure = true)
     boolean hasPlayerData(OfflinePlayer player);
 
     /**
@@ -218,7 +229,7 @@ public interface WorldGroup {
      * {@code false} if the world is not part of this group
      * @see #removeWorld(Key)
      */
-    @Contract(mutates = "this")
+    @Contract(mutates = "this,param1")
     boolean removeWorld(World world);
 
     /**
@@ -296,6 +307,7 @@ public interface WorldGroup {
      * @param player the player for whom the loading status is to be checked
      * @return {@code true} if the player's data is currently being loaded, {@code false} otherwise
      */
+    @Contract(pure = true)
     boolean isLoadingData(Player player);
 
     /**
