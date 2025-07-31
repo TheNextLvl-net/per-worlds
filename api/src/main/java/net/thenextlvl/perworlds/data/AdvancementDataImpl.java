@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 @NullMarked
 class AdvancementDataImpl implements AdvancementData {
@@ -70,7 +71,7 @@ class AdvancementDataImpl implements AdvancementData {
     }
 
     @Override
-    public @Unmodifiable Map<String, Instant> awardedCriteria() {
-        return Map.copyOf(awardedCriteria);
+    public void forEachAwardedCriteria(BiConsumer<String, Instant> action) {
+        awardedCriteria.forEach(action);
     }
 }
