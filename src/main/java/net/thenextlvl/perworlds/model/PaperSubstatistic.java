@@ -1,10 +1,7 @@
 package net.thenextlvl.perworlds.model;
 
-import core.nbt.serialization.ParserException;
-import core.nbt.tag.CompoundTag;
-import core.nbt.tag.Tag;
 import net.kyori.adventure.key.Keyed;
-import net.thenextlvl.perworlds.statistics.Stat;
+import net.thenextlvl.perworlds.statistics.Substatistic;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
@@ -13,8 +10,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @NullMarked
-public abstract class PaperStat<T extends Keyed> implements Stat<T> {
+public abstract class PaperSubstatistic<T extends Keyed> implements Substatistic<T> {
     protected final Map<T, Integer> values = new HashMap<>();
+    
+    protected PaperSubstatistic(Map<T, Integer> values) {
+        this.values.putAll(values);
+    }
+    
+    protected PaperSubstatistic() {
+    }
 
     @Override
     public @Unmodifiable Map<T, Integer> getValues() {
@@ -34,14 +38,5 @@ public abstract class PaperStat<T extends Keyed> implements Stat<T> {
     @Override
     public boolean shouldSerialize() {
         return values.values().stream().anyMatch(integer -> integer != 0);
-    }
-
-    @Override
-    public Tag serialize() throws ParserException {
-        var tag = new CompoundTag();
-        values.forEach((type, integer) -> {
-            if (integer != 0) tag.add(type.key().asString(), integer);
-        });
-        return tag;
     }
 }
