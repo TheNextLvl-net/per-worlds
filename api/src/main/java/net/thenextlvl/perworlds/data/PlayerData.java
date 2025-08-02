@@ -299,6 +299,7 @@ public interface PlayerData {
     PlayerData visualFire(TriState visualFire);
 
     @Contract(pure = true)
+    @Range(from = -1, to = 1)
     float walkSpeed();
 
     @Contract(mutates = "this")
