@@ -28,6 +28,7 @@ import net.thenextlvl.perworlds.statistics.Stats;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Registry;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.CraftServer;
@@ -55,6 +56,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -137,14 +139,16 @@ public class PaperPlayerData implements PlayerData {
     private int remainingAir = DEFAULT_REMAINING_AIR;
     private int score = DEFAULT_SCORE;
 
+    private @Nullable UUID uuid;
     private @Nullable PaperWorldGroup group;
 
-    public PaperPlayerData(@Nullable PaperWorldGroup group) {
+    public PaperPlayerData(@Nullable UUID uuid, @Nullable PaperWorldGroup group) {
         this.group = group;
+        this.uuid = uuid;
     }
 
     public static PaperPlayerData of(Player player, PaperWorldGroup group) {
-        var data = new PaperPlayerData(group);
+        var data = new PaperPlayerData(player.getUniqueId(), group);
         return data.attributes(collectAttributes(player))
                 .advancements(data.collectAdvancements(player))
                 .lastAdvancementTab(data.getLastAdvancementTab(player))
@@ -245,8 +249,11 @@ public class PaperPlayerData implements PlayerData {
 
     @Override
     public CompletableFuture<Boolean> load(Player player, boolean position) {
-        if (group == null) return CompletableFuture.failedFuture(new IllegalStateException(
+        if (group == null || uuid == null) return CompletableFuture.failedFuture(new IllegalStateException(
                 "Player data has not been finalized yet"
+        ));
+        if (!player.getUniqueId().equals(uuid)) return CompletableFuture.failedFuture(new IllegalStateException(
+                "Player UUID mismatch: Expected '" + uuid + "' but got '" + player.getUniqueId() + "'"
         ));
 
         var settings = group.getSettings();
@@ -549,11 +556,12 @@ public class PaperPlayerData implements PlayerData {
         }
     }
 
-    public PaperPlayerData group(PaperWorldGroup group) {
-        Preconditions.checkState(this.group == null, "Player data has already been finalized");
+    public PaperPlayerData finalize(OfflinePlayer player, PaperWorldGroup group) {
+        Preconditions.checkState(this.group == null || this.uuid == null, "Player data has already been finalized");
         if (respawnLocation != null && !group.containsWorld(respawnLocation.getWorld())) respawnLocation = null;
         if (lastDeathLocation != null && !group.containsWorld(lastDeathLocation.getWorld())) lastDeathLocation = null;
         if (lastLocation != null && !group.containsWorld(lastLocation.getWorld())) lastLocation = null;
+        this.uuid = player.getUniqueId();
         this.group = group;
         return this;
     }
@@ -562,6 +570,12 @@ public class PaperPlayerData implements PlayerData {
     public PaperWorldGroup group() {
         Preconditions.checkState(group != null, "Player data has not been finalized yet");
         return group;
+    }
+
+    @Override
+    public UUID uuid() {
+        Preconditions.checkState(uuid != null, "Player data has not been finalized yet");
+        return uuid;
     }
 
     @Override

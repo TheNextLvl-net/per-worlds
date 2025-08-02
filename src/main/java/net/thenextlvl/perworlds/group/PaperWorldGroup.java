@@ -261,7 +261,7 @@ public class PaperWorldGroup implements WorldGroup {
     public Optional<PlayerData> readPlayerData(OfflinePlayer player) {
         var file = getDataFolder().resolve(player.getUniqueId() + ".dat");
         try {
-            return readPlayerData(file);
+            return readPlayerData(player, file);
         } catch (EOFException e) {
             provider.getLogger().error("The player data file {} is irrecoverably broken", file);
             return Optional.empty();
@@ -321,7 +321,7 @@ public class PaperWorldGroup implements WorldGroup {
         if (!getSettings().enabled()) return CompletableFuture.completedFuture(false);
         if (isLoadingData(player)) return CompletableFuture.completedFuture(false);
         player.setMetadata(LOADING_METADATA_KEY, new FixedMetadataValue(provider.getPlugin(), null));
-        return readPlayerData(player).orElseGet(() -> new PaperPlayerData(this)).load(player, position)
+        return readPlayerData(player).orElseGet(() -> new PaperPlayerData(player.getUniqueId(), this)).load(player, position)
                 .whenComplete((success, throwable) -> player.removeMetadata(LOADING_METADATA_KEY, provider.getPlugin()))
                 .exceptionally(throwable -> {
                     provider.getLogger().error("Failed to load group data for player {}", player.getName(), throwable);
@@ -416,9 +416,9 @@ public class PaperWorldGroup implements WorldGroup {
         writePlayerData(player, playerData);
     }
 
-    private Optional<PlayerData> readPlayerData(Path file) throws IOException {
+    private Optional<PlayerData> readPlayerData(OfflinePlayer player, Path file) throws IOException {
         return readFile(file, file.resolveSibling(file.getFileName() + "_old"), PaperPlayerData.class)
-                .map(paperPlayerData -> paperPlayerData.group(this));
+                .map(paperPlayerData -> paperPlayerData.finalize(player, this));
     }
 
     private <T> Optional<T> readFile(Path file, Path backup, Class<T> type) throws IOException {

@@ -22,6 +22,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -34,6 +35,14 @@ public interface PlayerData {
      * @since 0.2.4
      */
     WorldGroup group();
+
+    /**
+     * Retrieves the uuid of the player to whom this data belongs.
+     *
+     * @return the uuid of the owning player
+     * @since 1.0.0
+     */
+    UUID uuid();
 
     @Nullable
     @Contract(pure = true)
