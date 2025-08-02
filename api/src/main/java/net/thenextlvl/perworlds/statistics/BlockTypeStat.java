@@ -9,5 +9,5 @@ import org.jspecify.annotations.NullMarked;
  */
 @NullMarked
 @ApiStatus.NonExtendable
-public interface BlockTypeStat extends TypedStat<BlockType> {
+public interface BlockTypeStat extends Substatistic<BlockType> {
 }

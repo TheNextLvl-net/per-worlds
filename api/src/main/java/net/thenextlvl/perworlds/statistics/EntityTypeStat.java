@@ -9,5 +9,5 @@ import org.jspecify.annotations.NullMarked;
  */
 @NullMarked
 @ApiStatus.NonExtendable
-public interface EntityTypeStat extends TypedStat<EntityType> {
+public interface EntityTypeStat extends Substatistic<EntityType> {
 }

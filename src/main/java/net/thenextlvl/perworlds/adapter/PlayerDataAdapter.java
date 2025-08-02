@@ -17,7 +17,7 @@ import net.thenextlvl.perworlds.data.AttributeData;
 import net.thenextlvl.perworlds.data.PlayerData;
 import net.thenextlvl.perworlds.data.WardenSpawnTracker;
 import net.thenextlvl.perworlds.model.PaperPlayerData;
-import net.thenextlvl.perworlds.statistics.Stats;
+import net.thenextlvl.perworlds.statistics.Statistics;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -71,7 +71,7 @@ public class PlayerDataAdapter implements TagAdapter<PlayerData> {
         root.optional("lastAdvancementTab").map(advancement ->
                 context.deserialize(advancement, Key.class)
         ).ifPresent(data::lastAdvancementTab);
-        root.optional("statistics").map(stats -> context.deserialize(stats, Stats.class)).ifPresent(data::stats);
+        root.optional("statistics").map(stats -> context.deserialize(stats, Statistics.class)).ifPresent(data::stats);
         root.optional("gameMode").map(mode -> context.deserialize(mode, GameMode.class)).ifPresent(data::gameMode);
         root.optional("seenCredits").map(Tag::getAsBoolean).ifPresent(data::seenCredits);
         root.optional("absorption").map(Tag::getAsDouble).ifPresent(data::absorption);

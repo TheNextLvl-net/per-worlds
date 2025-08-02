@@ -9,7 +9,7 @@ import org.jspecify.annotations.NullMarked;
  */
 @NullMarked
 @ApiStatus.NonExtendable
-public interface CustomStat extends Stat<Void> {
+public interface CustomStat extends Stat {
     @Contract(pure = true)
     int getValue();
 
