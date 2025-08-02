@@ -62,38 +62,37 @@ public class WorldListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onTimeSkip(TimeSkipEvent event) {
         processWorldDataUpdate(event.getWorld(), Type.TIME, data -> {
-            data.time(event.getWorld().getFullTime() + event.getSkipAmount());
+            data.setTime(event.getWorld().getFullTime() + event.getSkipAmount());
         });
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onWeatherChange(WeatherChangeEvent event) {
         processWorldDataUpdate(event.getWorld(), Type.WEATHER, data -> {
-            data.raining(event.toWeatherState());
-            data.rainDuration(event.getWorld().getWeatherDuration());
+            data.setRaining(event.toWeatherState());
+            data.setRainDuration(event.getWorld().getWeatherDuration());
         });
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onThunderChange(ThunderChangeEvent event) {
         processWorldDataUpdate(event.getWorld(), Type.WEATHER, data -> {
-            data.thundering(event.toThunderState());
-            data.thunderDuration(event.getWorld().getThunderDuration());
+            data.setThundering(event.toThunderState());
+            data.setThunderDuration(event.getWorld().getThunderDuration());
         });
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onWorldBorderChange(WorldBorderBoundsChangeEvent event) {
         processWorldDataUpdate(event.getWorld(), Type.WORLD_BORDER, data -> {
-            data.getWorldBorder().size(event.getNewSize());
-            data.getWorldBorder().duration(event.getDuration());
+            data.setWorldBorder(data.getWorldBorder().size(event.getNewSize()).duration(event.getDuration()));
         });
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onWorldBorderChange(WorldBorderCenterChangeEvent event) {
         processWorldDataUpdate(event.getWorld(), Type.WORLD_BORDER, data -> {
-            data.getWorldBorder().center(event.getNewCenter());
+            data.setWorldBorder(data.getWorldBorder().center(event.getNewCenter()));
         });
     }
 

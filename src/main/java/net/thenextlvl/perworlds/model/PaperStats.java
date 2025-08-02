@@ -19,6 +19,7 @@ import org.jspecify.annotations.NullMarked;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 @NullMarked
 public class PaperStats implements Stats {
@@ -77,6 +78,17 @@ public class PaperStats implements Stats {
         ((CustomStat) statistics.computeIfAbsent(statistic, ignored -> new PaperCustomStat())).setValue(value);
     }
 
+    @Override
+    public boolean hasData(Statistic statistic) {
+        var stat = statistics.get(statistic);
+        return stat != null && stat.shouldSerialize();
+    }
+
+    @Override
+    public void forEachStatistic(BiConsumer<Statistic, Stat<?>> action) {
+        statistics.forEach(action);
+    }
+
     public void setStatistic(Statistic statistic, Tag tag) {
         statistics.computeIfAbsent(statistic, ignored -> switch (statistic.getType()) {
             case UNTYPED -> new PaperCustomStat();
@@ -84,25 +96,6 @@ public class PaperStats implements Stats {
             case BLOCK -> new PaperBlockTypeStat();
             case ENTITY -> new PaperEntityTypeStat();
         }).deserialize(tag);
-    }
-
-    @Override
-    public void apply(Player player) {
-        clear(player);
-        statistics.forEach((statistic, stat) -> stat.apply(statistic, player));
-    }
-
-    @Override
-    @SuppressWarnings({"DataFlowIssue", "deprecation"})
-    public void clear(Player player) {
-        Registry.STATISTIC.forEach(statistic -> {
-            switch (statistic.getType()) {
-                case UNTYPED -> player.setStatistic(statistic, 0);
-                case ITEM -> Registry.ITEM.forEach(type -> player.setStatistic(statistic, type.asMaterial(), 0));
-                case BLOCK -> Registry.BLOCK.forEach(type -> player.setStatistic(statistic, type.asMaterial(), 0));
-                case ENTITY -> Registry.ENTITY_TYPE.forEach(type -> player.setStatistic(statistic, type, 0));
-            }
-        });
     }
 
     @SuppressWarnings({"DataFlowIssue", "deprecation"})

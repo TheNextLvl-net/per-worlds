@@ -5,10 +5,10 @@ import core.nbt.tag.Tag;
 import net.kyori.adventure.key.Key;
 import net.thenextlvl.perworlds.statistics.ItemTypeStat;
 import org.bukkit.Registry;
-import org.bukkit.Statistic;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemType;
 import org.jspecify.annotations.NullMarked;
+
+import java.util.function.BiConsumer;
 
 @NullMarked
 public class PaperItemTypeStat extends PaperStat<ItemType> implements ItemTypeStat {
@@ -23,8 +23,7 @@ public class PaperItemTypeStat extends PaperStat<ItemType> implements ItemTypeSt
     }
 
     @Override
-    @SuppressWarnings({"DataFlowIssue", "deprecation"})
-    public void apply(Statistic statistic, Player player) {
-        values.forEach((type, value) -> player.setStatistic(statistic, type.asMaterial(), value));
+    public void forEachValue(BiConsumer<ItemType, Integer> action) {
+        values.forEach(action);
     }
 }

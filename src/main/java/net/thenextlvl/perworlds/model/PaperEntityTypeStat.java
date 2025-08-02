@@ -5,10 +5,10 @@ import core.nbt.tag.Tag;
 import net.kyori.adventure.key.Key;
 import net.thenextlvl.perworlds.statistics.EntityTypeStat;
 import org.bukkit.Registry;
-import org.bukkit.Statistic;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
+
+import java.util.function.BiConsumer;
 
 @NullMarked
 public class PaperEntityTypeStat extends PaperStat<EntityType> implements EntityTypeStat {
@@ -22,7 +22,7 @@ public class PaperEntityTypeStat extends PaperStat<EntityType> implements Entity
     }
 
     @Override
-    public void apply(Statistic statistic, Player player) {
-        values.forEach((type, value) -> player.setStatistic(statistic, type, value));
+    public void forEachValue(BiConsumer<EntityType, Integer> action) {
+        values.forEach(action);
     }
 }

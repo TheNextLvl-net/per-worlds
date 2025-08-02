@@ -7,30 +7,29 @@ import core.nbt.serialization.TagSerializationContext;
 import core.nbt.tag.CompoundTag;
 import core.nbt.tag.Tag;
 import net.thenextlvl.perworlds.data.WorldBorderData;
-import net.thenextlvl.perworlds.model.PaperWorldBorderData;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public class WorldBorderAdapter implements TagAdapter<WorldBorderData> {
     @Override
     public WorldBorderData deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
-        var data = new PaperWorldBorderData();
+        var border = WorldBorderData.DEFAULT;
         var root = tag.getAsCompound();
-        root.optional("x").map(Tag::getAsDouble)
-                .map(value -> Math.clamp(value, -data.getMaxCenterCoordinate(), data.getMaxCenterCoordinate()))
-                .ifPresent(data::centerX);
-        root.optional("z").map(Tag::getAsDouble)
-                .map(value -> Math.clamp(value, -data.getMaxCenterCoordinate(), data.getMaxCenterCoordinate()))
-                .ifPresent(data::centerZ);
-        root.optional("size").map(Tag::getAsDouble)
-                .map(value -> Math.clamp(value, data.getMinSize(), data.getMaxSize()))
-                .ifPresent(data::size);
-        root.optional("duration").map(Tag::getAsLong).ifPresent(data::duration);
-        root.optional("damageAmount").map(Tag::getAsDouble).ifPresent(data::damageAmount);
-        root.optional("damageBuffer").map(Tag::getAsDouble).ifPresent(data::damageBuffer);
-        root.optional("warningDistance").map(Tag::getAsInt).ifPresent(data::warningDistance);
-        root.optional("warningTime").map(Tag::getAsInt).ifPresent(data::warningTime);
-        return data;
+        var x = root.optional("x").map(Tag::getAsDouble)
+                .map(value -> Math.clamp(value, -WorldBorderData.getMaxCenterCoordinate(), WorldBorderData.getMaxCenterCoordinate()))
+                .orElse(border.centerX());
+        var z = root.optional("z").map(Tag::getAsDouble)
+                .map(value -> Math.clamp(value, -WorldBorderData.getMaxCenterCoordinate(), WorldBorderData.getMaxCenterCoordinate()))
+                .orElse(border.centerZ());
+        var size = root.optional("size").map(Tag::getAsDouble)
+                .map(value -> Math.clamp(value, WorldBorderData.getMinSize(), WorldBorderData.getMaxSize()))
+                .orElse(border.size());
+        var duration = root.optional("duration").map(Tag::getAsLong).orElse(border.duration());
+        var damageAmount = root.optional("damageAmount").map(Tag::getAsDouble).orElse(border.damageAmount());
+        var damageBuffer = root.optional("damageBuffer").map(Tag::getAsDouble).orElse(border.damageBuffer());
+        var warningDistance = root.optional("warningDistance").map(Tag::getAsInt).orElse(border.warningDistance());
+        var warningTime = root.optional("warningTime").map(Tag::getAsInt).orElse(border.warningTime());
+        return WorldBorderData.create(x, z, size, damageAmount, damageBuffer, duration, warningDistance, warningTime);
     }
 
     @Override

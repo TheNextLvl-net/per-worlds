@@ -21,7 +21,7 @@ tasks.compileJava {
 }
 
 group = "net.thenextlvl.perworlds"
-version = "0.3.1"
+version = "1.0.0"
 
 repositories {
     mavenCentral()
@@ -32,7 +32,7 @@ repositories {
 dependencies {
     paperweight.paperDevBundle("1.21.8-R0.1-SNAPSHOT")
 
-    compileOnly("net.thenextlvl:worlds:3.2.5")
+    compileOnly("net.thenextlvl:worlds:3.2.5") { isTransitive = false }
 
     implementation("net.thenextlvl.core:adapters:2.0.2")
     implementation("net.thenextlvl.core:i18n:3.2.0")

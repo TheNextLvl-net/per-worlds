@@ -38,7 +38,7 @@ public class PlayerDataAdapter implements TagAdapter<PlayerData> {
 
     @Override
     public PlayerData deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
-        var data = new PaperPlayerData(null);
+        var data = new PaperPlayerData(null, null);
         var root = tag.getAsCompound();
         root.optional("advancements").map(Tag::getAsList).map(list ->
                 list.stream().map(advancement -> {

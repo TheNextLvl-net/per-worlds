@@ -1,45 +1,30 @@
-package net.thenextlvl.perworlds.model;
+package net.thenextlvl.perworlds.data;
 
-import net.minecraft.advancements.AdvancementHolder;
-import net.minecraft.advancements.AdvancementProgress;
-import net.thenextlvl.perworlds.data.AdvancementData;
 import org.bukkit.advancement.Advancement;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
-import org.spigotmc.SpigotConfig;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiConsumer;
 
 @NullMarked
-public class PaperAdvancementData implements AdvancementData {
+class AdvancementDataImpl implements AdvancementData {
     private final Advancement advancement;
     private final Set<String> remainingCriteria = new HashSet<>();
-    private final Map<String, @Nullable Instant> awardedCriteria = new HashMap<>();
-
-    public PaperAdvancementData(AdvancementHolder holder, AdvancementProgress progress) {
-        this.advancement = holder.toBukkit();
-        progress.getCompletedCriteria().forEach(criteria -> {
-            var criterion = progress.getCriterion(criteria);
-            awardedCriteria.put(criteria, criterion != null ? criterion.getObtained() : null);
-        });
-        progress.getRemainingCriteria().forEach(this.remainingCriteria::add);
-    }
-
-    public PaperAdvancementData(Advancement advancement, Map<String, Instant> awardedCriteria, Set<String> remainingCriteria) {
+    private final Map<String, Instant> awardedCriteria = new HashMap<>();
+    
+    AdvancementDataImpl(Advancement advancement, Map<String, Instant> awardedCriteria, Collection<String> remainingCriteria) {
         this.advancement = advancement;
         this.awardedCriteria.putAll(awardedCriteria);
         this.remainingCriteria.addAll(remainingCriteria);
     }
-
-    public @Unmodifiable Map<String, @Nullable Instant> awardedCriteria() {
-        return Map.copyOf(awardedCriteria);
-    }
-
+    
     @Override
     public Advancement getAdvancement() {
         return advancement;
@@ -48,6 +33,11 @@ public class PaperAdvancementData implements AdvancementData {
     @Override
     public boolean isDone() {
         return remainingCriteria.isEmpty();
+    }
+
+    @Override
+    public boolean hasProgress() {
+        return !awardedCriteria.isEmpty();
     }
 
     @Override
@@ -71,19 +61,6 @@ public class PaperAdvancementData implements AdvancementData {
     }
 
     @Override
-    public boolean shouldSerialize() {
-        return !awardedCriteria.isEmpty() && isEnabled();
-    }
-
-    private boolean isEnabled() {
-        var disabled = SpigotConfig.disabledAdvancements;
-        if (disabled == null || disabled.isEmpty()) return true;
-        if (disabled.contains("*")) return false;
-        if (disabled.contains(advancement.getKey().asString())) return false;
-        return !disabled.contains(advancement.getKey().getNamespace());
-    }
-
-    @Override
     public @Unmodifiable Set<String> getRemainingCriteria() {
         return Set.copyOf(remainingCriteria);
     }
@@ -91,5 +68,10 @@ public class PaperAdvancementData implements AdvancementData {
     @Override
     public @Unmodifiable Set<String> getAwardedCriteria() {
         return Set.copyOf(awardedCriteria.keySet());
+    }
+
+    @Override
+    public void forEachAwardedCriteria(BiConsumer<String, Instant> action) {
+        awardedCriteria.forEach(action);
     }
 }

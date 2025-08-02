@@ -11,7 +11,6 @@ import net.thenextlvl.perworlds.GroupData;
 import net.thenextlvl.perworlds.GroupProvider;
 import net.thenextlvl.perworlds.GroupSettings;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
-import net.thenextlvl.perworlds.UnownedWorldGroup;
 import net.thenextlvl.perworlds.WorldGroup;
 import net.thenextlvl.perworlds.adapter.AdvancementDataAdapter;
 import net.thenextlvl.perworlds.adapter.AttributeAdapter;
@@ -54,7 +53,7 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
@@ -65,23 +64,23 @@ import java.util.function.Consumer;
 
 @NullMarked
 public class PaperGroupProvider implements GroupProvider {
-    private final File dataFolder;
+    private final Path dataFolder;
     private final Set<WorldGroup> groups = new HashSet<>();
     private final NBT nbt;
     private final PerWorldsPlugin plugin;
-    private final UnownedWorldGroup unownedWorldGroup;
+    private final WorldGroup unownedWorldGroup;
 
     public PaperGroupProvider(PerWorldsPlugin plugin) {
         this.plugin = plugin;
-        this.dataFolder = new File(plugin.getDataFolder(), "groups");
+        this.dataFolder = plugin.getDataPath().resolve("groups");
         this.nbt = new NBT.Builder()
                 .registerTypeHierarchyAdapter(AdvancementData.class, new AdvancementDataAdapter(getServer()))
                 .registerTypeHierarchyAdapter(Attribute.class, new AttributeAdapter())
                 .registerTypeHierarchyAdapter(AttributeData.class, new AttributeDataAdapter())
                 .registerTypeHierarchyAdapter(Difficulty.class, new EnumAdapter<>(Difficulty.class))
                 .registerTypeHierarchyAdapter(GameMode.class, new EnumAdapter<>(GameMode.class))
-                .registerTypeHierarchyAdapter(GroupConfig.class, new GroupConfigAdapter(this))
-                .registerTypeHierarchyAdapter(GroupData.class, new GroupDataAdapter(this))
+                .registerTypeHierarchyAdapter(GroupConfig.class, new GroupConfigAdapter())
+                .registerTypeHierarchyAdapter(GroupData.class, new GroupDataAdapter(getServer()))
                 .registerTypeHierarchyAdapter(GroupSettings.class, new GroupSettingsAdapter())
                 .registerTypeHierarchyAdapter(Instant.class, new InstantAdapter())
                 .registerTypeHierarchyAdapter(ItemStack[].class, new ItemStackArrayAdapter())
@@ -105,7 +104,6 @@ public class PaperGroupProvider implements GroupProvider {
         return plugin.getComponentLogger();
     }
 
-    @Override
     public Server getServer() {
         return plugin.getServer();
     }
@@ -115,7 +113,7 @@ public class PaperGroupProvider implements GroupProvider {
     }
 
     @Override
-    public File getDataFolder() {
+    public Path getDataFolder() {
         return dataFolder;
     }
 
@@ -151,7 +149,7 @@ public class PaperGroupProvider implements GroupProvider {
     }
 
     @Override
-    public UnownedWorldGroup getUnownedWorldGroup() {
+    public WorldGroup getUnownedWorldGroup() {
         return unownedWorldGroup;
     }
 
@@ -162,7 +160,7 @@ public class PaperGroupProvider implements GroupProvider {
         Preconditions.checkState(invalid.isEmpty(), "Worlds cannot be in multiple groups: {}", String.join(", ", invalid));
 
         var groupSettings = new PaperGroupSettings();
-        var groupData = new PaperGroupData(this);
+        var groupData = new PaperGroupData();
         settings.accept(groupSettings);
         data.accept(groupData);
 
@@ -192,8 +190,8 @@ public class PaperGroupProvider implements GroupProvider {
 
     @Override
     public boolean hasGroup(String name) {
-        return groups.stream().anyMatch(group -> group.getName().equals(name))
-               || unownedWorldGroup.getName().equals(name);
+        return unownedWorldGroup.getName().equals(name)
+               || groups.stream().anyMatch(group -> group.getName().equals(name));
     }
 
     @Override
