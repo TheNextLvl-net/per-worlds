@@ -11,11 +11,11 @@ import core.nbt.tag.StringTag;
 import core.nbt.tag.Tag;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.TriState;
+import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.data.AdvancementData;
 import net.thenextlvl.perworlds.data.AttributeData;
 import net.thenextlvl.perworlds.data.PlayerData;
 import net.thenextlvl.perworlds.data.WardenSpawnTracker;
-import net.thenextlvl.perworlds.group.PaperGroupProvider;
 import net.thenextlvl.perworlds.model.PaperPlayerData;
 import net.thenextlvl.perworlds.statistics.Stats;
 import org.bukkit.GameMode;
@@ -30,10 +30,10 @@ import java.util.Objects;
 
 @NullMarked
 public class PlayerDataAdapter implements TagAdapter<PlayerData> {
-    private final PaperGroupProvider provider;
+    private final PerWorldsPlugin plugin;
 
-    public PlayerDataAdapter(PaperGroupProvider provider) {
-        this.provider = provider;
+    public PlayerDataAdapter(PerWorldsPlugin plugin) {
+        this.plugin = plugin;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class PlayerDataAdapter implements TagAdapter<PlayerData> {
                     try {
                         return context.deserialize(advancement, AdvancementData.class);
                     } catch (ParserException e) {
-                        provider.getLogger().warn(e.getMessage());
+                        plugin.getComponentLogger().warn(e.getMessage());
                         return null;
                     }
                 }).filter(Objects::nonNull).toList()
