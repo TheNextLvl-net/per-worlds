@@ -12,11 +12,11 @@ import java.util.Map;
 @NullMarked
 public abstract class PaperSubstatistic<T extends Keyed> implements Substatistic<T> {
     protected final Map<T, Integer> values = new HashMap<>();
-    
+
     protected PaperSubstatistic(Map<T, Integer> values) {
         this.values.putAll(values);
     }
-    
+
     protected PaperSubstatistic() {
     }
 
