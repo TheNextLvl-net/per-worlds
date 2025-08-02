@@ -4,7 +4,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.TriState;
 import net.thenextlvl.perworlds.GroupSettings;
 import net.thenextlvl.perworlds.WorldGroup;
-import net.thenextlvl.perworlds.statistics.Stats;
+import net.thenextlvl.perworlds.statistics.Statistics;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -274,11 +274,11 @@ public interface PlayerData {
     PlayerData seenCredits(boolean seenCredits);
 
     @ApiStatus.Experimental
-    Stats stats();
+    Statistics stats();
 
     @ApiStatus.Experimental
     @Contract(mutates = "this")
-    PlayerData stats(Stats stats);
+    PlayerData stats(Statistics statistics);
 
     @Contract(value = " -> new", pure = true)
     Vector velocity();

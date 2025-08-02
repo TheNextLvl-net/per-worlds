@@ -13,14 +13,14 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 /**
- * @since 0.1.0
+ * @since 1.0.0
  */
 @NullMarked
 @ApiStatus.NonExtendable
-public interface Stats {
+public interface Statistics {
     @Unmodifiable
     @Contract(pure = true)
-    Map<Statistic, Stat<?>> getStatistics();
+    Map<Statistic, Stat> getStatistics();
 
     @Contract(pure = true)
     int getStatistic(Statistic statistic);
@@ -48,5 +48,5 @@ public interface Stats {
 
     boolean hasData(Statistic statistic);
 
-    void forEachStatistic(BiConsumer<Statistic, Stat<?>> action);
+    void forEachStatistic(BiConsumer<Statistic, Stat> action);
 }

@@ -1,13 +1,12 @@
 package net.thenextlvl.perworlds.model;
 
 import com.google.common.base.Preconditions;
-import core.nbt.tag.Tag;
 import net.thenextlvl.perworlds.statistics.BlockTypeStat;
 import net.thenextlvl.perworlds.statistics.CustomStat;
 import net.thenextlvl.perworlds.statistics.EntityTypeStat;
 import net.thenextlvl.perworlds.statistics.ItemTypeStat;
 import net.thenextlvl.perworlds.statistics.Stat;
-import net.thenextlvl.perworlds.statistics.Stats;
+import net.thenextlvl.perworlds.statistics.Statistics;
 import org.bukkit.Registry;
 import org.bukkit.Statistic;
 import org.bukkit.block.BlockType;
@@ -22,11 +21,19 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 @NullMarked
-public class PaperStats implements Stats {
-    private final Map<Statistic, Stat<?>> statistics = new HashMap<>();
+public class PaperStatistics implements Statistics {
+    private final Map<Statistic, Stat> statistics;
+    
+    public PaperStatistics(HashMap<Statistic, Stat> values) {
+        this.statistics = values;
+    }
+    
+    public PaperStatistics() {
+        this(new HashMap<>());
+    }
 
     @Override
-    public @Unmodifiable Map<Statistic, Stat<?>> getStatistics() {
+    public @Unmodifiable Map<Statistic, Stat> getStatistics() {
         return Map.copyOf(statistics);
     }
 
@@ -85,22 +92,13 @@ public class PaperStats implements Stats {
     }
 
     @Override
-    public void forEachStatistic(BiConsumer<Statistic, Stat<?>> action) {
+    public void forEachStatistic(BiConsumer<Statistic, Stat> action) {
         statistics.forEach(action);
     }
 
-    public void setStatistic(Statistic statistic, Tag tag) {
-        statistics.computeIfAbsent(statistic, ignored -> switch (statistic.getType()) {
-            case UNTYPED -> new PaperCustomStat();
-            case ITEM -> new PaperItemTypeStat();
-            case BLOCK -> new PaperBlockTypeStat();
-            case ENTITY -> new PaperEntityTypeStat();
-        }).deserialize(tag);
-    }
-
     @SuppressWarnings({"DataFlowIssue", "deprecation"})
-    public static PaperStats of(Player player) {
-        var stats = new PaperStats();
+    public static PaperStatistics of(Player player) {
+        var stats = new PaperStatistics();
         Registry.STATISTIC.forEach(statistic -> {
             switch (statistic.getType()) {
                 case UNTYPED -> stats.setStatistic(statistic, player.getStatistic(statistic));

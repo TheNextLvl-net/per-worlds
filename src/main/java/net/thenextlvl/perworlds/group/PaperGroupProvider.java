@@ -26,7 +26,7 @@ import net.thenextlvl.perworlds.adapter.NamespacedKeyAdapter;
 import net.thenextlvl.perworlds.adapter.PlayerDataAdapter;
 import net.thenextlvl.perworlds.adapter.PotionEffectAdapter;
 import net.thenextlvl.perworlds.adapter.PotionEffectTypeAdapter;
-import net.thenextlvl.perworlds.adapter.StatisticsAdapter;
+import net.thenextlvl.perworlds.adapter.statistic.StatisticsAdapter;
 import net.thenextlvl.perworlds.adapter.VectorAdapter;
 import net.thenextlvl.perworlds.adapter.WardenSpawnTrackerAdapter;
 import net.thenextlvl.perworlds.adapter.WorldAdapter;
@@ -37,7 +37,7 @@ import net.thenextlvl.perworlds.data.WardenSpawnTracker;
 import net.thenextlvl.perworlds.data.WorldBorderData;
 import net.thenextlvl.perworlds.model.PaperPlayerData;
 import net.thenextlvl.perworlds.model.config.GroupConfig;
-import net.thenextlvl.perworlds.statistics.Stats;
+import net.thenextlvl.perworlds.statistics.Statistics;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.Keyed;
@@ -90,7 +90,7 @@ public class PaperGroupProvider implements GroupProvider {
                 .registerTypeHierarchyAdapter(PaperPlayerData.class, new PlayerDataAdapter(plugin))
                 .registerTypeHierarchyAdapter(PotionEffect.class, new PotionEffectAdapter())
                 .registerTypeHierarchyAdapter(PotionEffectType.class, new PotionEffectTypeAdapter())
-                .registerTypeHierarchyAdapter(Stats.class, new StatisticsAdapter())
+                .registerTypeHierarchyAdapter(Statistics.class, new StatisticsAdapter(plugin))
                 .registerTypeHierarchyAdapter(TriState.class, new EnumAdapter<>(TriState.class))
                 .registerTypeHierarchyAdapter(Vector.class, new VectorAdapter())
                 .registerTypeHierarchyAdapter(WardenSpawnTracker.class, new WardenSpawnTrackerAdapter())
