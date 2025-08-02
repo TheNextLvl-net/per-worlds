@@ -39,33 +39,57 @@ public interface PlayerData {
     @Contract(pure = true)
     ItemStack[] enderChest();
 
+    @Contract(mutates = "this")
+    PlayerData enderChest(@Nullable ItemStack[] contents);
+
     @Nullable
     @Contract(pure = true)
     ItemStack[] inventory();
+
+    @Contract(mutates = "this")
+    PlayerData inventory(@Nullable ItemStack[] contents);
 
     @Unmodifiable
     @Contract(pure = true)
     List<PotionEffect> potionEffects();
 
+    @Contract(mutates = "this")
+    PlayerData potionEffects(Collection<PotionEffect> effects);
+
     @Nullable
     @Contract(pure = true)
     GameMode gameMode();
+
+    @Contract(mutates = "this")
+    PlayerData gameMode(@Nullable GameMode gameMode);
 
     @Nullable
     @Contract(pure = true)
     GameMode previousGameMode();
 
+    @Contract(mutates = "this")
+    PlayerData previousGameMode(@Nullable GameMode gameMode);
+
     @Nullable
     @Contract(pure = true)
     Location lastDeathLocation();
+
+    @Contract(mutates = "this")
+    PlayerData lastDeathLocation(@Nullable Location location);
 
     @Nullable
     @Contract(pure = true)
     Location lastLocation();
 
+    @Contract(mutates = "this")
+    PlayerData lastLocation(@Nullable Location location);
+
     @Nullable
     @Contract(pure = true)
     Location respawnLocation();
+
+    @Contract(mutates = "this")
+    PlayerData respawnLocation(@Nullable Location location);
 
     /**
      * @since 0.2.6
@@ -74,117 +98,181 @@ public interface PlayerData {
     @Contract(pure = true)
     Key lastAdvancementTab();
 
-    @Contract(mutates = "this")
-    PlayerData absorption(double absorption);
-
-    @Contract(mutates = "this")
-    PlayerData advancements(Collection<AdvancementData> advancements);
-
-    @Contract(mutates = "this")
-    PlayerData arrowsInBody(int arrowsInBody);
-
-    @Contract(mutates = "this")
-    PlayerData attributes(Collection<AttributeData> attributes);
-
-    @Contract(mutates = "this")
-    PlayerData beeStingersInBody(int beeStingers);
-
-    @Contract(mutates = "this")
-    PlayerData discoveredRecipes(Collection<NamespacedKey> recipes);
-
-    @Contract(mutates = "this")
-    PlayerData enderChest(@Nullable ItemStack[] contents);
-
-    @Contract(mutates = "this")
-    PlayerData exhaustion(float exhaustion);
-
-    @Contract(mutates = "this")
-    PlayerData experience(float experience);
-
-    @Contract(mutates = "this")
-    PlayerData fallDistance(float fallDistance);
-
-    @Contract(mutates = "this")
-    PlayerData fireTicks(int fireTicks);
-
-    @Contract(mutates = "this")
-    PlayerData flySpeed(@Range(from = -1, to = 1) float speed);
-
-    @Contract(mutates = "this")
-    PlayerData flying(TriState flying);
-
-    @Contract(mutates = "this")
-    PlayerData foodLevel(int foodLevel);
-
-    @Contract(mutates = "this")
-    PlayerData freezeTicks(int freezeTicks);
-
-    @Contract(mutates = "this")
-    PlayerData gameMode(@Nullable GameMode gameMode);
-
-    @Contract(mutates = "this")
-    PlayerData gliding(boolean gliding);
-
-    @Contract(mutates = "this")
-    PlayerData health(double health);
-
-    @Contract(mutates = "this")
-    PlayerData heldItemSlot(int heldItemSlot);
-
-    @Contract(mutates = "this")
-    PlayerData inventory(@Nullable ItemStack[] contents);
-
-    @Contract(mutates = "this")
-    PlayerData invulnerable(boolean invulnerable);
-
-    @Contract(mutates = "this")
-    PlayerData lastDeathLocation(@Nullable Location location);
-
-    @Contract(mutates = "this")
-    PlayerData lastLocation(@Nullable Location location);
-
     /**
      * @since 0.2.6
      */
     @Contract(mutates = "this")
     PlayerData lastAdvancementTab(@Nullable Key key);
 
+    @Contract(pure = true)
+    double absorption();
+
+    @Contract(mutates = "this")
+    PlayerData absorption(double absorption);
+
+    @Unmodifiable
+    @Contract(pure = true)
+    Set<AdvancementData> advancements();
+
+    @Contract(mutates = "this")
+    PlayerData advancements(Collection<AdvancementData> advancements);
+
+    @Contract(pure = true)
+    int arrowsInBody();
+
+    @Contract(mutates = "this")
+    PlayerData arrowsInBody(int arrowsInBody);
+
+    @Unmodifiable
+    @Contract(pure = true)
+    Set<AttributeData> attributes();
+
+    @Contract(mutates = "this")
+    PlayerData attributes(Collection<AttributeData> attributes);
+
+    @Contract(pure = true)
+    int beeStingersInBody();
+
+    @Contract(mutates = "this")
+    PlayerData beeStingersInBody(int beeStingers);
+
+    @Unmodifiable
+    @Contract(pure = true)
+    Set<NamespacedKey> discoveredRecipes();
+
+    @Contract(mutates = "this")
+    PlayerData discoveredRecipes(Collection<NamespacedKey> recipes);
+
+    @Contract(pure = true)
+    float exhaustion();
+
+    @Contract(mutates = "this")
+    PlayerData exhaustion(float exhaustion);
+
+    @Contract(pure = true)
+    float experience();
+
+    @Contract(mutates = "this")
+    PlayerData experience(float experience);
+
+    @Contract(pure = true)
+    float fallDistance();
+
+    @Contract(mutates = "this")
+    PlayerData fallDistance(float fallDistance);
+
+    @Contract(pure = true)
+    int fireTicks();
+
+    @Contract(mutates = "this")
+    PlayerData fireTicks(int fireTicks);
+
+    @Contract(pure = true)
+    @Range(from = -1, to = 1)
+    float flySpeed();
+
+    @Contract(mutates = "this")
+    PlayerData flySpeed(@Range(from = -1, to = 1) float speed);
+
+    @Contract(pure = true)
+    TriState flying();
+
+    @Contract(mutates = "this")
+    PlayerData flying(TriState flying);
+
+    @Contract(pure = true)
+    int foodLevel();
+
+    @Contract(mutates = "this")
+    PlayerData foodLevel(int foodLevel);
+
+    @Contract(pure = true)
+    int freezeTicks();
+
+    @Contract(mutates = "this")
+    PlayerData freezeTicks(int freezeTicks);
+
+    @Contract(pure = true)
+    boolean gliding();
+
+    @Contract(mutates = "this")
+    PlayerData gliding(boolean gliding);
+
+    @Contract(pure = true)
+    double health();
+
+    @Contract(mutates = "this")
+    PlayerData health(double health);
+
+    @Contract(pure = true)
+    int heldItemSlot();
+
+    @Contract(mutates = "this")
+    PlayerData heldItemSlot(int heldItemSlot);
+
+    @Contract(pure = true)
+    boolean invulnerable();
+
+    @Contract(mutates = "this")
+    PlayerData invulnerable(boolean invulnerable);
+
+    @Contract(pure = true)
+    int level();
+
     @Contract(mutates = "this")
     PlayerData level(int level);
+
+    @Contract(pure = true)
+    boolean lockFreezeTicks();
 
     @Contract(mutates = "this")
     PlayerData lockFreezeTicks(boolean lockFreezeTicks);
 
+    @Contract(pure = true)
+    TriState mayFly();
+
     @Contract(mutates = "this")
     PlayerData mayFly(TriState mayFly);
+
+    @Contract(pure = true)
+    int portalCooldown();
 
     @Contract(mutates = "this")
     PlayerData portalCooldown(int cooldown);
 
-    @Contract(mutates = "this")
-    PlayerData potionEffects(Collection<PotionEffect> effects);
-
-    @Contract(mutates = "this")
-    PlayerData previousGameMode(@Nullable GameMode gameMode);
+    @Contract(pure = true)
+    int remainingAir();
 
     @Contract(mutates = "this")
     PlayerData remainingAir(int remainingAir);
 
-    @Contract(mutates = "this")
-    PlayerData respawnLocation(@Nullable Location location);
+    @Contract(pure = true)
+    float saturation();
 
     @Contract(mutates = "this")
     PlayerData saturation(float saturation);
 
+    @Contract(pure = true)
+    int score();
+
     @Contract(mutates = "this")
     PlayerData score(int score);
+
+    @Contract(pure = true)
+    boolean seenCredits();
 
     @Contract(mutates = "this")
     PlayerData seenCredits(boolean seenCredits);
 
     @ApiStatus.Experimental
+    Stats stats();
+
+    @ApiStatus.Experimental
     @Contract(mutates = "this")
     PlayerData stats(Stats stats);
+
+    @Contract(value = " -> new", pure = true)
+    Vector velocity();
 
     @Contract(mutates = "this")
     PlayerData velocity(Vector velocity);
@@ -192,113 +280,26 @@ public interface PlayerData {
     /**
      * @since 0.2.0
      */
-    @Contract(mutates = "this")
-    PlayerData visualFire(TriState visualFire);
-
-    @Contract(mutates = "this")
-    PlayerData walkSpeed(@Range(from = -1, to = 1) float speed);
-
-    @Contract(mutates = "this")
-    PlayerData wardenSpawnTracker(WardenSpawnTracker tracker);
-
-    @Unmodifiable
     @Contract(pure = true)
-    Set<AdvancementData> advancements();
-
-    @Unmodifiable
-    @Contract(pure = true)
-    Set<AttributeData> attributes();
-
-    @Unmodifiable
-    @Contract(pure = true)
-    Set<NamespacedKey> discoveredRecipes();
-
-    @ApiStatus.Experimental
-    Stats stats();
-
-    @Contract(pure = true)
-    TriState flying();
-
-    @Contract(pure = true)
-    TriState mayFly();
+    TriState visualFire();
 
     /**
      * @since 0.2.0
      */
-    @Contract(pure = true)
-    TriState visualFire();
-
-    @Contract(value = " -> new", pure = true)
-    Vector velocity();
-
-    @Contract(pure = true)
-    WardenSpawnTracker wardenSpawnTracker();
-
-    @Contract(pure = true)
-    boolean gliding();
-
-    @Contract(pure = true)
-    boolean invulnerable();
-
-    @Contract(pure = true)
-    boolean lockFreezeTicks();
-
-    @Contract(pure = true)
-    boolean seenCredits();
-
-    @Contract(pure = true)
-    double absorption();
-
-    @Contract(pure = true)
-    double health();
-
-    @Contract(pure = true)
-    float exhaustion();
-
-    @Contract(pure = true)
-    float experience();
-
-    @Contract(pure = true)
-    float fallDistance();
-
-    @Contract(pure = true)
-    float flySpeed();
-
-    @Contract(pure = true)
-    float saturation();
+    @Contract(mutates = "this")
+    PlayerData visualFire(TriState visualFire);
 
     @Contract(pure = true)
     float walkSpeed();
 
-    @Contract(pure = true)
-    int arrowsInBody();
+    @Contract(mutates = "this")
+    PlayerData walkSpeed(@Range(from = -1, to = 1) float speed);
 
     @Contract(pure = true)
-    int beeStingersInBody();
+    WardenSpawnTracker wardenSpawnTracker();
 
-    @Contract(pure = true)
-    int fireTicks();
-
-    @Contract(pure = true)
-    int foodLevel();
-
-    @Contract(pure = true)
-    int freezeTicks();
-
-    @Contract(pure = true)
-    int heldItemSlot();
-
-    @Contract(pure = true)
-    int level();
-
-    @Contract(pure = true)
-    int portalCooldown();
-
-    @Contract(pure = true)
-    int remainingAir();
-
-    @Contract(pure = true)
-    int score();
+    @Contract(mutates = "this")
+    PlayerData wardenSpawnTracker(WardenSpawnTracker tracker);
 
     /**
      * Loads the player's data based on the specified group and optionally modifies the player's
