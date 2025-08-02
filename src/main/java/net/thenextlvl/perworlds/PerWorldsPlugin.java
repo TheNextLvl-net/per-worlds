@@ -15,6 +15,7 @@ import net.thenextlvl.perworlds.listener.WorldsListener;
 import net.thenextlvl.perworlds.version.PluginVersionChecker;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
@@ -85,12 +86,16 @@ public class PerWorldsPlugin extends JavaPlugin {
     }
 
     private void warnWorldManager() {
-        if (knownWorldManagers.stream()
+        var plugin = knownWorldManagers.stream()
                 .filter(name -> !name.equals("Worlds"))
                 .map(getServer().getPluginManager()::getPlugin)
-                .noneMatch(Objects::nonNull)) return;
+                .filter(Objects::nonNull)
+                .findAny()
+                .map(Plugin::getName)
+                .orElse(null);
+        if (plugin == null) return;
         getComponentLogger().warn("It appears you are using a third party world management plugin");
-        getComponentLogger().warn("Consider switching to 'Worlds' for first hand support");
+        getComponentLogger().warn("Consider switching from '{}' to 'Worlds' for first hand support", plugin);
         getComponentLogger().warn("Download at: https://modrinth.com/project/gBIw3Gvy");
     }
 
