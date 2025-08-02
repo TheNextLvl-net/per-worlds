@@ -24,7 +24,7 @@ import net.thenextlvl.perworlds.statistics.BlockTypeStat;
 import net.thenextlvl.perworlds.statistics.CustomStat;
 import net.thenextlvl.perworlds.statistics.EntityTypeStat;
 import net.thenextlvl.perworlds.statistics.ItemTypeStat;
-import net.thenextlvl.perworlds.statistics.Stats;
+import net.thenextlvl.perworlds.statistics.Statistics;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -110,7 +110,7 @@ public class PaperPlayerData implements PlayerData {
     private Set<AdvancementData> advancements = Set.of();
     private Set<AttributeData> attributes = DEFAULT_ATTRIBUTES;
     private Set<NamespacedKey> recipes = Set.of();
-    private Stats stats = new PaperStats();
+    private Statistics statistics = new PaperStatistics();
     private TriState flying = DEFAULT_FLYING;
     private TriState mayFly = DEFAULT_MAY_FLY;
     private TriState visualFire = DEFAULT_VISUAL_FIRE;
@@ -170,7 +170,7 @@ public class PaperPlayerData implements PlayerData {
                 .respawnLocation(player.getRespawnLocation(false))
                 .potionEffects(player.getActivePotionEffects())
                 .gameMode(player.getGameMode())
-                .stats(PaperStats.of(player))
+                .stats(PaperStatistics.of(player))
                 .discoveredRecipes(player.getDiscoveredRecipes())
                 .seenCredits(player.hasSeenWinScreen())
                 .absorption(player.getAbsorptionAmount())
@@ -360,7 +360,7 @@ public class PaperPlayerData implements PlayerData {
     @SuppressWarnings({"DataFlowIssue", "deprecation"})
     private void applyStatistics(Player player, GroupSettings settings) {
         clearStatistics(player, settings.statistics());
-        if (settings.statistics()) stats.forEachStatistic((statistic, stat) -> {
+        if (settings.statistics()) statistics.forEachStatistic((statistic, stat) -> {
             switch (stat) {
                 case CustomStat customStat -> player.setStatistic(statistic, customStat.getValue());
                 case ItemTypeStat itemStat ->
@@ -377,7 +377,7 @@ public class PaperPlayerData implements PlayerData {
     @SuppressWarnings({"DataFlowIssue", "deprecation"})
     private void clearStatistics(Player player, boolean filter) {
         Registry.STATISTIC.forEach(statistic -> {
-            if (filter && stats.hasData(statistic)) return;
+            if (filter && statistics.hasData(statistic)) return;
             switch (statistic.getType()) {
                 case UNTYPED -> player.setStatistic(statistic, 0);
                 case ITEM -> Registry.ITEM.forEach(type -> player.setStatistic(statistic, type.asMaterial(), 0));
@@ -774,8 +774,8 @@ public class PaperPlayerData implements PlayerData {
     }
 
     @Override
-    public PaperPlayerData stats(Stats stats) {
-        this.stats = stats;
+    public PaperPlayerData stats(Statistics statistics) {
+        this.statistics = statistics;
         return this;
     }
 
@@ -880,8 +880,8 @@ public class PaperPlayerData implements PlayerData {
     }
 
     @Override
-    public Stats stats() {
-        return stats;
+    public Statistics stats() {
+        return statistics;
     }
 
     @Override
