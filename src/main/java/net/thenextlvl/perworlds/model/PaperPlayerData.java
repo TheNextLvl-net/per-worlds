@@ -357,7 +357,6 @@ public class PaperPlayerData implements PlayerData {
         applyRecipes(player, settings);
     }
 
-    // fixme: awful code
     @SuppressWarnings({"DataFlowIssue", "deprecation"})
     private void applyStatistics(Player player, GroupSettings settings) {
         clearStatistics(player, settings.statistics());
@@ -375,7 +374,6 @@ public class PaperPlayerData implements PlayerData {
         });
     }
 
-    // fixme: awful code
     @SuppressWarnings({"DataFlowIssue", "deprecation"})
     private void clearStatistics(Player player, boolean filter) {
         Registry.STATISTIC.forEach(statistic -> {
