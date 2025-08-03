@@ -1,6 +1,5 @@
 plugins {
     id("java")
-    id("java-library")
     id("maven-publish")
 }
 
@@ -25,7 +24,6 @@ repositories {
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
-    api("net.thenextlvl.core:nbt:2.3.2")
 }
 
 publishing {

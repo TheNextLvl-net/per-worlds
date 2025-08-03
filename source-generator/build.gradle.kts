@@ -14,6 +14,7 @@ repositories {
 dependencies {
     implementation("io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT")
     implementation("com.palantir.javapoet:javapoet:0.7.0")
+    implementation("net.thenextlvl.core:nbt:2.3.2")
     implementation(project(":api"))
 
     testImplementation(platform("org.junit:junit-bom:6.0.0-SNAPSHOT"))
