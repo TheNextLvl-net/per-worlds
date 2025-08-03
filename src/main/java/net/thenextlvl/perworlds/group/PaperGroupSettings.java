@@ -30,13 +30,13 @@ public class PaperGroupSettings implements GroupSettings {
     private boolean hotbarSlot = true;
     private boolean inventory = true;
     private boolean invulnerable = true;
-    private boolean joinMessages = true;
+    private boolean joinMessages = false;
     private boolean lastDeathLocation = true;
     private boolean lastLocation = true;
     private boolean lockFreezeTicks = false;
     private boolean portalCooldown = true;
     private boolean potionEffects = true;
-    private boolean quitMessages = true;
+    private boolean quitMessages = false;
     private boolean recipes = true;
     private boolean remainingAir = true;
     private boolean respawnLocation = true;
