@@ -36,12 +36,7 @@ public class StatisticsAdapter implements TagAdapter<Statistics> {
         tag.getAsCompound().forEach((key, value) -> {
             var statistic = Registry.STATISTIC.get(Key.key(key));
             if (statistic == null) plugin.getLogger().warning("Unknown statistic: " + key);
-            else values.put(statistic, context.deserialize(tag, switch (statistic.getType()) {
-                case UNTYPED -> CustomStat.class;
-                case ITEM -> ItemTypeStat.class;
-                case BLOCK -> BlockTypeStat.class;
-                case ENTITY -> EntityTypeStat.class;
-            }));
+            else values.put(statistic, context.deserialize(tag, getType(statistic)));
         });
         return new PaperStatistics(values);
     }
@@ -53,5 +48,14 @@ public class StatisticsAdapter implements TagAdapter<Statistics> {
             if (value.hasData()) tag.add(statistic.key().asString(), context.serialize(value));
         });
         return tag;
+    }
+
+    private static Class<? extends Stat> getType(Statistic statistic) {
+        return switch (statistic.getType()) {
+            case UNTYPED -> CustomStat.class;
+            case ITEM -> ItemTypeStat.class;
+            case BLOCK -> BlockTypeStat.class;
+            case ENTITY -> EntityTypeStat.class;
+        };
     }
 }
