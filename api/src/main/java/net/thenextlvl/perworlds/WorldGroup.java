@@ -285,6 +285,7 @@ public interface WorldGroup {
      *
      * @param world the world whose data is to be updated
      * @throws IllegalArgumentException thrown if the specified world is not part of this group
+     * @see #updateWorldData(World, GroupData.Type)
      */
     @Contract(mutates = "param1")
     void updateWorldData(World world) throws IllegalArgumentException;
