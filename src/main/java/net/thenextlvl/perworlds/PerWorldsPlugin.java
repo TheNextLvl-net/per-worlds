@@ -23,7 +23,6 @@ import org.jspecify.annotations.NullMarked;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
@@ -114,9 +113,7 @@ public class PerWorldsPlugin extends JavaPlugin {
     }
 
     private void persistGroups() {
-        var groups = new ArrayList<>(provider.getGroups());
-        groups.add(provider.getUnownedWorldGroup());
-        groups.forEach(group -> {
+        provider.getAllGroups().forEach(group -> {
             group.persistPlayerData();
             group.persist();
         });
