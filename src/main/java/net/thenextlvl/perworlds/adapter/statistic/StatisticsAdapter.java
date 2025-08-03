@@ -36,7 +36,7 @@ public class StatisticsAdapter implements TagAdapter<Statistics> {
         tag.getAsCompound().forEach((key, value) -> {
             var statistic = Registry.STATISTIC.get(Key.key(key));
             if (statistic == null) plugin.getLogger().warning("Unknown statistic: " + key);
-            else values.put(statistic, context.deserialize(tag, getType(statistic)));
+            else values.put(statistic, context.deserialize(value, getType(statistic)));
         });
         return new PaperStatistics(values);
     }
