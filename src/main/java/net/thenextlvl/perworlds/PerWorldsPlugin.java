@@ -100,6 +100,7 @@ public class PerWorldsPlugin extends JavaPlugin {
 
     private void loadGroups() {
         var suffix = ".dat";
+        if (!Files.exists(provider.getDataFolder())) return;
         try (var files = Files.list(provider.getDataFolder())) {
             files.map(path -> path.getFileName().toString())
                     .filter(name -> name.endsWith(suffix))
