@@ -31,7 +31,7 @@ class GroupRemoveCommand {
     }
 
     private ArgumentBuilder<CommandSourceStack, ?> remove() {
-        return groupArgument(plugin).then(Commands.argument("world", ArgumentTypes.key())
+        return groupArgument(plugin, false).then(Commands.argument("world", ArgumentTypes.key())
                 .suggests(new GroupMemberSuggestionProvider<>())
                 .executes(this::remove));
     }

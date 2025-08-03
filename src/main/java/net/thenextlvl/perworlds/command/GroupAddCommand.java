@@ -33,7 +33,7 @@ class GroupAddCommand {
     private ArgumentBuilder<CommandSourceStack, ?> add() {
         return Commands.argument("world", ArgumentTypes.world())
                 .suggests(new UnassignedWorldsSuggestionProvider<>(plugin))
-                .then(groupArgument(plugin).executes(this::add));
+                .then(groupArgument(plugin, false).executes(this::add));
     }
 
     private int add(CommandContext<CommandSourceStack> context) {

@@ -33,7 +33,7 @@ class GroupTeleportCommand {
         var command = new GroupTeleportCommand(plugin);
         return Commands.literal("teleport")
                 .requires(source -> source.getSender().hasPermission("perworlds.command.group.teleport"))
-                .then(groupArgument(plugin)
+                .then(groupArgument(plugin, true)
                         .then(Commands.argument("players", ArgumentTypes.players())
                                 .executes(command::teleportPlayers))
                         .executes(command::teleport));

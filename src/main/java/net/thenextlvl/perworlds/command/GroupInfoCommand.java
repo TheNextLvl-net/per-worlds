@@ -26,7 +26,7 @@ class GroupInfoCommand {
         var command = new GroupInfoCommand(plugin);
         return Commands.literal("info")
                 .requires(source -> source.getSender().hasPermission("perworlds.command.group.info"))
-                .then(groupArgument(plugin).executes(command::info));
+                .then(groupArgument(plugin, true).executes(command::info));
     }
 
     private int info(CommandContext<CommandSourceStack> context) {

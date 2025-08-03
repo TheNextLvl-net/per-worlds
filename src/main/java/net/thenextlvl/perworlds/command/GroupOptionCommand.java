@@ -81,7 +81,7 @@ class GroupOptionCommand {
     }
 
     private ArgumentBuilder<CommandSourceStack, ?> option(String name, Function<GroupSettings, Boolean> getter, BiConsumer<GroupSettings, Boolean> setter) {
-        return Commands.literal(name).then(groupArgument(plugin)
+        return Commands.literal(name).then(groupArgument(plugin, true)
                 .then(Commands.argument("value", BoolArgumentType.bool())
                         .executes(context -> set(context, name, getter, setter)))
                 .executes(context -> query(context, name, getter)));

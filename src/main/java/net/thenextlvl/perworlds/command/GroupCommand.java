@@ -25,7 +25,7 @@ public class GroupCommand {
                 .then(GroupTeleportCommand.create(plugin));
     }
 
-    static RequiredArgumentBuilder<CommandSourceStack, WorldGroup> groupArgument(PerWorldsPlugin plugin) {
-        return Commands.argument("group", new GroupArgument(plugin));
+    static RequiredArgumentBuilder<CommandSourceStack, WorldGroup> groupArgument(PerWorldsPlugin plugin, boolean listAll) {
+        return Commands.argument("group", new GroupArgument(plugin, listAll));
     }
 }

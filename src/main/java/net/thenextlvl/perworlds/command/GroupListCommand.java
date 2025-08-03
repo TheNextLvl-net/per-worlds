@@ -27,7 +27,7 @@ class GroupListCommand {
 
     private int list(CommandContext<CommandSourceStack> context) {
         var sender = context.getSource().getSender();
-        var groups = plugin.groupProvider().getGroups().stream().map(group ->
+        var groups = plugin.groupProvider().getAllGroups().stream().map(group ->
                 plugin.bundle().component("group.list.component", sender,
                         Placeholder.parsed("group", group.getName()))
         ).toList();
