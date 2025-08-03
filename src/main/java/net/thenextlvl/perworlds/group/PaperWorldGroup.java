@@ -188,26 +188,6 @@ public class PaperWorldGroup implements WorldGroup {
         return true;
     }
 
-    @SuppressWarnings("unchecked")
-    private void loadWorldData(World world) {
-        getGroupData().setDifficulty(world.getDifficulty());
-        getGroupData().setTime(world.getFullTime());
-
-        Arrays.stream(GameRule.values())
-                .filter(gameRule -> world.getFeatureFlags().containsAll(gameRule.requiredFeatures()))
-                .map(gameRule -> (GameRule<Object>) gameRule)
-                .forEach(rule -> getGroupData().setGameRule(rule, world.getGameRuleValue(rule)));
-
-        getGroupData().setWorldBorder(WorldBorderData.of(world.getWorldBorder()));
-        getGroupData().setHardcore(TriState.byBoolean(world.isHardcore()));
-
-        getGroupData().setRaining(world.hasStorm());
-        getGroupData().setThundering(world.isThundering());
-        getGroupData().clearWeatherDuration(world.getClearWeatherDuration());
-        getGroupData().setThunderDuration(world.getThunderDuration());
-        getGroupData().setRainDuration(world.getWeatherDuration());
-    }
-
     @Override
     public boolean containsWorld(World world) {
         return config.worlds().contains(world.key());
@@ -269,7 +249,7 @@ public class PaperWorldGroup implements WorldGroup {
         provider.getUnownedWorldGroup().updateWorldData(world);
         return true;
     }
-    
+
     private Stream<Player> getPlayers(World world) {
         return world.getPlayers().stream().filter(player -> !player.hasMetadata("NPC"));
     }
@@ -377,6 +357,29 @@ public class PaperWorldGroup implements WorldGroup {
             }
             case WEATHER -> applyWeather(world);
         }
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void loadWorldData(World world) {
+        Preconditions.checkArgument(containsWorld(world), "World '%s' is not part of group '%s'", world.getName(), getName());
+        
+        getGroupData().setDifficulty(world.getDifficulty());
+        getGroupData().setTime(world.getFullTime());
+
+        Arrays.stream(GameRule.values())
+                .filter(gameRule -> world.getFeatureFlags().containsAll(gameRule.requiredFeatures()))
+                .map(gameRule -> (GameRule<Object>) gameRule)
+                .forEach(rule -> getGroupData().setGameRule(rule, world.getGameRuleValue(rule)));
+
+        getGroupData().setWorldBorder(WorldBorderData.of(world.getWorldBorder()));
+        getGroupData().setHardcore(TriState.byBoolean(world.isHardcore()));
+
+        getGroupData().setRaining(world.hasStorm());
+        getGroupData().setThundering(world.isThundering());
+        getGroupData().clearWeatherDuration(world.getClearWeatherDuration());
+        getGroupData().setThunderDuration(world.getThunderDuration());
+        getGroupData().setRainDuration(world.getWeatherDuration());
     }
 
     private boolean isEnabled(GroupData.Type type) {

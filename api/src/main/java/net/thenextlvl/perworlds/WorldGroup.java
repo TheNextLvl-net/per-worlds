@@ -298,9 +298,24 @@ public interface WorldGroup {
      * @param world the world whose data is to be updated
      * @param type  the type of update to apply to the world's data
      * @throws IllegalArgumentException if the specified world is not part of this group
+     * @see #loadWorldData(World)
      */
     @Contract(mutates = "param1")
     void updateWorldData(World world, GroupData.Type type) throws IllegalArgumentException;
+
+    /**
+     * Loads the data of the specified world into this group.
+     * <p>
+     * This method is distinct from updating the world data, as it imports
+     * the existing data of the specified world rather than applying any
+     * current data to it.
+     *
+     * @param world The world for which the data is to be loaded into the group.
+     * @throws IllegalArgumentException if the specified world is not part of this group
+     * @since 1.0.0
+     */
+    @Contract(mutates = "this")
+    void loadWorldData(World world) throws IllegalArgumentException;
 
     /**
      * Checks whether data for the specified player is currently being loaded.
