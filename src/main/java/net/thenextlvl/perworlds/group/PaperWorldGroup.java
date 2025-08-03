@@ -338,9 +338,7 @@ public class PaperWorldGroup implements WorldGroup {
     public void updateWorldData(World world) throws IllegalArgumentException {
         Preconditions.checkArgument(containsWorld(world), "World '%s' is not part of group '%s'", world.getName(), getName());
         if (!getSettings().enabled()) return;
-        provider.getServer().getGlobalRegionScheduler().run(provider.getPlugin(), task -> {
-            for (var type : GroupData.Type.values()) updateWorldData(world, type);
-        });
+        for (var type : GroupData.Type.values()) updateWorldData(world, type);
     }
 
     @Override
