@@ -757,13 +757,13 @@ public class PaperPlayerData implements PlayerData {
 
     @Override
     public PaperPlayerData lastDeathLocation(@Nullable Location location) {
-        this.lastDeathLocation = location != null && group != null && group.containsWorld(location.getWorld()) ? location.clone() : null;
+        this.lastDeathLocation = location != null && (group == null || group.containsWorld(location.getWorld())) ? location.clone() : null;
         return this;
     }
 
     @Override
     public PaperPlayerData lastLocation(@Nullable Location location) {
-        this.lastLocation = location != null && group != null && group.containsWorld(location.getWorld()) ? location.clone() : null;
+        this.lastLocation = location != null && (group == null || group.containsWorld(location.getWorld())) ? location.clone() : null;
         return this;
     }
 
@@ -853,7 +853,7 @@ public class PaperPlayerData implements PlayerData {
 
     @Override
     public PaperPlayerData respawnLocation(@Nullable Location location) {
-        this.respawnLocation = location != null && group != null && group.containsWorld(location.getWorld()) ? location.clone() : null;
+        this.respawnLocation = location != null && (group == null || group.containsWorld(location.getWorld())) ? location.clone() : null;
         return this;
     }
 
