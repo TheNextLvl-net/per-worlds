@@ -10,7 +10,7 @@ import org.bukkit.Server;
 import org.bukkit.World;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
-import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
@@ -19,6 +19,7 @@ import java.util.function.BiConsumer;
 /**
  * @since 0.1.0
  */
+@NullMarked
 @ApiStatus.NonExtendable
 public interface GroupData {
     /**
@@ -37,9 +38,8 @@ public interface GroupData {
      * @see World#getGameRuleValue(GameRule)
      * @since 0.2.2
      */
-    @NonNull
     @Contract(pure = true)
-    <T> Optional<T> getGameRule(@NonNull GameRule<T> rule);
+    <T> Optional<T> getGameRule(GameRule<T> rule);
 
     /**
      * Set the given {@link GameRule}'s new value.
@@ -51,7 +51,7 @@ public interface GroupData {
      * @since 0.2.2
      */
     @Contract(mutates = "this")
-    <T> boolean setGameRule(@NonNull GameRule<T> rule, @Nullable T value);
+    <T> boolean setGameRule(GameRule<T> rule, @Nullable T value);
 
     /**
      * Retrieves the current difficulty level applied to the group.
@@ -60,7 +60,6 @@ public interface GroupData {
      * @see World#getDifficulty()
      * @since 0.2.2
      */
-    @NonNull
     @Contract(pure = true)
     Difficulty getDifficulty();
 
@@ -74,7 +73,7 @@ public interface GroupData {
      * @since 0.2.2
      */
     @Contract(mutates = "this")
-    void setDifficulty(@NonNull Difficulty difficulty);
+    void setDifficulty(Difficulty difficulty);
 
     /**
      * Retrieves the default {@link GameMode} for the group.
@@ -104,7 +103,6 @@ public interface GroupData {
      * @see World#getWorldBorder()
      * @since 0.2.2
      */
-    @NonNull
     @Contract(pure = true)
     WorldBorderData getWorldBorder();
 
@@ -115,7 +113,7 @@ public interface GroupData {
      * @since 1.0.0
      */
     @Contract(mutates = "this")
-    void setWorldBorder(@NonNull WorldBorderData worldBorder);
+    void setWorldBorder(WorldBorderData worldBorder);
 
     /**
      * Retrieves the spawn location associated with the group.
@@ -125,7 +123,6 @@ public interface GroupData {
      * @see #setSpawnLocation(Location)
      * @since 0.2.2
      */
-    @NonNull
     @Contract(pure = true)
     Optional<Location> getSpawnLocation();
 
