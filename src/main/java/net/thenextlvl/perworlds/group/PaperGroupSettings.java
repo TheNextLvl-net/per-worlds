@@ -53,298 +53,8 @@ public class PaperGroupSettings implements GroupSettings {
     private boolean worldBorder = true;
 
     @Override
-    public boolean absorption() {
-        return absorption;
-    }
-
-    @Override
-    public boolean advancementMessages() {
-        return advancementMessages;
-    }
-
-    @Override
-    public boolean advancements() {
-        return advancements;
-    }
-
-    @Override
-    public boolean arrowsInBody() {
-        return arrowsInBody;
-    }
-
-    @Override
-    public boolean attributes() {
-        return attributes;
-    }
-
-    @Override
-    public boolean beeStingersInBody() {
-        return beeStingersInBody;
-    }
-
-    @Override
-    public boolean chat() {
-        return chat;
-    }
-
-    @Override
-    public boolean deathMessages() {
-        return deathMessages;
-    }
-
-    @Override
-    public boolean difficulty() {
-        return difficulty;
-    }
-
-    @Override
-    public boolean score() {
-        return score;
-    }
-
-    @Override
-    public boolean statistics() {
-        return statistics;
-    }
-
-    @Override
     public boolean enabled() {
         return enabled;
-    }
-
-    @Override
-    public boolean endCredits() {
-        return endCredits;
-    }
-
-    @Override
-    public boolean enderChest() {
-        return enderChest;
-    }
-
-    @Override
-    public boolean exhaustion() {
-        return exhaustion;
-    }
-
-    @Override
-    public boolean experience() {
-        return experience;
-    }
-
-    @Override
-    public boolean fallDistance() {
-        return fallDistance;
-    }
-
-    @Override
-    public boolean fireTicks() {
-        return fireTicks;
-    }
-
-    @Override
-    public boolean flySpeed() {
-        return flySpeed;
-    }
-
-    @Override
-    public boolean flyState() {
-        return flyState;
-    }
-
-    @Override
-    public boolean foodLevel() {
-        return foodLevel;
-    }
-
-    @Override
-    public boolean freezeTicks() {
-        return freezeTicks;
-    }
-
-    @Override
-    public boolean gameMode() {
-        return gameMode;
-    }
-
-    @Override
-    public boolean gameRules() {
-        return gameRules;
-    }
-
-    @Override
-    public boolean gliding() {
-        return gliding;
-    }
-
-    @Override
-    public boolean health() {
-        return health;
-    }
-
-    @Override
-    public boolean hotbarSlot() {
-        return hotbarSlot;
-    }
-
-    @Override
-    public boolean inventory() {
-        return inventory;
-    }
-
-    @Override
-    public boolean invulnerable() {
-        return invulnerable;
-    }
-
-    @Override
-    public boolean joinMessages() {
-        return joinMessages;
-    }
-
-    @Override
-    public boolean lastDeathLocation() {
-        return lastDeathLocation;
-    }
-
-    @Override
-    public boolean lastLocation() {
-        return lastLocation;
-    }
-
-    @Override
-    public boolean lockFreezeTicks() {
-        return lockFreezeTicks;
-    }
-
-    @Override
-    public boolean portalCooldown() {
-        return portalCooldown;
-    }
-
-    @Override
-    public boolean potionEffects() {
-        return potionEffects;
-    }
-
-    @Override
-    public boolean quitMessages() {
-        return quitMessages;
-    }
-
-    @Override
-    public boolean recipes() {
-        return recipes;
-    }
-
-    @Override
-    public boolean remainingAir() {
-        return remainingAir;
-    }
-
-    @Override
-    public boolean respawnLocation() {
-        return respawnLocation;
-    }
-
-    @Override
-    public boolean saturation() {
-        return saturation;
-    }
-
-    @Override
-    public boolean tabList() {
-        return tabList;
-    }
-
-    @Override
-    public boolean time() {
-        return time;
-    }
-
-    @Override
-    public boolean velocity() {
-        return velocity;
-    }
-
-    @Override
-    public boolean visualFire() {
-        return visualFire;
-    }
-
-    @Override
-    public boolean walkSpeed() {
-        return walkSpeed;
-    }
-
-    @Override
-    public boolean wardenSpawnTracker() {
-        return wardenSpawnTracker;
-    }
-
-    @Override
-    public boolean weather() {
-        return weather;
-    }
-
-    @Override
-    public boolean worldBorder() {
-        return worldBorder;
-    }
-
-    @Override
-    public void absorption(boolean enabled) {
-        this.absorption = enabled;
-    }
-
-    @Override
-    public void advancementMessages(boolean enabled) {
-        this.advancementMessages = enabled;
-    }
-
-    @Override
-    public void advancements(boolean enabled) {
-        this.advancements = enabled;
-    }
-
-    @Override
-    public void arrowsInBody(boolean enabled) {
-        this.arrowsInBody = enabled;
-    }
-
-    @Override
-    public void attributes(boolean enabled) {
-        this.attributes = enabled;
-    }
-
-    @Override
-    public void beeStingersInBody(boolean enabled) {
-        this.beeStingersInBody = enabled;
-    }
-
-    @Override
-    public void chat(boolean enabled) {
-        this.chat = enabled;
-    }
-
-    @Override
-    public void deathMessages(boolean enabled) {
-        this.deathMessages = enabled;
-    }
-
-    @Override
-    public void difficulty(boolean enabled) {
-        this.difficulty = enabled;
-    }
-
-    @Override
-    public void score(boolean enabled) {
-        this.score = enabled;
-    }
-
-    @Override
-    public void statistics(boolean enabled) {
-        this.statistics = enabled;
     }
 
     @Override
@@ -353,88 +63,28 @@ public class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void endCredits(boolean enabled) {
-        this.endCredits = enabled;
+    public boolean advancementMessages() {
+        return advancementMessages;
     }
 
     @Override
-    public void enderChest(boolean enabled) {
-        this.enderChest = enabled;
+    public void advancementMessages(boolean enabled) {
+        this.advancementMessages = enabled;
     }
 
     @Override
-    public void exhaustion(boolean enabled) {
-        this.exhaustion = enabled;
+    public boolean deathMessages() {
+        return deathMessages;
     }
 
     @Override
-    public void experience(boolean enabled) {
-        this.experience = enabled;
+    public void deathMessages(boolean enabled) {
+        this.deathMessages = enabled;
     }
 
     @Override
-    public void fallDistance(boolean enabled) {
-        this.fallDistance = enabled;
-    }
-
-    @Override
-    public void fireTicks(boolean enabled) {
-        this.fireTicks = enabled;
-    }
-
-    @Override
-    public void flySpeed(boolean enabled) {
-        this.flySpeed = enabled;
-    }
-
-    @Override
-    public void flyState(boolean enabled) {
-        this.flyState = enabled;
-    }
-
-    @Override
-    public void foodLevel(boolean enabled) {
-        this.foodLevel = enabled;
-    }
-
-    @Override
-    public void freezeTicks(boolean enabled) {
-        this.freezeTicks = enabled;
-    }
-
-    @Override
-    public void gameMode(boolean enabled) {
-        this.gameMode = enabled;
-    }
-
-    @Override
-    public void gameRules(boolean enabled) {
-        this.gameRules = enabled;
-    }
-
-    @Override
-    public void gliding(boolean enabled) {
-        this.gliding = enabled;
-    }
-
-    @Override
-    public void health(boolean enabled) {
-        this.health = enabled;
-    }
-
-    @Override
-    public void hotbarSlot(boolean enabled) {
-        this.hotbarSlot = enabled;
-    }
-
-    @Override
-    public void inventory(boolean enabled) {
-        this.inventory = enabled;
-    }
-
-    @Override
-    public void invulnerable(boolean enabled) {
-        this.invulnerable = enabled;
+    public boolean joinMessages() {
+        return joinMessages;
     }
 
     @Override
@@ -443,28 +93,8 @@ public class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void lastDeathLocation(boolean enabled) {
-        this.lastDeathLocation = enabled;
-    }
-
-    @Override
-    public void lastLocation(boolean enabled) {
-        this.lastLocation = enabled;
-    }
-
-    @Override
-    public void lockFreezeTicks(boolean enabled) {
-        this.lockFreezeTicks = enabled;
-    }
-
-    @Override
-    public void portalCooldown(boolean enabled) {
-        this.portalCooldown = enabled;
-    }
-
-    @Override
-    public void potionEffects(boolean enabled) {
-        this.potionEffects = enabled;
+    public boolean quitMessages() {
+        return quitMessages;
     }
 
     @Override
@@ -473,23 +103,38 @@ public class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void recipes(boolean enabled) {
-        this.recipes = enabled;
+    public boolean chat() {
+        return chat;
     }
 
     @Override
-    public void remainingAir(boolean enabled) {
-        this.remainingAir = enabled;
+    public void chat(boolean enabled) {
+        this.chat = enabled;
     }
 
     @Override
-    public void respawnLocation(boolean enabled) {
-        this.respawnLocation = enabled;
+    public boolean difficulty() {
+        return difficulty;
     }
 
     @Override
-    public void saturation(boolean enabled) {
-        this.saturation = enabled;
+    public void difficulty(boolean enabled) {
+        this.difficulty = enabled;
+    }
+
+    @Override
+    public boolean gameRules() {
+        return gameRules;
+    }
+
+    @Override
+    public void gameRules(boolean enabled) {
+        this.gameRules = enabled;
+    }
+
+    @Override
+    public boolean tabList() {
+        return tabList;
     }
 
     @Override
@@ -498,28 +143,18 @@ public class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
+    public boolean time() {
+        return time;
+    }
+
+    @Override
     public void time(boolean enabled) {
         this.time = enabled;
     }
 
     @Override
-    public void velocity(boolean enabled) {
-        this.velocity = enabled;
-    }
-
-    @Override
-    public void visualFire(boolean enabled) {
-        this.visualFire = enabled;
-    }
-
-    @Override
-    public void walkSpeed(boolean enabled) {
-        this.walkSpeed = enabled;
-    }
-
-    @Override
-    public void wardenSpawnTracker(boolean enabled) {
-        this.wardenSpawnTracker = enabled;
+    public boolean weather() {
+        return weather;
     }
 
     @Override
@@ -528,7 +163,372 @@ public class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
+    public boolean worldBorder() {
+        return worldBorder;
+    }
+
+    @Override
     public void worldBorder(boolean enabled) {
         this.worldBorder = enabled;
+    }
+
+    @Override
+    public boolean absorption() {
+        return absorption;
+    }
+
+    @Override
+    public void absorption(boolean enabled) {
+        this.absorption = enabled;
+    }
+
+    @Override
+    public boolean advancements() {
+        return advancements;
+    }
+
+    @Override
+    public void advancements(boolean enabled) {
+        this.advancements = enabled;
+    }
+
+    @Override
+    public boolean arrowsInBody() {
+        return arrowsInBody;
+    }
+
+    @Override
+    public void arrowsInBody(boolean enabled) {
+        this.arrowsInBody = enabled;
+    }
+
+    @Override
+    public boolean attributes() {
+        return attributes;
+    }
+
+    @Override
+    public void attributes(boolean enabled) {
+        this.attributes = enabled;
+    }
+
+    @Override
+    public boolean beeStingersInBody() {
+        return beeStingersInBody;
+    }
+
+    @Override
+    public void beeStingersInBody(boolean enabled) {
+        this.beeStingersInBody = enabled;
+    }
+
+    @Override
+    public boolean endCredits() {
+        return endCredits;
+    }
+
+    @Override
+    public void endCredits(boolean enabled) {
+        this.endCredits = enabled;
+    }
+
+    @Override
+    public boolean enderChest() {
+        return enderChest;
+    }
+
+    @Override
+    public void enderChest(boolean enabled) {
+        this.enderChest = enabled;
+    }
+
+    @Override
+    public boolean exhaustion() {
+        return exhaustion;
+    }
+
+    @Override
+    public void exhaustion(boolean enabled) {
+        this.exhaustion = enabled;
+    }
+
+    @Override
+    public boolean experience() {
+        return experience;
+    }
+
+    @Override
+    public void experience(boolean enabled) {
+        this.experience = enabled;
+    }
+
+    @Override
+    public boolean fallDistance() {
+        return fallDistance;
+    }
+
+    @Override
+    public void fallDistance(boolean enabled) {
+        this.fallDistance = enabled;
+    }
+
+    @Override
+    public boolean fireTicks() {
+        return fireTicks;
+    }
+
+    @Override
+    public void fireTicks(boolean enabled) {
+        this.fireTicks = enabled;
+    }
+
+    @Override
+    public boolean flySpeed() {
+        return flySpeed;
+    }
+
+    @Override
+    public void flySpeed(boolean enabled) {
+        this.flySpeed = enabled;
+    }
+
+    @Override
+    public boolean flyState() {
+        return flyState;
+    }
+
+    @Override
+    public void flyState(boolean enabled) {
+        this.flyState = enabled;
+    }
+
+    @Override
+    public boolean foodLevel() {
+        return foodLevel;
+    }
+
+    @Override
+    public void foodLevel(boolean enabled) {
+        this.foodLevel = enabled;
+    }
+
+    @Override
+    public boolean freezeTicks() {
+        return freezeTicks;
+    }
+
+    @Override
+    public void freezeTicks(boolean enabled) {
+        this.freezeTicks = enabled;
+    }
+
+    @Override
+    public boolean gameMode() {
+        return gameMode;
+    }
+
+    @Override
+    public void gameMode(boolean enabled) {
+        this.gameMode = enabled;
+    }
+
+    @Override
+    public boolean gliding() {
+        return gliding;
+    }
+
+    @Override
+    public void gliding(boolean enabled) {
+        this.gliding = enabled;
+    }
+
+    @Override
+    public boolean health() {
+        return health;
+    }
+
+    @Override
+    public void health(boolean enabled) {
+        this.health = enabled;
+    }
+
+    @Override
+    public boolean hotbarSlot() {
+        return hotbarSlot;
+    }
+
+    @Override
+    public void hotbarSlot(boolean enabled) {
+        this.hotbarSlot = enabled;
+    }
+
+    @Override
+    public boolean inventory() {
+        return inventory;
+    }
+
+    @Override
+    public void inventory(boolean enabled) {
+        this.inventory = enabled;
+    }
+
+    @Override
+    public boolean invulnerable() {
+        return invulnerable;
+    }
+
+    @Override
+    public void invulnerable(boolean enabled) {
+        this.invulnerable = enabled;
+    }
+
+    @Override
+    public boolean lastDeathLocation() {
+        return lastDeathLocation;
+    }
+
+    @Override
+    public void lastDeathLocation(boolean enabled) {
+        this.lastDeathLocation = enabled;
+    }
+
+    @Override
+    public boolean lastLocation() {
+        return lastLocation;
+    }
+
+    @Override
+    public void lastLocation(boolean enabled) {
+        this.lastLocation = enabled;
+    }
+
+    @Override
+    public boolean lockFreezeTicks() {
+        return lockFreezeTicks;
+    }
+
+    @Override
+    public void lockFreezeTicks(boolean enabled) {
+        this.lockFreezeTicks = enabled;
+    }
+
+    @Override
+    public boolean portalCooldown() {
+        return portalCooldown;
+    }
+
+    @Override
+    public void portalCooldown(boolean enabled) {
+        this.portalCooldown = enabled;
+    }
+
+    @Override
+    public boolean potionEffects() {
+        return potionEffects;
+    }
+
+    @Override
+    public void potionEffects(boolean enabled) {
+        this.potionEffects = enabled;
+    }
+
+    @Override
+    public boolean recipes() {
+        return recipes;
+    }
+
+    @Override
+    public void recipes(boolean enabled) {
+        this.recipes = enabled;
+    }
+
+    @Override
+    public boolean remainingAir() {
+        return remainingAir;
+    }
+
+    @Override
+    public void remainingAir(boolean enabled) {
+        this.remainingAir = enabled;
+    }
+
+    @Override
+    public boolean respawnLocation() {
+        return respawnLocation;
+    }
+
+    @Override
+    public void respawnLocation(boolean enabled) {
+        this.respawnLocation = enabled;
+    }
+
+    @Override
+    public boolean saturation() {
+        return saturation;
+    }
+
+    @Override
+    public void saturation(boolean enabled) {
+        this.saturation = enabled;
+    }
+
+    @Override
+    public boolean score() {
+        return score;
+    }
+
+    @Override
+    public void score(boolean enabled) {
+        this.score = enabled;
+    }
+
+    @Override
+    public boolean statistics() {
+        return statistics;
+    }
+
+    @Override
+    public void statistics(boolean enabled) {
+        this.statistics = enabled;
+    }
+
+    @Override
+    public boolean velocity() {
+        return velocity;
+    }
+
+    @Override
+    public void velocity(boolean enabled) {
+        this.velocity = enabled;
+    }
+
+    @Override
+    public boolean visualFire() {
+        return visualFire;
+    }
+
+    @Override
+    public void visualFire(boolean enabled) {
+        this.visualFire = enabled;
+    }
+
+    @Override
+    public boolean walkSpeed() {
+        return walkSpeed;
+    }
+
+    @Override
+    public void walkSpeed(boolean enabled) {
+        this.walkSpeed = enabled;
+    }
+
+    @Override
+    public boolean wardenSpawnTracker() {
+        return wardenSpawnTracker;
+    }
+
+    @Override
+    public void wardenSpawnTracker(boolean enabled) {
+        this.wardenSpawnTracker = enabled;
     }
 }
