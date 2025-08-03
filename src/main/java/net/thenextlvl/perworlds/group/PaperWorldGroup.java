@@ -361,7 +361,7 @@ public class PaperWorldGroup implements WorldGroup {
     @SuppressWarnings("unchecked")
     public void loadWorldData(World world) {
         Preconditions.checkArgument(containsWorld(world), "World '%s' is not part of group '%s'", world.getName(), getName());
-        
+
         getGroupData().setDifficulty(world.getDifficulty());
         getGroupData().setTime(world.getFullTime());
 
@@ -378,6 +378,8 @@ public class PaperWorldGroup implements WorldGroup {
         getGroupData().clearWeatherDuration(world.getClearWeatherDuration());
         getGroupData().setThunderDuration(world.getThunderDuration());
         getGroupData().setRainDuration(world.getWeatherDuration());
+
+        getWorlds().filter(other -> other != world).forEach(this::updateWorldData);
     }
 
     private boolean isEnabled(GroupData.Type type) {
