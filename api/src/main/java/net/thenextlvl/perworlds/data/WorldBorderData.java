@@ -274,4 +274,15 @@ public interface WorldBorderData {
     static WorldBorderData create(double centerX, double centerZ, double size, double damageAmount, double damageBuffer, long duration, int warningDistance, int warningTime) {
         return new WorldBorderDataImpl(centerX, centerZ, size, damageAmount, damageBuffer, duration, warningDistance, warningTime);
     }
+
+    /**
+     * Creates a new {@code WorldBorderData} instance based on the provided {@code WorldBorder}.
+     *
+     * @param border The {@code WorldBorder} instance to derive the {@code WorldBorderData} from.
+     * @return A new {@code WorldBorderData} instance containing the data from the given {@code WorldBorder}.
+     * @since 1.0.0
+     */
+    static WorldBorderData of(WorldBorder border) {
+        return new WorldBorderDataImpl(border);
+    }
 }

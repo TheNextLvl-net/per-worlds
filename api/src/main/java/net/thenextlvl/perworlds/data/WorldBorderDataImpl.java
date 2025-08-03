@@ -2,6 +2,7 @@ package net.thenextlvl.perworlds.data;
 
 import com.google.common.base.Preconditions;
 import io.papermc.paper.math.Position;
+import org.bukkit.WorldBorder;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
@@ -29,6 +30,19 @@ record WorldBorderDataImpl(
 
     WorldBorderDataImpl() {
         this(0d, 0d, MAX_SIZE, 0.2d, 5.0d, 0, 5, 15);
+    }
+
+    WorldBorderDataImpl(WorldBorder border) {
+        this(
+                border.getCenter().getX(),
+                border.getCenter().getZ(),
+                border.getSize(),
+                border.getDamageAmount(),
+                border.getDamageBuffer(),
+                0,
+                border.getWarningDistance(),
+                border.getWarningTime()
+        );
     }
 
     @Override
