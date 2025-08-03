@@ -1,8 +1,10 @@
 package net.thenextlvl.perworlds.statistics;
 
 import net.kyori.adventure.key.Keyed;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -13,6 +15,8 @@ import java.util.function.BiConsumer;
  * @param <T> the type of key that this statistic is associated with.
  * @since 1.0.0
  */
+@NullMarked
+@ApiStatus.NonExtendable
 public interface Substatistic<T extends Keyed> extends Stat {
     @Unmodifiable
     @Contract(pure = true)
