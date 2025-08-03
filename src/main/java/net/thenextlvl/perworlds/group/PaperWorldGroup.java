@@ -115,11 +115,7 @@ public class PaperWorldGroup implements WorldGroup {
 
     @Override
     public @Unmodifiable List<Player> getPlayers() {
-        return getWorlds()
-                .map(World::getPlayers)
-                .flatMap(List::stream)
-                .filter(player -> !player.hasMetadata("NPC"))
-                .toList();
+        return getWorlds().flatMap(this::getPlayers).toList();
     }
 
     @Override
@@ -184,9 +180,9 @@ public class PaperWorldGroup implements WorldGroup {
     public boolean addWorld(World world) {
         if (provider.hasGroup(world)) return false;
         var previous = provider.getGroup(world).orElse(provider.getUnownedWorldGroup());
-        world.getPlayers().forEach(previous::persistPlayerData);
+        getPlayers(world).forEach(previous::persistPlayerData);
         if (!config.worlds().add(world.key())) return false;
-        world.getPlayers().forEach(this::loadPlayerData);
+        getPlayers(world).forEach(this::loadPlayerData);
         if (config.worlds().size() == 1) loadWorldData(world);
         else updateWorldData(world);
         return true;
@@ -269,9 +265,13 @@ public class PaperWorldGroup implements WorldGroup {
     @Override
     public boolean removeWorld(World world) {
         if (!config.worlds().remove(world.key())) return false;
-        world.getPlayers().forEach(provider.getUnownedWorldGroup()::loadPlayerData);
+        getPlayers(world).forEach(provider.getUnownedWorldGroup()::loadPlayerData);
         provider.getUnownedWorldGroup().updateWorldData(world);
         return true;
+    }
+    
+    private Stream<Player> getPlayers(World world) {
+        return world.getPlayers().stream().filter(player -> !player.hasMetadata("NPC"));
     }
 
     @Override
