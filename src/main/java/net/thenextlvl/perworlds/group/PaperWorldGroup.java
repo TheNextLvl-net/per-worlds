@@ -197,7 +197,9 @@ public class PaperWorldGroup implements WorldGroup {
         getGroupData().setDifficulty(world.getDifficulty());
         getGroupData().setTime(world.getFullTime());
 
-        Arrays.stream(GameRule.values()).map(gameRule -> (GameRule<Object>) gameRule)
+        Arrays.stream(GameRule.values())
+                .filter(gameRule -> world.getFeatureFlags().containsAll(gameRule.requiredFeatures()))
+                .map(gameRule -> (GameRule<Object>) gameRule)
                 .forEach(rule -> getGroupData().setGameRule(rule, world.getGameRuleValue(rule)));
 
         getGroupData().setWorldBorder(WorldBorderData.of(world.getWorldBorder()));
