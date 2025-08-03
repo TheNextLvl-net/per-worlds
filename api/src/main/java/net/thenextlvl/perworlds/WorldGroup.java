@@ -311,11 +311,10 @@ public interface WorldGroup {
      * current data to it.
      *
      * @param world The world for which the data is to be loaded into the group.
-     * @throws IllegalArgumentException if the specified world is not part of this group
      * @since 1.0.0
      */
     @Contract(mutates = "this")
-    void loadWorldData(World world) throws IllegalArgumentException;
+    void loadWorldData(World world);
 
     /**
      * Checks whether data for the specified player is currently being loaded.

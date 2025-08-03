@@ -360,8 +360,6 @@ public class PaperWorldGroup implements WorldGroup {
     @Override
     @SuppressWarnings("unchecked")
     public void loadWorldData(World world) {
-        Preconditions.checkArgument(containsWorld(world), "World '%s' is not part of group '%s'", world.getName(), getName());
-
         getGroupData().setDifficulty(world.getDifficulty());
         getGroupData().setTime(world.getFullTime());
 
