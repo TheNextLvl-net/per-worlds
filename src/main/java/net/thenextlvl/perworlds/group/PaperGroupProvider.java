@@ -26,17 +26,25 @@ import net.thenextlvl.perworlds.adapter.NamespacedKeyAdapter;
 import net.thenextlvl.perworlds.adapter.PlayerDataAdapter;
 import net.thenextlvl.perworlds.adapter.PotionEffectAdapter;
 import net.thenextlvl.perworlds.adapter.PotionEffectTypeAdapter;
-import net.thenextlvl.perworlds.adapter.statistic.StatisticsAdapter;
 import net.thenextlvl.perworlds.adapter.VectorAdapter;
 import net.thenextlvl.perworlds.adapter.WardenSpawnTrackerAdapter;
 import net.thenextlvl.perworlds.adapter.WorldAdapter;
 import net.thenextlvl.perworlds.adapter.WorldBorderAdapter;
+import net.thenextlvl.perworlds.adapter.statistic.BlockTypeStatAdapter;
+import net.thenextlvl.perworlds.adapter.statistic.CustomStatAdapter;
+import net.thenextlvl.perworlds.adapter.statistic.EntityTypeStatAdapter;
+import net.thenextlvl.perworlds.adapter.statistic.ItemTypeStatAdapter;
+import net.thenextlvl.perworlds.adapter.statistic.StatisticsAdapter;
 import net.thenextlvl.perworlds.data.AdvancementData;
 import net.thenextlvl.perworlds.data.AttributeData;
 import net.thenextlvl.perworlds.data.WardenSpawnTracker;
 import net.thenextlvl.perworlds.data.WorldBorderData;
 import net.thenextlvl.perworlds.model.PaperPlayerData;
 import net.thenextlvl.perworlds.model.config.GroupConfig;
+import net.thenextlvl.perworlds.statistics.BlockTypeStat;
+import net.thenextlvl.perworlds.statistics.CustomStat;
+import net.thenextlvl.perworlds.statistics.EntityTypeStat;
+import net.thenextlvl.perworlds.statistics.ItemTypeStat;
 import net.thenextlvl.perworlds.statistics.Statistics;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
@@ -77,13 +85,17 @@ public class PaperGroupProvider implements GroupProvider {
                 .registerTypeHierarchyAdapter(AdvancementData.class, new AdvancementDataAdapter(getServer()))
                 .registerTypeHierarchyAdapter(Attribute.class, new AttributeAdapter())
                 .registerTypeHierarchyAdapter(AttributeData.class, new AttributeDataAdapter())
+                .registerTypeHierarchyAdapter(BlockTypeStat.class, new BlockTypeStatAdapter())
+                .registerTypeHierarchyAdapter(CustomStat.class, new CustomStatAdapter())
                 .registerTypeHierarchyAdapter(Difficulty.class, new EnumAdapter<>(Difficulty.class))
+                .registerTypeHierarchyAdapter(EntityTypeStat.class, new EntityTypeStatAdapter())
                 .registerTypeHierarchyAdapter(GameMode.class, new EnumAdapter<>(GameMode.class))
                 .registerTypeHierarchyAdapter(GroupConfig.class, new GroupConfigAdapter())
                 .registerTypeHierarchyAdapter(GroupData.class, new GroupDataAdapter(getServer()))
                 .registerTypeHierarchyAdapter(GroupSettings.class, new GroupSettingsAdapter())
                 .registerTypeHierarchyAdapter(Instant.class, new InstantAdapter())
                 .registerTypeHierarchyAdapter(ItemStack[].class, new ItemStackArrayAdapter())
+                .registerTypeHierarchyAdapter(ItemTypeStat.class, new ItemTypeStatAdapter())
                 .registerTypeHierarchyAdapter(Key.class, new KeyAdapter())
                 .registerTypeHierarchyAdapter(Location.class, new LocationAdapter())
                 .registerTypeHierarchyAdapter(NamespacedKey.class, new NamespacedKeyAdapter())
