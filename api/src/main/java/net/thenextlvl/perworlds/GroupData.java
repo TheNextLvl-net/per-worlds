@@ -8,12 +8,19 @@ import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.World;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
+/**
+ * @since 0.1.0
+ */
+@NullMarked
+@ApiStatus.NonExtendable
 public interface GroupData {
     /**
      * Iterates over each {@link GameRule} associated with the group and applies the given action.
@@ -27,26 +34,12 @@ public interface GroupData {
      *
      * @param rule the GameRule to check
      * @param <T>  the GameRule's type
-     * @return the current value
-     * @see World#getGameRuleValue(GameRule)
-     * @deprecated use {@link #getGameRule(GameRule)}
-     */
-    @Nullable
-    @Deprecated(forRemoval = true, since = "0.2.2")
-    default <T> T gameRule(@NonNull GameRule<T> rule) {
-        return getGameRule(rule).orElse(null);
-    }
-
-    /**
-     * Get the current value for a given {@link GameRule}.
-     *
-     * @param rule the GameRule to check
-     * @param <T>  the GameRule's type
      * @return an {@link Optional} containing the current gamerule value
      * @see World#getGameRuleValue(GameRule)
+     * @since 0.2.2
      */
-    @NonNull
-    <T> Optional<T> getGameRule(@NonNull GameRule<T> rule);
+    @Contract(pure = true)
+    <T> Optional<T> getGameRule(GameRule<T> rule);
 
     /**
      * Set the given {@link GameRule}'s new value.
@@ -55,43 +48,19 @@ public interface GroupData {
      * @param <T>  the value type of the GameRule
      * @return true if the value was successfully set
      * @see World#setGameRule(GameRule, Object)
-     * @deprecated use {@link #setGameRule(GameRule, Object)}
+     * @since 0.2.2
      */
-    @Deprecated(forRemoval = true, since = "0.2.2")
-    default <T> boolean gameRule(@NonNull GameRule<T> rule, @Nullable T value) {
-        return setGameRule(rule, value);
-    }
-
-    /**
-     * Set the given {@link GameRule}'s new value.
-     *
-     * @param rule the GameRule to update
-     * @param <T>  the value type of the GameRule
-     * @return true if the value was successfully set
-     * @see World#setGameRule(GameRule, Object)
-     */
-    <T> boolean setGameRule(@NonNull GameRule<T> rule, @Nullable T value);
+    @Contract(mutates = "this")
+    <T> boolean setGameRule(GameRule<T> rule, @Nullable T value);
 
     /**
      * Retrieves the current difficulty level applied to the group.
      *
      * @return the current {@link Difficulty} of the group
      * @see World#getDifficulty()
-     * @deprecated use {@link #getDifficulty}
+     * @since 0.2.2
      */
-    @NonNull
-    @Deprecated(forRemoval = true, since = "0.2.2")
-    default Difficulty difficulty() {
-        return getDifficulty();
-    }
-
-    /**
-     * Retrieves the current difficulty level applied to the group.
-     *
-     * @return the current {@link Difficulty} of the group
-     * @see World#getDifficulty()
-     */
-    @NonNull
+    @Contract(pure = true)
     Difficulty getDifficulty();
 
     /**
@@ -101,54 +70,20 @@ public interface GroupData {
      *
      * @param difficulty the new {@link Difficulty} to be set
      * @see World#setDifficulty(Difficulty)
-     * @deprecated use {@link #setDifficulty(Difficulty)}
+     * @since 0.2.2
      */
-    @Deprecated(forRemoval = true, since = "0.2.2")
-    default void difficulty(@NonNull Difficulty difficulty) {
-        setDifficulty(difficulty);
-    }
-
-    /**
-     * Sets the difficulty level for the group.
-     * The difficulty level dictates the gameplay challenges, such as
-     * mob behavior and damage levels, associated with the group.
-     *
-     * @param difficulty the new {@link Difficulty} to be set
-     * @see World#setDifficulty(Difficulty)
-     */
-    void setDifficulty(@NonNull Difficulty difficulty);
-
-    /**
-     * Retrieves the default {@link GameMode} for the group.
-     *
-     * @return the default {@link GameMode} for the group, never null
-     * @see #setDefaultGameMode(GameMode)
-     * @deprecated use {@link #getDefaultGameMode()}
-     */
-    @NonNull
-    @Deprecated(forRemoval = true, since = "0.2.2")
-    default GameMode defaultGameMode() {
-        return getDefaultGameMode().orElse(getGroupProvider().getServer().getDefaultGameMode());
-    }
+    @Contract(mutates = "this")
+    void setDifficulty(Difficulty difficulty);
 
     /**
      * Retrieves the default {@link GameMode} for the group.
      *
      * @return an {@link Optional} containing the default {@link GameMode} for the group
      * @see #setDefaultGameMode(GameMode)
+     * @since 0.2.2
      */
+    @Contract(pure = true)
     Optional<GameMode> getDefaultGameMode();
-
-    /**
-     * Sets the default {@link GameMode} for the group.
-     *
-     * @param gameMode the {@link GameMode} to be set as the default for the group
-     * @see #getDefaultGameMode()
-     */
-    @Deprecated(forRemoval = true, since = "0.2.2")
-    default void defaultGameMode(@Nullable GameMode gameMode) {
-        setDefaultGameMode(gameMode);
-    }
 
     /**
      * Sets the default {@link GameMode} for the group.
@@ -156,7 +91,9 @@ public interface GroupData {
      * @param gameMode the {@link GameMode} to be set as the default for the group,
      *                 {@code null} to delegate to {@link Server#getDefaultGameMode()}
      * @see #getDefaultGameMode()
+     * @since 0.2.2
      */
+    @Contract(mutates = "this")
     void setDefaultGameMode(@Nullable GameMode gameMode);
 
     /**
@@ -164,46 +101,19 @@ public interface GroupData {
      *
      * @return the {@link WorldBorderData} instance representing the world's border configuration
      * @see World#getWorldBorder()
-     * @deprecated use {@link #getWorldBorder()}
+     * @since 0.2.2
      */
-    @NonNull
-    @Deprecated(forRemoval = true, since = "0.2.2")
-    default WorldBorderData worldBorder() {
-        return getWorldBorder();
-    }
-
-    /**
-     * Retrieves the {@link WorldBorderData} associated with the group.
-     *
-     * @return the {@link WorldBorderData} instance representing the world's border configuration
-     * @see World#getWorldBorder()
-     */
-    @NonNull
+    @Contract(pure = true)
     WorldBorderData getWorldBorder();
 
     /**
-     * Sets the {@link WorldBorderData} configuration for the group.
-     * The world border defines boundaries and related settings such as size,
-     * center, and warning distances for the game world.
+     * Sets the world border configuration for the group.
      *
-     * @param worldBorder the {@link WorldBorderData} instance to set, or {@code null}
-     *                    to remove any existing world border configuration
-     * @see World#getWorldBorder()
-     * @deprecated use {@link #getWorldBorder()}
+     * @param worldBorder the new world border configuration
+     * @since 1.0.0
      */
-    @Deprecated(forRemoval = true, since = "0.2.2")
-    default void worldBorder(@Nullable WorldBorderData worldBorder) {
-        if (worldBorder != null) getWorldBorder()
-                .centerX(worldBorder.centerX())
-                .centerZ(worldBorder.centerZ())
-                .size(worldBorder.size())
-                .damageAmount(worldBorder.damageAmount())
-                .damageBuffer(worldBorder.damageBuffer())
-                .warningDistance(worldBorder.warningDistance())
-                .warningTime(worldBorder.warningTime())
-                .duration(worldBorder.duration());
-        else getWorldBorder().reset();
-    }
+    @Contract(mutates = "this")
+    void setWorldBorder(WorldBorderData worldBorder);
 
     /**
      * Retrieves the spawn location associated with the group.
@@ -211,22 +121,9 @@ public interface GroupData {
      * @return the {@link Location} representing the group's spawn location,
      * or {@code null} if no spawn location is defined
      * @see #setSpawnLocation(Location)
-     * @deprecated use {@link #getSpawnLocation()}
+     * @since 0.2.2
      */
-    @Nullable
-    @Deprecated(forRemoval = true, since = "0.2.2")
-    default Location spawnLocation() {
-        return getSpawnLocation().orElse(null);
-    }
-
-    /**
-     * Retrieves the spawn location associated with the group.
-     *
-     * @return the {@link Location} representing the group's spawn location,
-     * or {@code null} if no spawn location is defined
-     * @see #setSpawnLocation(Location)
-     */
-    @NonNull
+    @Contract(pure = true)
     Optional<Location> getSpawnLocation();
 
     /**
@@ -237,55 +134,20 @@ public interface GroupData {
      * @param location the {@link Location} to set as the group's spawn location.
      *                 Can be {@code null} to unset or clear the spawn location.
      * @see #getSpawnLocation()
-     * @deprecated use {@link #setSpawnLocation(Location)}
+     * @since 0.2.2
      */
-    @Deprecated(forRemoval = true, since = "0.2.2")
-    default void spawnLocation(@Nullable Location location) {
-        setSpawnLocation(location);
-    }
-
-    /**
-     * Sets the spawn location for the group.
-     * The spawn location is typically the default location where players appear
-     * when spawning within the group.
-     *
-     * @param location the {@link Location} to set as the group's spawn location.
-     *                 Can be {@code null} to unset or clear the spawn location.
-     * @see #getSpawnLocation()
-     */
+    @Contract(mutates = "this")
     void setSpawnLocation(@Nullable Location location);
-
-    /**
-     * Checks whether the group is in hardcore mode.
-     *
-     * @return true if the group is in hardcore mode, false otherwise
-     * @see World#isHardcore()
-     * @deprecated use {@link #getHardcore()}
-     */
-    @Deprecated(forRemoval = true, since = "0.2.2")
-    default boolean hardcore() {
-        return getHardcore().toBooleanOrElse(getGroupProvider().getServer().isHardcore());
-    }
 
     /**
      * Checks whether the group is in hardcore mode.
      *
      * @return a {@link TriState} indicating whether the group is in hardcore mode
      * @see World#isHardcore()
+     * @since 0.2.2
      */
+    @Contract(pure = true)
     TriState getHardcore();
-
-    /**
-     * Sets the hardcore mode for the group.
-     *
-     * @param hardcore true to enable hardcore mode, false to disable it
-     * @see World#setHardcore(boolean)
-     * @deprecated use {@link #setHardcore(TriState)}
-     */
-    @Deprecated(forRemoval = true, since = "0.2.2")
-    default void hardcore(boolean hardcore) {
-        setHardcore(TriState.byBoolean(hardcore));
-    }
 
     /**
      * Sets the hardcore mode for the group.
@@ -293,7 +155,9 @@ public interface GroupData {
      * @param hardcore {@link TriState#TRUE} to enable hardcore mode, {@link TriState#FALSE} to disable it,
      *                 and {@link TriState#NOT_SET} to delegate to {@link Server#isHardcore()}
      * @see World#setHardcore(boolean)
+     * @since 0.2.2
      */
+    @Contract(mutates = "this")
     void setHardcore(TriState hardcore);
 
     /**
@@ -302,8 +166,10 @@ public interface GroupData {
      *
      * @return true if it is raining, false otherwise
      * @see World#setStorm(boolean)
+     * @since 1.0.0
      */
-    boolean raining();
+    @Contract(pure = true)
+    boolean isRaining();
 
     /**
      * Sets the rain state for the group.
@@ -311,16 +177,20 @@ public interface GroupData {
      *
      * @param raining true to enable rain, false to disable it
      * @see World#setStorm(boolean)
+     * @since 1.0.0
      */
-    void raining(boolean raining);
+    @Contract(mutates = "this")
+    void setRaining(boolean raining);
 
     /**
      * Checks whether it is currently thundering within the group's environment.
      *
      * @return true if it is thundering, false otherwise
      * @see World#setThundering(boolean)
+     * @since 1.0.0
      */
-    boolean thundering();
+    @Contract(pure = true)
+    boolean isThundering();
 
     /**
      * Sets the thunder state for the group.
@@ -328,8 +198,10 @@ public interface GroupData {
      *
      * @param thundering true to enable thundering, false to disable it
      * @see World#setThundering(boolean)
+     * @since 1.0.0
      */
-    void thundering(boolean thundering);
+    @Contract(mutates = "this")
+    void setThundering(boolean thundering);
 
     /**
      * Retrieves the duration for which the weather will remain clear in the group.
@@ -337,7 +209,9 @@ public interface GroupData {
      *
      * @return the remaining duration of clear weather in ticks
      * @see World#getClearWeatherDuration()
+     * @since 1.0.0
      */
+    @Contract(pure = true)
     int clearWeatherDuration();
 
     /**
@@ -347,7 +221,9 @@ public interface GroupData {
      *
      * @param duration the number of ticks for the clear weather duration
      * @see World#setClearWeatherDuration(int)
+     * @since 1.0.0
      */
+    @Contract(mutates = "this")
     void clearWeatherDuration(int duration);
 
     /**
@@ -356,8 +232,10 @@ public interface GroupData {
      *
      * @return the remaining duration of the thunderstorm in ticks
      * @see World#getThunderDuration()
+     * @since 1.0.0
      */
-    int thunderDuration();
+    @Contract(pure = true)
+    int getThunderDuration();
 
     /**
      * Sets the duration for thundering in the group.
@@ -366,8 +244,10 @@ public interface GroupData {
      *
      * @param duration the number of ticks for the thundering duration
      * @see World#setThunderDuration(int)
+     * @since 1.0.0
      */
-    void thunderDuration(int duration);
+    @Contract(mutates = "this")
+    void setThunderDuration(int duration);
 
     /**
      * Retrieves the duration for which it will continue raining in the group.
@@ -375,8 +255,10 @@ public interface GroupData {
      *
      * @return the remaining duration of the rain in ticks
      * @see World#getWeatherDuration()
+     * @since 1.0.0
      */
-    int rainDuration();
+    @Contract(pure = true)
+    int getRainDuration();
 
     /**
      * Sets the duration for raining in the group.
@@ -385,32 +267,31 @@ public interface GroupData {
      *
      * @param duration the number of ticks for the raining duration
      * @see World#setWeatherDuration(int)
+     * @since 1.0.0
      */
-    void rainDuration(int duration);
+    @Contract(mutates = "this")
+    void setRainDuration(int duration);
 
     /**
      * Retrieves the current time value associated with the group.
      *
      * @return the current time as a long
      * @see World#getFullTime()
+     * @since 1.0.0
      */
-    long time();
+    @Contract(pure = true)
+    long getTime();
 
     /**
-     * Sets the current time value for the group.
+     * Sets the full time for the group.
      * The time value typically represents the in-game time within the group's environment.
      *
-     * @param time the time value to be set, represented as a long
+     * @param time the full time to be set
      * @see World#setFullTime(long)
+     * @since 1.0.0
      */
-    void time(long time);
-
-    /**
-     * Retrieves the current instance of the GroupProvider.
-     *
-     * @return the GroupProvider associated with this object
-     */
-    GroupProvider getGroupProvider();
+    @Contract(mutates = "this")
+    void setTime(long time);
 
     /**
      * Represents various types of group data that can be manipulated within the game.

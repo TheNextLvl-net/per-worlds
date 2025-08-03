@@ -8,11 +8,11 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public class GroupArgument extends WrappedArgumentType<String, WorldGroup> {
-    public GroupArgument(PerWorldsPlugin plugin) {
+    public GroupArgument(PerWorldsPlugin plugin, boolean listAll) {
         super(StringArgumentType.string(), (reader, type) -> plugin.groupProvider().getGroup(type)
                 .orElseThrow(() -> new RuntimeException("Group not found")), (context, builder) -> {
-            plugin.groupProvider().getGroups().stream()
-                    .map(WorldGroup::getName)
+            var groups = listAll ? plugin.groupProvider().getAllGroups() : plugin.groupProvider().getGroups();
+            groups.stream().map(WorldGroup::getName)
                     .filter(name -> name.contains(builder.getRemaining()))
                     .map(StringArgumentType::escapeIfRequired)
                     .forEach(builder::suggest);

@@ -1,13 +1,12 @@
 package net.thenextlvl.perworlds.model;
 
 import com.google.common.base.Preconditions;
-import core.nbt.tag.Tag;
 import net.thenextlvl.perworlds.statistics.BlockTypeStat;
 import net.thenextlvl.perworlds.statistics.CustomStat;
 import net.thenextlvl.perworlds.statistics.EntityTypeStat;
 import net.thenextlvl.perworlds.statistics.ItemTypeStat;
 import net.thenextlvl.perworlds.statistics.Stat;
-import net.thenextlvl.perworlds.statistics.Stats;
+import net.thenextlvl.perworlds.statistics.Statistics;
 import org.bukkit.Registry;
 import org.bukkit.Statistic;
 import org.bukkit.block.BlockType;
@@ -19,13 +18,22 @@ import org.jspecify.annotations.NullMarked;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 @NullMarked
-public class PaperStats implements Stats {
-    private final Map<Statistic, Stat<?>> statistics = new HashMap<>();
+public class PaperStatistics implements Statistics {
+    private final Map<Statistic, Stat> statistics;
+    
+    public PaperStatistics(HashMap<Statistic, Stat> values) {
+        this.statistics = values;
+    }
+    
+    public PaperStatistics() {
+        this(new HashMap<>());
+    }
 
     @Override
-    public @Unmodifiable Map<Statistic, Stat<?>> getStatistics() {
+    public @Unmodifiable Map<Statistic, Stat> getStatistics() {
         return Map.copyOf(statistics);
     }
 
@@ -77,37 +85,20 @@ public class PaperStats implements Stats {
         ((CustomStat) statistics.computeIfAbsent(statistic, ignored -> new PaperCustomStat())).setValue(value);
     }
 
-    public void setStatistic(Statistic statistic, Tag tag) {
-        statistics.computeIfAbsent(statistic, ignored -> switch (statistic.getType()) {
-            case UNTYPED -> new PaperCustomStat();
-            case ITEM -> new PaperItemTypeStat();
-            case BLOCK -> new PaperBlockTypeStat();
-            case ENTITY -> new PaperEntityTypeStat();
-        }).deserialize(tag);
+    @Override
+    public boolean hasData(Statistic statistic) {
+        var stat = statistics.get(statistic);
+        return stat != null && stat.hasData();
     }
 
     @Override
-    public void apply(Player player) {
-        clear(player);
-        statistics.forEach((statistic, stat) -> stat.apply(statistic, player));
-    }
-
-    @Override
-    @SuppressWarnings({"DataFlowIssue", "deprecation"})
-    public void clear(Player player) {
-        Registry.STATISTIC.forEach(statistic -> {
-            switch (statistic.getType()) {
-                case UNTYPED -> player.setStatistic(statistic, 0);
-                case ITEM -> Registry.ITEM.forEach(type -> player.setStatistic(statistic, type.asMaterial(), 0));
-                case BLOCK -> Registry.BLOCK.forEach(type -> player.setStatistic(statistic, type.asMaterial(), 0));
-                case ENTITY -> Registry.ENTITY_TYPE.forEach(type -> player.setStatistic(statistic, type, 0));
-            }
-        });
+    public void forEachStatistic(BiConsumer<Statistic, Stat> action) {
+        statistics.forEach(action);
     }
 
     @SuppressWarnings({"DataFlowIssue", "deprecation"})
-    public static PaperStats of(Player player) {
-        var stats = new PaperStats();
+    public static PaperStatistics of(Player player) {
+        var stats = new PaperStatistics();
         Registry.STATISTIC.forEach(statistic -> {
             switch (statistic.getType()) {
                 case UNTYPED -> stats.setStatistic(statistic, player.getStatistic(statistic));

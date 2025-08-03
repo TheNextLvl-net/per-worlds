@@ -7,7 +7,6 @@ import core.nbt.serialization.TagSerializationContext;
 import core.nbt.tag.CompoundTag;
 import core.nbt.tag.Tag;
 import net.thenextlvl.perworlds.data.WardenSpawnTracker;
-import net.thenextlvl.perworlds.model.PaperWardenSpawnTracker;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
@@ -18,10 +17,7 @@ public class WardenSpawnTrackerAdapter implements TagAdapter<WardenSpawnTracker>
         var cooldownTicks = root.get("cooldownTicks").getAsInt();
         var ticksSinceLastWarning = root.get("ticksSinceLastWarning").getAsInt();
         var warningLevel = root.get("warningLevel").getAsInt();
-        return new PaperWardenSpawnTracker()
-                .cooldownTicks(cooldownTicks)
-                .ticksSinceLastWarning(ticksSinceLastWarning)
-                .warningLevel(warningLevel);
+        return WardenSpawnTracker.create(cooldownTicks, ticksSinceLastWarning, warningLevel);
     }
 
     @Override

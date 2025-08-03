@@ -2,9 +2,7 @@ package net.thenextlvl.perworlds.group;
 
 import net.kyori.adventure.util.TriState;
 import net.thenextlvl.perworlds.GroupData;
-import net.thenextlvl.perworlds.GroupProvider;
 import net.thenextlvl.perworlds.data.WorldBorderData;
-import net.thenextlvl.perworlds.model.PaperWorldBorderData;
 import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;
@@ -23,7 +21,7 @@ public class PaperGroupData implements GroupData {
     private final Map<GameRule<?>, Object> gameRules = new HashMap<>();
     private @Nullable GameMode defaultGameMode = null;
     private @Nullable Location spawnLocation = null;
-    private WorldBorderData worldBorder = new PaperWorldBorderData();
+    private WorldBorderData worldBorder = WorldBorderData.DEFAULT;
     private Difficulty difficulty = Difficulty.NORMAL;
     private TriState hardcore = TriState.NOT_SET;
     private boolean raining = false;
@@ -32,12 +30,6 @@ public class PaperGroupData implements GroupData {
     private int rainDuration;
     private int thunderDuration;
     private long time = 0;
-
-    private final GroupProvider provider;
-
-    public PaperGroupData(GroupProvider provider) {
-        this.provider = provider;
-    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -89,12 +81,12 @@ public class PaperGroupData implements GroupData {
 
     @Override
     public @NonNull Optional<Location> getSpawnLocation() {
-        return Optional.ofNullable(spawnLocation);
+        return Optional.ofNullable(spawnLocation).map(Location::clone);
     }
 
     @Override
     public void setSpawnLocation(@Nullable Location location) {
-        this.spawnLocation = location;
+        this.spawnLocation = location != null ? location.clone() : null;
     }
 
     @Override
@@ -108,22 +100,22 @@ public class PaperGroupData implements GroupData {
     }
 
     @Override
-    public boolean raining() {
+    public boolean isRaining() {
         return raining;
     }
 
     @Override
-    public void raining(boolean raining) {
+    public void setRaining(boolean raining) {
         this.raining = raining;
     }
 
     @Override
-    public boolean thundering() {
+    public boolean isThundering() {
         return thundering;
     }
 
     @Override
-    public void thundering(boolean thundering) {
+    public void setThundering(boolean thundering) {
         this.thundering = thundering;
     }
 
@@ -138,37 +130,32 @@ public class PaperGroupData implements GroupData {
     }
 
     @Override
-    public int thunderDuration() {
+    public int getThunderDuration() {
         return thunderDuration;
     }
 
     @Override
-    public void thunderDuration(int duration) {
+    public void setThunderDuration(int duration) {
         this.thunderDuration = duration;
     }
 
     @Override
-    public int rainDuration() {
+    public int getRainDuration() {
         return rainDuration;
     }
 
     @Override
-    public void rainDuration(int duration) {
+    public void setRainDuration(int duration) {
         this.rainDuration = duration;
     }
 
     @Override
-    public long time() {
+    public long getTime() {
         return time;
     }
 
     @Override
-    public void time(long time) {
+    public void setTime(long time) {
         this.time = time;
-    }
-
-    @Override
-    public GroupProvider getGroupProvider() {
-        return provider;
     }
 }

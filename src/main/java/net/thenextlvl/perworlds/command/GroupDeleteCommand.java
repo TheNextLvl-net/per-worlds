@@ -24,7 +24,7 @@ class GroupDeleteCommand {
         var command = new GroupDeleteCommand(plugin);
         return Commands.literal("delete")
                 .requires(source -> source.getSender().hasPermission("perworlds.command.group.delete"))
-                .then(groupArgument(plugin).executes(command::delete));
+                .then(groupArgument(plugin, true).executes(command::delete));
     }
 
     private int delete(CommandContext<CommandSourceStack> context) {

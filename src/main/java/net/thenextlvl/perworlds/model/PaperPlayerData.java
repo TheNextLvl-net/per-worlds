@@ -20,10 +20,15 @@ import net.thenextlvl.perworlds.data.AttributeData;
 import net.thenextlvl.perworlds.data.PlayerData;
 import net.thenextlvl.perworlds.data.WardenSpawnTracker;
 import net.thenextlvl.perworlds.group.PaperWorldGroup;
-import net.thenextlvl.perworlds.statistics.Stats;
+import net.thenextlvl.perworlds.statistics.BlockTypeStat;
+import net.thenextlvl.perworlds.statistics.CustomStat;
+import net.thenextlvl.perworlds.statistics.EntityTypeStat;
+import net.thenextlvl.perworlds.statistics.ItemTypeStat;
+import net.thenextlvl.perworlds.statistics.Statistics;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Registry;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.CraftServer;
@@ -41,14 +46,17 @@ import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.spigotmc.SpigotConfig;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -66,7 +74,7 @@ public class PaperPlayerData implements PlayerData {
     private static final TriState DEFAULT_MAY_FLY = TriState.NOT_SET;
     private static final TriState DEFAULT_VISUAL_FIRE = TriState.NOT_SET;
     private static final Vector DEFAULT_VELOCITY = new Vector(0, 0, 0);
-    private static final WardenSpawnTracker DEFAULT_WARDEN_SPAWN_TRACKER = new PaperWardenSpawnTracker();
+    private static final WardenSpawnTracker DEFAULT_WARDEN_SPAWN_TRACKER = WardenSpawnTracker.create();
     private static final boolean DEFAULT_GLIDING = false;
     private static final boolean DEFAULT_INVULNERABLE = false;
     private static final boolean DEFAULT_LOCK_FREEZE_TICKS = false;
@@ -102,7 +110,7 @@ public class PaperPlayerData implements PlayerData {
     private Set<AdvancementData> advancements = Set.of();
     private Set<AttributeData> attributes = DEFAULT_ATTRIBUTES;
     private Set<NamespacedKey> recipes = Set.of();
-    private Stats stats = new PaperStats();
+    private Statistics statistics = new PaperStatistics();
     private TriState flying = DEFAULT_FLYING;
     private TriState mayFly = DEFAULT_MAY_FLY;
     private TriState visualFire = DEFAULT_VISUAL_FIRE;
@@ -131,14 +139,16 @@ public class PaperPlayerData implements PlayerData {
     private int remainingAir = DEFAULT_REMAINING_AIR;
     private int score = DEFAULT_SCORE;
 
+    private @Nullable UUID uuid;
     private @Nullable PaperWorldGroup group;
 
-    public PaperPlayerData(@Nullable PaperWorldGroup group) {
+    public PaperPlayerData(@Nullable UUID uuid, @Nullable PaperWorldGroup group) {
         this.group = group;
+        this.uuid = uuid;
     }
 
     public static PaperPlayerData of(Player player, PaperWorldGroup group) {
-        var data = new PaperPlayerData(group);
+        var data = new PaperPlayerData(player.getUniqueId(), group);
         return data.attributes(collectAttributes(player))
                 .advancements(data.collectAdvancements(player))
                 .lastAdvancementTab(data.getLastAdvancementTab(player))
@@ -146,7 +156,7 @@ public class PaperPlayerData implements PlayerData {
                 .invulnerable(((CraftPlayer) player).getHandle().isInvulnerable())
                 .portalCooldown(player.getPortalCooldown())
                 .gliding(player.isGliding())
-                .wardenSpawnTracker(PaperWardenSpawnTracker.of(player))
+                .wardenSpawnTracker(WardenSpawnTracker.of(player))
                 .lastDeathLocation(player.getLastDeathLocation())
                 .lastLocation(player.getLocation())
                 .velocity(player.getVelocity())
@@ -160,7 +170,7 @@ public class PaperPlayerData implements PlayerData {
                 .respawnLocation(player.getRespawnLocation(false))
                 .potionEffects(player.getActivePotionEffects())
                 .gameMode(player.getGameMode())
-                .stats(PaperStats.of(player))
+                .stats(PaperStatistics.of(player))
                 .discoveredRecipes(player.getDiscoveredRecipes())
                 .seenCredits(player.hasSeenWinScreen())
                 .absorption(player.getAbsorptionAmount())
@@ -186,7 +196,7 @@ public class PaperPlayerData implements PlayerData {
         return Registry.ATTRIBUTE.stream()
                 .map(player::getAttribute)
                 .filter(Objects::nonNull)
-                .map(PaperAttributeData::new)
+                .map(AttributeData::of)
                 .collect(Collectors.toSet());
     }
 
@@ -196,10 +206,28 @@ public class PaperPlayerData implements PlayerData {
         var progress = getProgress(handle, handle.getAdvancements());
         var data = new HashSet<AdvancementData>();
         progress.forEach((key, value) -> {
-            var advancementData = new PaperAdvancementData(key, value);
-            if (advancementData.shouldSerialize()) data.add(advancementData);
+            if (!value.hasProgress() || !isEnabled(key.id())) return;
+
+            var awardedCriteria = new HashMap<String, Instant>();
+            var remainingCriteria = new HashSet<String>();
+
+            value.getCompletedCriteria().forEach(criteria -> {
+                var criterion = value.getCriterion(criteria);
+                var obtained = criterion != null ? criterion.getObtained() : null;
+                if (obtained != null) awardedCriteria.put(criteria, obtained);
+            });
+            value.getRemainingCriteria().forEach(remainingCriteria::add);
+            data.add(AdvancementData.of(key.toBukkit(), awardedCriteria, remainingCriteria));
         });
         return data;
+    }
+
+    private boolean isEnabled(ResourceLocation location) {
+        var disabled = SpigotConfig.disabledAdvancements;
+        if (disabled == null || disabled.isEmpty()) return true;
+        if (disabled.contains("*")) return false;
+        if (disabled.contains(location.toString())) return false;
+        return !disabled.contains(location.getNamespace());
     }
 
     @SuppressWarnings("PatternValidation")
@@ -221,8 +249,11 @@ public class PaperPlayerData implements PlayerData {
 
     @Override
     public CompletableFuture<Boolean> load(Player player, boolean position) {
-        if (group == null) return CompletableFuture.failedFuture(new IllegalStateException(
+        if (group == null || uuid == null) return CompletableFuture.failedFuture(new IllegalStateException(
                 "Player data has not been finalized yet"
+        ));
+        if (!player.getUniqueId().equals(uuid)) return CompletableFuture.failedFuture(new IllegalStateException(
+                "Player UUID mismatch: Expected '" + uuid + "' but got '" + player.getUniqueId() + "'"
         ));
 
         var settings = group.getSettings();
@@ -318,8 +349,7 @@ public class PaperPlayerData implements PlayerData {
         player.setWardenWarningCooldown(tracker.cooldownTicks());
         player.setWardenWarningLevel(tracker.warningLevel());
 
-        if (settings.statistics()) stats.apply(player);
-        else stats.clear(player);
+        applyStatistics(player, settings);
 
         updateTablistVisibility(player, group);
 
@@ -327,9 +357,44 @@ public class PaperPlayerData implements PlayerData {
         applyRecipes(player, settings);
     }
 
+    @SuppressWarnings({"DataFlowIssue", "deprecation"})
+    private void applyStatistics(Player player, GroupSettings settings) {
+        clearStatistics(player, settings.statistics());
+        if (settings.statistics()) statistics.forEachStatistic((statistic, stat) -> {
+            switch (stat) {
+                case CustomStat customStat -> player.setStatistic(statistic, customStat.getValue());
+                case ItemTypeStat itemStat ->
+                        itemStat.forEachValue((type, value) -> player.setStatistic(statistic, type.asMaterial(), value));
+                case BlockTypeStat blockStat ->
+                        blockStat.forEachValue((type, value) -> player.setStatistic(statistic, type.asMaterial(), value));
+                case EntityTypeStat entityStat ->
+                        entityStat.forEachValue((type, value) -> player.setStatistic(statistic, type, value));
+                default -> throw new IllegalStateException("Unexpected stat type: " + stat.getClass().getName());
+            }
+        });
+    }
+
+    @SuppressWarnings({"DataFlowIssue", "deprecation"})
+    private void clearStatistics(Player player, boolean filter) {
+        Registry.STATISTIC.forEach(statistic -> {
+            if (filter && statistics.hasData(statistic)) return;
+            switch (statistic.getType()) {
+                case UNTYPED -> player.setStatistic(statistic, 0);
+                case ITEM -> Registry.ITEM.forEach(type -> player.setStatistic(statistic, type.asMaterial(), 0));
+                case BLOCK -> Registry.BLOCK.forEach(type -> player.setStatistic(statistic, type.asMaterial(), 0));
+                case ENTITY -> Registry.ENTITY_TYPE.forEach(type -> player.setStatistic(statistic, type, 0));
+            }
+        });
+    }
+
     private void applyAttributes(Player player, GroupSettings settings) {
-        if (settings.attributes()) attributes.forEach(data -> data.apply(player));
-        else DEFAULT_ATTRIBUTES.forEach(data -> data.apply(player));
+        if (settings.attributes()) attributes.forEach(data -> applyAttribute(player, data));
+        else DEFAULT_ATTRIBUTES.forEach(data -> applyAttribute(player, data));
+    }
+
+    private void applyAttribute(Player player, AttributeData data) {
+        var instance = player.getAttribute(data.attribute());
+        if (instance != null) instance.setBaseValue(data.baseValue());
     }
 
     private void updateTablistVisibility(Player player, WorldGroup group) {
@@ -489,11 +554,12 @@ public class PaperPlayerData implements PlayerData {
         }
     }
 
-    public PaperPlayerData group(PaperWorldGroup group) {
-        Preconditions.checkState(this.group == null, "Player data has already been finalized");
+    public PaperPlayerData finalize(OfflinePlayer player, PaperWorldGroup group) {
+        Preconditions.checkState(this.group == null || this.uuid == null, "Player data has already been finalized");
         if (respawnLocation != null && !group.containsWorld(respawnLocation.getWorld())) respawnLocation = null;
         if (lastDeathLocation != null && !group.containsWorld(lastDeathLocation.getWorld())) lastDeathLocation = null;
         if (lastLocation != null && !group.containsWorld(lastLocation.getWorld())) lastLocation = null;
+        this.uuid = player.getUniqueId();
         this.group = group;
         return this;
     }
@@ -505,13 +571,19 @@ public class PaperPlayerData implements PlayerData {
     }
 
     @Override
+    public UUID uuid() {
+        Preconditions.checkState(uuid != null, "Player data has not been finalized yet");
+        return uuid;
+    }
+
+    @Override
     public @Nullable ItemStack[] enderChest() {
-        return enderChest;
+        return enderChest.clone();
     }
 
     @Override
     public @Nullable ItemStack[] inventory() {
-        return inventory;
+        return inventory.clone();
     }
 
     @Override
@@ -531,17 +603,17 @@ public class PaperPlayerData implements PlayerData {
 
     @Override
     public @Nullable Location lastDeathLocation() {
-        return lastDeathLocation;
+        return lastDeathLocation != null ? lastDeathLocation.clone() : null;
     }
 
     @Override
     public @Nullable Location lastLocation() {
-        return lastLocation;
+        return lastLocation != null ? lastLocation.clone() : null;
     }
 
     @Override
     public @Nullable Location respawnLocation() {
-        return respawnLocation;
+        return respawnLocation != null ? respawnLocation.clone() : null;
     }
 
     @Override
@@ -685,13 +757,13 @@ public class PaperPlayerData implements PlayerData {
 
     @Override
     public PaperPlayerData lastDeathLocation(@Nullable Location location) {
-        this.lastDeathLocation = location == null || group == null || group.containsWorld(location.getWorld()) ? location : null;
+        this.lastDeathLocation = location != null && (group == null || group.containsWorld(location.getWorld())) ? location.clone() : null;
         return this;
     }
 
     @Override
     public PaperPlayerData lastLocation(@Nullable Location location) {
-        this.lastLocation = location == null || group == null || group.containsWorld(location.getWorld()) ? location : null;
+        this.lastLocation = location != null && (group == null || group.containsWorld(location.getWorld())) ? location.clone() : null;
         return this;
     }
 
@@ -702,14 +774,14 @@ public class PaperPlayerData implements PlayerData {
     }
 
     @Override
-    public PaperPlayerData stats(Stats stats) {
-        this.stats = stats;
+    public PaperPlayerData stats(Statistics statistics) {
+        this.statistics = statistics;
         return this;
     }
 
     @Override
     public PaperPlayerData velocity(Vector velocity) {
-        this.velocity = velocity;
+        this.velocity = velocity.clone();
         return this;
     }
 
@@ -781,7 +853,7 @@ public class PaperPlayerData implements PlayerData {
 
     @Override
     public PaperPlayerData respawnLocation(@Nullable Location location) {
-        this.respawnLocation = location == null || group == null || group.containsWorld(location.getWorld()) ? location : null;
+        this.respawnLocation = location != null && (group == null || group.containsWorld(location.getWorld())) ? location.clone() : null;
         return this;
     }
 
@@ -808,8 +880,8 @@ public class PaperPlayerData implements PlayerData {
     }
 
     @Override
-    public Stats stats() {
-        return stats;
+    public Statistics stats() {
+        return statistics;
     }
 
     @Override
@@ -829,7 +901,7 @@ public class PaperPlayerData implements PlayerData {
 
     @Override
     public Vector velocity() {
-        return velocity;
+        return velocity.clone();
     }
 
     @Override
@@ -952,7 +1024,7 @@ public class PaperPlayerData implements PlayerData {
         return Registry.ATTRIBUTE.stream()
                 .map(defaults::getAttribute)
                 .filter(Objects::nonNull)
-                .map(PaperAttributeData::new)
+                .map(AttributeData::of)
                 .collect(Collectors.toSet());
     }
 }

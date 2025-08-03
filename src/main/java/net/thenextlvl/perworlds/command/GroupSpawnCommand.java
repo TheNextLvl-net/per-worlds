@@ -69,7 +69,7 @@ class GroupSpawnCommand {
     private LiteralArgumentBuilder<CommandSourceStack> unsetSpawn() {
         return Commands.literal("unset")
                 .requires(source -> source.getSender().hasPermission("perworlds.command.group.spawn.unset"))
-                .then(groupArgument(plugin).executes(context -> {
+                .then(groupArgument(plugin, true).executes(context -> {
                     var group = context.getArgument("group", WorldGroup.class);
                     return unsetSpawn(context, group);
                 })).executes(context -> {
@@ -89,7 +89,7 @@ class GroupSpawnCommand {
     }
 
     private ArgumentBuilder<CommandSourceStack, ?> targetArgument() {
-        return groupArgument(plugin).then(worldArgument()
+        return groupArgument(plugin, true).then(worldArgument()
                 .then(positionArgument().then(rotationArgument().executes(context -> {
                     var rotation = context.getArgument("rotation", RotationResolver.class);
                     return setTargetSpawn(context, rotation.resolve(context.getSource()));

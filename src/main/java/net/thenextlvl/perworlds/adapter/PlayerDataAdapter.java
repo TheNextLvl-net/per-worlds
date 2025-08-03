@@ -11,13 +11,13 @@ import core.nbt.tag.StringTag;
 import core.nbt.tag.Tag;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.TriState;
+import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.data.AdvancementData;
 import net.thenextlvl.perworlds.data.AttributeData;
 import net.thenextlvl.perworlds.data.PlayerData;
 import net.thenextlvl.perworlds.data.WardenSpawnTracker;
-import net.thenextlvl.perworlds.group.PaperGroupProvider;
 import net.thenextlvl.perworlds.model.PaperPlayerData;
-import net.thenextlvl.perworlds.statistics.Stats;
+import net.thenextlvl.perworlds.statistics.Statistics;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
@@ -30,22 +30,22 @@ import java.util.Objects;
 
 @NullMarked
 public class PlayerDataAdapter implements TagAdapter<PlayerData> {
-    private final PaperGroupProvider provider;
+    private final PerWorldsPlugin plugin;
 
-    public PlayerDataAdapter(PaperGroupProvider provider) {
-        this.provider = provider;
+    public PlayerDataAdapter(PerWorldsPlugin plugin) {
+        this.plugin = plugin;
     }
 
     @Override
     public PlayerData deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
-        var data = new PaperPlayerData(null);
+        var data = new PaperPlayerData(null, null);
         var root = tag.getAsCompound();
         root.optional("advancements").map(Tag::getAsList).map(list ->
                 list.stream().map(advancement -> {
                     try {
                         return context.deserialize(advancement, AdvancementData.class);
                     } catch (ParserException e) {
-                        provider.getLogger().warn(e.getMessage());
+                        plugin.getComponentLogger().warn(e.getMessage());
                         return null;
                     }
                 }).filter(Objects::nonNull).toList()
@@ -71,7 +71,7 @@ public class PlayerDataAdapter implements TagAdapter<PlayerData> {
         root.optional("lastAdvancementTab").map(advancement ->
                 context.deserialize(advancement, Key.class)
         ).ifPresent(data::lastAdvancementTab);
-        root.optional("statistics").map(stats -> context.deserialize(stats, Stats.class)).ifPresent(data::stats);
+        root.optional("statistics").map(stats -> context.deserialize(stats, Statistics.class)).ifPresent(data::stats);
         root.optional("gameMode").map(mode -> context.deserialize(mode, GameMode.class)).ifPresent(data::gameMode);
         root.optional("seenCredits").map(Tag::getAsBoolean).ifPresent(data::seenCredits);
         root.optional("absorption").map(Tag::getAsDouble).ifPresent(data::absorption);

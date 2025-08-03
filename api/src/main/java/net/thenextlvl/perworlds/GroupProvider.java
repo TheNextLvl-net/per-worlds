@@ -1,11 +1,12 @@
 package net.thenextlvl.perworlds;
 
-import org.bukkit.Server;
 import org.bukkit.World;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
-import java.io.File;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
@@ -15,16 +16,21 @@ import java.util.function.Consumer;
  * Represents a provider responsible for managing and interacting with {@link WorldGroup world groups}.
  * A group contains multiple worlds and is defined alongside its settings and associated data.
  * This interface provides various functionalities to create, retrieve, verify, and remove groups.
+ *
+ * @since 0.1.0
  */
 @NullMarked
+@ApiStatus.NonExtendable
 public interface GroupProvider {
     /**
      * Retrieves the data folder associated with the group provider.
      * The data folder is used for storing persistent data relevant to groups.
      *
-     * @return the file object pointing to the data folder used by the group provider
+     * @return the path pointing to the data folder used by the group provider
+     * @since 1.0.0
      */
-    File getDataFolder();
+    @Contract(pure = true)
+    Path getDataFolder();
 
     /**
      * Retrieves an unmodifiable set of all world groups managed by this provider.
@@ -66,12 +72,11 @@ public interface GroupProvider {
     /**
      * Retrieves the unowned world group.
      * <p>
-     * The {@link UnownedWorldGroup} represents worlds that do not belong
-     * to any explicitly defined {@link WorldGroup}.
+     * The {@link WorldGroup} represents worlds that do not belong to any explicitly defined group.
      *
-     * @return the {@link UnownedWorldGroup} instance representing unassociated worlds
+     * @return the {@link WorldGroup} instance representing unassociated worlds
      */
-    UnownedWorldGroup getUnownedWorldGroup();
+    WorldGroup getUnownedWorldGroup();
 
     /**
      * Creates a new {@link WorldGroup} with the specified name, data, settings, and a collection of worlds.
@@ -85,6 +90,7 @@ public interface GroupProvider {
      * @throws IllegalStateException if a group with the specified name already exists,
      *                               or if a given world is already part of another group.
      */
+    @Contract(value = "_, _, _, _ -> new", mutates = "this")
     WorldGroup createGroup(String name, Consumer<GroupData> data, Consumer<GroupSettings> settings, Collection<World> worlds) throws IllegalStateException;
 
     /**
@@ -97,6 +103,7 @@ public interface GroupProvider {
      * @throws IllegalStateException if a group with the specified name already exists,
      *                               or if a given world is already part of another group.
      */
+    @Contract(value = "_, _ -> new", mutates = "this")
     WorldGroup createGroup(String name, Collection<World> worlds) throws IllegalStateException;
 
     /**
@@ -111,6 +118,7 @@ public interface GroupProvider {
      * @throws IllegalStateException if a group with the specified name already exists,
      *                               or if a given world is already part of another group.
      */
+    @Contract(value = "_, _, _, _ -> new", mutates = "this")
     WorldGroup createGroup(String name, Consumer<GroupData> data, Consumer<GroupSettings> settings, World... worlds) throws IllegalStateException;
 
     /**
@@ -123,6 +131,7 @@ public interface GroupProvider {
      * @throws IllegalStateException if a group with the specified name already exists,
      *                               or if a given world is already part of another group.
      */
+    @Contract(value = "_, _ -> new", mutates = "this")
     WorldGroup createGroup(String name, World... worlds) throws IllegalStateException;
 
     /**
@@ -131,6 +140,7 @@ public interface GroupProvider {
      * @param name the name of the group to check for existence
      * @return {@code true} if a group with the specified name exists, {@code false} otherwise
      */
+    @Contract(pure = true)
     boolean hasGroup(String name);
 
     /**
@@ -139,6 +149,7 @@ public interface GroupProvider {
      * @param world the {@link World} to check for group membership
      * @return {@code true} if the specified world is part of a group, {@code false} otherwise
      */
+    @Contract(pure = true)
     boolean hasGroup(World world);
 
     /**
@@ -147,6 +158,7 @@ public interface GroupProvider {
      * @param group the {@link WorldGroup} to check for management
      * @return {@code true} if this provider manages the specified group, {@code false} otherwise
      */
+    @Contract(pure = true)
     boolean hasGroup(WorldGroup group);
 
     /**
@@ -156,6 +168,7 @@ public interface GroupProvider {
      * @return {@code true} if the group was successfully removed, {@code false} otherwise
      * @see #removeGroup(WorldGroup)
      */
+    @Contract(mutates = "this")
     boolean removeGroup(String name);
 
     /**
@@ -166,12 +179,6 @@ public interface GroupProvider {
      * @param group the {@link WorldGroup} to be removed
      * @return whether the group was successfully removed from the provider
      */
+    @Contract(mutates = "this")
     boolean removeGroup(WorldGroup group);
-    
-    /**
-     * Retrieves the {@link Server} instance associated with the group provider.
-     *
-     * @return the {@link Server} instance representing the server environment this provider operates in
-     */
-    Server getServer();
 }

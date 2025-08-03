@@ -9,7 +9,6 @@ import core.nbt.tag.ListTag;
 import core.nbt.tag.Tag;
 import net.kyori.adventure.key.Key;
 import net.thenextlvl.perworlds.GroupData;
-import net.thenextlvl.perworlds.GroupProvider;
 import net.thenextlvl.perworlds.GroupSettings;
 import net.thenextlvl.perworlds.group.PaperGroupData;
 import net.thenextlvl.perworlds.group.PaperGroupSettings;
@@ -21,23 +20,16 @@ import java.util.stream.Collectors;
 
 @NullMarked
 public class GroupConfigAdapter implements TagAdapter<GroupConfig> {
-    private final GroupProvider provider;
-
-    public GroupConfigAdapter(GroupProvider provider) {
-        this.provider = provider;
-    }
-
     @Override
     public GroupConfig deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
-        var root = tag.getAsCompound();
-        var data = root.optional("data")
+        var data = tag.getAsCompound().optional("data")
                 .map(tag1 -> context.deserialize(tag1, GroupData.class))
-                .orElseGet(() -> new PaperGroupData(provider));
-        var settings = root.optional("settings")
+                .orElseGet(PaperGroupData::new);
+        var settings = tag.getAsCompound().optional("settings")
                 .map(tag1 -> context.deserialize(tag1, GroupSettings.class))
                 .orElseGet(PaperGroupSettings::new);
-        var worlds = root.optional("worlds").map(Tag::getAsList)
-                .map(tags -> tags.stream()
+        var worlds = tag.getAsCompound().optional("worlds")
+                .map(Tag::getAsList).map(tags -> tags.stream()
                         .map(world -> context.deserialize(world, Key.class))
                         .collect(Collectors.toSet()))
                 .orElseGet(HashSet::new);
