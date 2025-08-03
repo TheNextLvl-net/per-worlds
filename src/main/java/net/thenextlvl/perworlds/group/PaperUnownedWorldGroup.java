@@ -36,12 +36,12 @@ public class PaperUnownedWorldGroup extends PaperWorldGroup {
 
     @Override
     public boolean addWorld(World world) {
-        return containsWorld(world);
+        return false;
     }
 
     @Override
     public boolean removeWorld(World world) {
-        return containsWorld(world);
+        return false;
     }
 
     @Override
