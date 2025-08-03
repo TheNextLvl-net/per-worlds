@@ -283,10 +283,10 @@ public interface GroupData {
     long getTime();
 
     /**
-     * Sets the current time value for the group.
+     * Sets the full time for the group.
      * The time value typically represents the in-game time within the group's environment.
      *
-     * @param time the time value to be set, represented as a long
+     * @param time the full time to be set
      * @see World#setFullTime(long)
      * @since 1.0.0
      */
