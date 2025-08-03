@@ -36,7 +36,7 @@ public abstract class PaperSubstatistic<T extends Keyed> implements Substatistic
     }
 
     @Override
-    public boolean shouldSerialize() {
+    public boolean hasData() {
         return values.values().stream().anyMatch(integer -> integer != 0);
     }
 }

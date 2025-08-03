@@ -26,7 +26,7 @@ public class PaperCustomStat implements CustomStat {
     }
 
     @Override
-    public boolean shouldSerialize() {
+    public boolean hasData() {
         return value != 0;
     }
 

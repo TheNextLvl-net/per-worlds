@@ -88,7 +88,7 @@ public class PaperStatistics implements Statistics {
     @Override
     public boolean hasData(Statistic statistic) {
         var stat = statistics.get(statistic);
-        return stat != null && stat.shouldSerialize();
+        return stat != null && stat.hasData();
     }
 
     @Override

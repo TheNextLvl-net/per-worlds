@@ -10,8 +10,13 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 @ApiStatus.NonExtendable
 public interface Stat {
-    @ApiStatus.Internal
-    boolean shouldSerialize();
+    /**
+     * Determines if the statistic contains any data.
+     *
+     * @return {@code true} if the statistic has data, otherwise {@code false}.
+     * @since 1.0.0
+     */
+    boolean hasData();
 
     /**
      * Retrieves the type of the statistic.

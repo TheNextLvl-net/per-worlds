@@ -50,7 +50,7 @@ public class StatisticsAdapter implements TagAdapter<Statistics> {
     public Tag serialize(Statistics statistics, TagSerializationContext context) throws ParserException {
         var tag = new CompoundTag();
         statistics.forEachStatistic((statistic, value) -> {
-            if (value.shouldSerialize()) tag.add(statistic.key().asString(), context.serialize(value));
+            if (value.hasData()) tag.add(statistic.key().asString(), context.serialize(value));
         });
         return tag;
     }
