@@ -5,10 +5,12 @@ import core.io.IO;
 import core.nbt.NBTInputStream;
 import core.nbt.NBTOutputStream;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.util.TriState;
 import net.thenextlvl.perworlds.GroupData;
 import net.thenextlvl.perworlds.GroupSettings;
 import net.thenextlvl.perworlds.WorldGroup;
 import net.thenextlvl.perworlds.data.PlayerData;
+import net.thenextlvl.perworlds.data.WorldBorderData;
 import net.thenextlvl.perworlds.model.PaperPlayerData;
 import net.thenextlvl.perworlds.model.config.GroupConfig;
 import org.bukkit.GameRule;
@@ -185,8 +187,27 @@ public class PaperWorldGroup implements WorldGroup {
         world.getPlayers().forEach(previous::persistPlayerData);
         if (!config.worlds().add(world.key())) return false;
         world.getPlayers().forEach(this::loadPlayerData);
-        updateWorldData(world);
+        if (config.worlds().size() == 1) loadWorldData(world);
+        else updateWorldData(world);
         return true;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void loadWorldData(World world) {
+        getGroupData().setDifficulty(world.getDifficulty());
+        getGroupData().setTime(world.getFullTime());
+
+        Arrays.stream(GameRule.values()).map(gameRule -> (GameRule<Object>) gameRule)
+                .forEach(rule -> getGroupData().setGameRule(rule, world.getGameRuleValue(rule)));
+
+        getGroupData().setWorldBorder(WorldBorderData.of(world.getWorldBorder()));
+        getGroupData().setHardcore(TriState.byBoolean(world.isHardcore()));
+
+        getGroupData().setRaining(world.hasStorm());
+        getGroupData().setThundering(world.isThundering());
+        getGroupData().clearWeatherDuration(world.getClearWeatherDuration());
+        getGroupData().setThunderDuration(world.getThunderDuration());
+        getGroupData().setRainDuration(world.getWeatherDuration());
     }
 
     @Override
