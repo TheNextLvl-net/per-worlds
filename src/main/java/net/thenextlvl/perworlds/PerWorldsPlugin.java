@@ -43,6 +43,7 @@ public class PerWorldsPlugin extends JavaPlugin {
             .build();
 
     private final PaperGroupProvider provider = new PaperGroupProvider(this);
+    private final boolean groupsExist = Files.exists(provider.getDataFolder());
 
     public PerWorldsPlugin() {
         registerCommands();
@@ -58,6 +59,7 @@ public class PerWorldsPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        scheduleDefaultGroupCreation();
         registerListeners();
         warnWorldManager();
     }
@@ -84,6 +86,24 @@ public class PerWorldsPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new WorldsListener(provider), this);
     }
 
+    private void scheduleDefaultGroupCreation() {
+        if (groupsExist) return;
+        getServer().getScheduler().runTaskLater(this, () -> {
+            var defaultGroupName = "default";
+
+            var defaultGroup = groupProvider().getGroup(defaultGroupName)
+                    .orElseGet(() -> groupProvider().createGroup(defaultGroupName));
+
+            var overworld = getServer().getWorld(Key.key(Key.MINECRAFT_NAMESPACE, "overworld"));
+            var nether = getServer().getWorld(Key.key(Key.MINECRAFT_NAMESPACE, "the_nether"));
+            var end = getServer().getWorld(Key.key(Key.MINECRAFT_NAMESPACE, "the_end"));
+
+            if (overworld != null) defaultGroup.addWorld(overworld);
+            if (nether != null) defaultGroup.addWorld(nether);
+            if (end != null) defaultGroup.addWorld(end);
+        }, 10);
+    }
+
     private void warnWorldManager() {
         var plugin = knownWorldManagers.stream()
                 .filter(name -> !name.equals("Worlds"))
@@ -99,8 +119,8 @@ public class PerWorldsPlugin extends JavaPlugin {
     }
 
     private void loadGroups() {
+        if (!groupsExist) return;
         var suffix = ".dat";
-        if (!Files.exists(provider.getDataFolder())) return;
         try (var files = Files.list(provider.getDataFolder())) {
             files.map(path -> path.getFileName().toString())
                     .filter(name -> name.endsWith(suffix))
