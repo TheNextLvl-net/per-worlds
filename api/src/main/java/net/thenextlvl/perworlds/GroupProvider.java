@@ -126,7 +126,7 @@ public interface GroupProvider {
      *
      * @param name   the name of the group to be created.
      * @param data   a {@link Consumer} to configure the {@link GroupData} for the new group.
-     * @param worlds an collection of {@link World} instances that will be part of the group.
+     * @param worlds a collection of {@link World} instances that will be part of the group.
      * @return the created {@link WorldGroup} instance.
      * @throws IllegalStateException if a group with the specified name already exists,
      *                               or if a given world is already part of another group.
