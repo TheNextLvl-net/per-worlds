@@ -116,6 +116,7 @@ public interface GroupProvider {
      * @return the created {@link WorldGroup} instance.
      * @throws IllegalStateException if a group with the specified name already exists,
      *                               or if a given world is already part of another group.
+     * @since 1.0.2
      */
     @Contract(value = "_, _, _ -> new", mutates = "this")
     WorldGroup createGroup(String name, Consumer<GroupData> data, World... worlds) throws IllegalStateException;
@@ -130,6 +131,7 @@ public interface GroupProvider {
      * @return the created {@link WorldGroup} instance.
      * @throws IllegalStateException if a group with the specified name already exists,
      *                               or if a given world is already part of another group.
+     * @since 1.0.2
      */
     @Contract(value = "_, _, _ -> new", mutates = "this")
     WorldGroup createGroup(String name, Consumer<GroupData> data, Collection<World> worlds) throws IllegalStateException;
