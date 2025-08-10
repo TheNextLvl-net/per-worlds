@@ -291,11 +291,6 @@ public class PaperPlayerData implements PlayerData {
         player.setGameMode(settings.gameMode() && previousGameMode != null ? previousGameMode : defaultGameMode);
         player.setGameMode(settings.gameMode() && gameMode != null ? gameMode : defaultGameMode);
 
-        player.setAllowFlight((settings.flyState() ? mayFly : DEFAULT_MAY_FLY)
-                .toBooleanOrElseGet(() -> player.getGameMode().isInvulnerable()));
-        player.setFlying((settings.flyState() ? flying : DEFAULT_FLYING)
-                .toBooleanOrElseGet(() -> player.getGameMode().equals(GameMode.SPECTATOR)));
-
         applyAttributes(player, settings);
 
         player.setGliding(settings.gliding() ? gliding : DEFAULT_GLIDING);
@@ -340,6 +335,11 @@ public class PaperPlayerData implements PlayerData {
 
         player.setFlySpeed(Math.clamp(settings.flySpeed() ? flySpeed : DEFAULT_FLY_SPEED, -1, 1));
         player.setWalkSpeed(Math.clamp(settings.walkSpeed() ? walkSpeed : DEFAULT_WALK_SPEED, -1, 1));
+
+        player.setAllowFlight((settings.flyState() ? mayFly : DEFAULT_MAY_FLY)
+                .toBooleanOrElseGet(() -> player.getGameMode().isInvulnerable()));
+        player.setFlying((settings.flyState() ? flying : DEFAULT_FLYING)
+                .toBooleanOrElseGet(() -> player.getGameMode().equals(GameMode.SPECTATOR)));
 
         player.clearActivePotionEffects();
         if (settings.potionEffects()) player.addPotionEffects(potionEffects);
