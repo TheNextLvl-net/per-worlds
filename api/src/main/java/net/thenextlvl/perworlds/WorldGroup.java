@@ -381,7 +381,7 @@ public interface WorldGroup {
      * @param player the offline player whose data is to be persisted and modified
      * @param data   a {@link Consumer} that manipulates the {@link PlayerData} object
      * @see #persistPlayerData(Player, Consumer)
-     * @since 1.0.3
+     * @since 1.1.0
      */
     @Contract(mutates = "io")
     void persistPlayerData(OfflinePlayer player, Consumer<PlayerData> data);
