@@ -4,6 +4,7 @@ import io.papermc.paper.event.world.WorldDifficultyChangeEvent;
 import io.papermc.paper.event.world.WorldGameRuleChangeEvent;
 import io.papermc.paper.event.world.border.WorldBorderBoundsChangeEvent;
 import io.papermc.paper.event.world.border.WorldBorderCenterChangeEvent;
+import net.kyori.adventure.key.Key;
 import net.thenextlvl.perworlds.GroupData;
 import net.thenextlvl.perworlds.GroupData.Type;
 import net.thenextlvl.perworlds.WorldGroup;
@@ -17,6 +18,7 @@ import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.TimeSkipEvent;
 import org.bukkit.event.world.WorldInitEvent;
+import org.bukkit.event.world.WorldUnloadEvent;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.HashMap;
@@ -29,6 +31,9 @@ import java.util.function.Consumer;
 public class WorldListener implements Listener {
     private final PaperGroupProvider provider;
 
+    private final Map<Type, Set<WorldGroup>> lock = new HashMap<>();
+    private final Set<Key> allowed = new HashSet<>();
+
     public WorldListener(PaperGroupProvider provider) {
         this.provider = provider;
     }
@@ -38,9 +43,13 @@ public class WorldListener implements Listener {
         provider.getGroup(event.getWorld())
                 .orElse(provider.getUnownedWorldGroup())
                 .updateWorldData(event.getWorld());
+        allowed.add(event.getWorld().key());
     }
 
-    private final Map<Type, Set<WorldGroup>> lock = new HashMap<>();
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onWorldUnload(WorldUnloadEvent event) {
+        allowed.remove(event.getWorld().key());
+    }
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onWorldDifficultyChange(WorldDifficultyChangeEvent event) {
@@ -97,6 +106,7 @@ public class WorldListener implements Listener {
     }
 
     private void processWorldDataUpdate(World world, Type type, Consumer<GroupData> process) {
+        if (!allowed.contains(world.key())) return;
         var group = provider.getGroup(world).orElse(provider.getUnownedWorldGroup());
         if (!lock.computeIfAbsent(type, ignored -> new HashSet<>()).add(group)) return;
         process.accept(group.getGroupData());
