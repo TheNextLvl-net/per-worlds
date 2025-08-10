@@ -3,11 +3,9 @@ package net.thenextlvl.perworlds.importer;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.WorldGroup;
 import net.thenextlvl.perworlds.data.PlayerData;
-import org.bukkit.generator.WorldInfo;
 import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Map;
@@ -60,22 +58,22 @@ public abstract class Importer {
     }
 
     public void loadPlayers(Set<WorldGroup> groups) throws IOException {
-        // todo: extract to readPlayer
-        readPlayers().forEach((uuid, name) -> {
-            groups.stream().forEach(group -> group.getWorlds().map(WorldInfo::getName)
-                    .map(this.dataPath.resolve("worlds")::resolve)
-                    .map(path -> path.resolve(name + ".json"))
-                    .filter(Files::isRegularFile)
-                    .findAny().ifPresent(path -> {
-                        // todo: load player data from path into the current group
-                    })
-            );
-        });
+        readPlayers().forEach((uuid, name) -> groups.forEach(group -> {
+            var offlinePlayer = plugin.getServer().getOfflinePlayer(uuid);
+            group.persistPlayerData(offlinePlayer, playerData -> {
+                try {
+                    readPlayer(uuid, name, group, playerData);
+                } catch (IOException e) {
+                    plugin.getComponentLogger().error("Failed to import player data for {} ({}) in group {}",
+                            name, uuid, group.getName(), e);
+                }
+            });
+        }));
     }
 
     public abstract Map<String, Set<String>> readGroups() throws IOException;
 
     public abstract Map<UUID, String> readPlayers() throws IOException;
 
-    public abstract PlayerData readPlayer(UUID uuid, String name, WorldGroup group) throws IOException;
+    public abstract void readPlayer(UUID uuid, String name, WorldGroup group, PlayerData data) throws IOException;
 }
