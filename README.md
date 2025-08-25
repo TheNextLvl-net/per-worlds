@@ -23,4 +23,4 @@ Define which data is synced between groups:
 ---
 
 🔗 [Download now](https://modrinth.com/project/lpfQmSV2)  
-📘 For detailed setup and configurations, visit the [Wiki](https://thenextlvl.net/docs/worlds/per-worlds).
+📘 For detailed setup and configurations, visit the [Wiki](https://thenextlvl.net/docs/perworlds).
