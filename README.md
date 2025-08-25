@@ -24,9 +24,3 @@ Define which data is synced between groups:
 
 🔗 [Download now](https://modrinth.com/project/lpfQmSV2)  
 📘 For detailed setup and configurations, visit the [Wiki](https://thenextlvl.net/docs/worlds/per-worlds).
-
----
-
-> [!NOTE]
-> If you are using [Worlds](https://modrinth.com/project/gBIw3Gvy) as your world manager,  
-> you don't have to install this plugin as it is already bundled with Worlds
