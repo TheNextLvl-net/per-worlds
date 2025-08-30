@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 @NullMarked
@@ -87,21 +88,19 @@ public class PerWorldsPlugin extends JavaPlugin {
     }
 
     private void scheduleDefaultGroupCreation() {
-        if (groupsExist) return;
-        getServer().getScheduler().runTaskLater(this, () -> {
+        if (!groupsExist) getServer().getGlobalRegionScheduler().execute(this, () -> {
             var defaultGroupName = "default";
 
             var defaultGroup = groupProvider().getGroup(defaultGroupName)
                     .orElseGet(() -> groupProvider().createGroup(defaultGroupName));
 
-            var overworld = getServer().getWorld(Key.key(Key.MINECRAFT_NAMESPACE, "overworld"));
-            var nether = getServer().getWorld(Key.key(Key.MINECRAFT_NAMESPACE, "the_nether"));
-            var end = getServer().getWorld(Key.key(Key.MINECRAFT_NAMESPACE, "the_end"));
-
-            if (overworld != null) defaultGroup.addWorld(overworld);
-            if (nether != null) defaultGroup.addWorld(nether);
-            if (end != null) defaultGroup.addWorld(end);
-        }, 10);
+            Optional.ofNullable(getServer().getWorld(Key.key(Key.MINECRAFT_NAMESPACE, "overworld")))
+                    .ifPresent(defaultGroup::addWorld);
+            Optional.ofNullable(getServer().getWorld(Key.key(Key.MINECRAFT_NAMESPACE, "the_nether")))
+                    .ifPresent(defaultGroup::addWorld);
+            Optional.ofNullable(getServer().getWorld(Key.key(Key.MINECRAFT_NAMESPACE, "the_end")))
+                    .ifPresent(defaultGroup::addWorld);
+        });
     }
 
     private void warnWorldManager() {
