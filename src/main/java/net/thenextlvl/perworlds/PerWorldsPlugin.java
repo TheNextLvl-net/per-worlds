@@ -48,7 +48,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
     private final boolean groupsExist = Files.exists(provider.getDataFolder());
 
     private final Path setupSuccess = getDataPath().resolve(".setup_success");
-    private final boolean firstSetup = !Files.isRegularFile(setupSuccess);
+    private final boolean firstSetup = false; // !Files.isRegularFile(setupSuccess); // todo: uncomment when finalized
 
     public PerWorldsPlugin() {
         registerCommands();
