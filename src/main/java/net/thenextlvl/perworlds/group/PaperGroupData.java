@@ -7,7 +7,6 @@ import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -80,7 +79,7 @@ public class PaperGroupData implements GroupData {
     }
 
     @Override
-    public @NonNull Optional<Location> getSpawnLocation() {
+    public Optional<Location> getSpawnLocation() {
         return Optional.ofNullable(spawnLocation).map(Location::clone);
     }
 
