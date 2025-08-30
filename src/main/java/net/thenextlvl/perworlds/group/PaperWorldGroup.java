@@ -324,7 +324,7 @@ public class PaperWorldGroup implements WorldGroup {
         if (!getSettings().enabled()) return CompletableFuture.completedFuture(false);
         if (isLoadingData(player)) return CompletableFuture.completedFuture(false);
         player.setMetadata(LOADING_METADATA_KEY, new FixedMetadataValue(provider.getPlugin(), null));
-        return readPlayerData(player).orElseGet(() -> new PaperPlayerData(player.getUniqueId(), this)).load(player, position)
+        return readPlayerData(player).orElseGet(() -> migratePlayerData(player)).load(player, position)
                 .whenComplete((success, throwable) -> player.removeMetadata(LOADING_METADATA_KEY, provider.getPlugin()))
                 .exceptionally(throwable -> {
                     provider.getLogger().error("Failed to load group data for player {}", player.getName(), throwable);
@@ -332,6 +332,14 @@ public class PaperWorldGroup implements WorldGroup {
                     player.kick(provider.bundle().component("group.load.failed", player));
                     return false;
                 });
+    }
+
+    private PaperPlayerData migratePlayerData(Player player) {
+        var unowned = provider.getUnownedWorldGroup();
+        var data = PaperPlayerData.of(player, unowned);
+        if (equals(unowned)) return data;
+        writePlayerData(player, data);
+        return new PaperPlayerData(player.getUniqueId(), this);
     }
 
     @Override
