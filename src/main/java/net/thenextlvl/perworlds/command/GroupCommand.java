@@ -17,6 +17,7 @@ public class GroupCommand {
                 .then(GroupAddCommand.create(plugin))
                 .then(GroupCreateCommand.create(plugin))
                 .then(GroupDeleteCommand.create(plugin))
+                .then(GroupHelpCommand.create(plugin))
                 .then(GroupInfoCommand.create(plugin))
                 .then(GroupListCommand.create(plugin))
                 .then(GroupOptionCommand.create(plugin))
