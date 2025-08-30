@@ -31,6 +31,7 @@ import java.util.Set;
 @NullMarked
 public final class PerWorldsPlugin extends JavaPlugin {
     public static final String ISSUES = "https://github.com/TheNextLvl-net/per-worlds/issues/new?template=bug_report.yml";
+    public static final String DOCS_URL = "https://thenextlvl.net/docs/perworlds";
 
     private final PluginVersionChecker versionChecker = new PluginVersionChecker(this);
     private final Metrics metrics = new Metrics(this, 25295);
@@ -46,6 +47,9 @@ public final class PerWorldsPlugin extends JavaPlugin {
     private final PaperGroupProvider provider = new PaperGroupProvider(this);
     private final boolean groupsExist = Files.exists(provider.getDataFolder());
 
+    private final Path setupSuccess = getDataPath().resolve(".setup_success");
+    private final boolean firstSetup = !Files.isRegularFile(setupSuccess);
+
     public PerWorldsPlugin() {
         registerCommands();
     }
@@ -59,10 +63,17 @@ public final class PerWorldsPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        scheduleDefaultGroupCreation();
+        scheduleDelayedInitTask();
         registerListeners();
         warnWorldManager();
         loadGroups();
+    }
+
+    private void scheduleDelayedInitTask() {
+        if (groupsExist || firstSetup) getServer().getGlobalRegionScheduler().execute(this, () -> {
+            if (groupsExist) createDefaultGroup();
+            if (firstSetup) setupNotice();
+        });
     }
 
     @Override
@@ -73,6 +84,19 @@ public final class PerWorldsPlugin extends JavaPlugin {
 
     private void registerServices() {
         getServer().getServicesManager().register(GroupProvider.class, provider, this, ServicePriority.Highest);
+    }
+
+    // fixme: not final
+    private void setupNotice() {
+        var separator = "-".repeat(80);
+        getComponentLogger().warn(separator);
+        getComponentLogger().warn("This is your first startup using PerWorlds");
+        getComponentLogger().warn("Before you are able to connect to the server make sure to set up some world groups");
+        getComponentLogger().warn("The main command to interact with PerWorlds is '/world group'");
+        getComponentLogger().warn("Refer to the wiki to learn how to manage groups: {}", DOCS_URL);
+        getComponentLogger().warn("If you are done with the group setup run '/perworlds setup finish'");
+        getComponentLogger().warn("To prevent data corruption, players are unable to connect until the setup is done");
+        getComponentLogger().warn(separator);
     }
 
     private void registerListeners() {
@@ -87,20 +111,18 @@ public final class PerWorldsPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new WorldsListener(provider), this);
     }
 
-    private void scheduleDefaultGroupCreation() {
-        if (!groupsExist) getServer().getGlobalRegionScheduler().execute(this, () -> {
-            var defaultGroupName = "default";
+    private void createDefaultGroup() {
+        var defaultGroupName = "default";
 
-            var defaultGroup = groupProvider().getGroup(defaultGroupName)
-                    .orElseGet(() -> groupProvider().createGroup(defaultGroupName));
+        var defaultGroup = groupProvider().getGroup(defaultGroupName)
+                .orElseGet(() -> groupProvider().createGroup(defaultGroupName));
 
-            Optional.ofNullable(getServer().getWorld(Key.key(Key.MINECRAFT_NAMESPACE, "overworld")))
-                    .ifPresent(defaultGroup::addWorld);
-            Optional.ofNullable(getServer().getWorld(Key.key(Key.MINECRAFT_NAMESPACE, "the_nether")))
-                    .ifPresent(defaultGroup::addWorld);
-            Optional.ofNullable(getServer().getWorld(Key.key(Key.MINECRAFT_NAMESPACE, "the_end")))
-                    .ifPresent(defaultGroup::addWorld);
-        });
+        Optional.ofNullable(getServer().getWorld(Key.key(Key.MINECRAFT_NAMESPACE, "overworld")))
+                .ifPresent(defaultGroup::addWorld);
+        Optional.ofNullable(getServer().getWorld(Key.key(Key.MINECRAFT_NAMESPACE, "the_nether")))
+                .ifPresent(defaultGroup::addWorld);
+        Optional.ofNullable(getServer().getWorld(Key.key(Key.MINECRAFT_NAMESPACE, "the_end")))
+                .ifPresent(defaultGroup::addWorld);
     }
 
     private void warnWorldManager() {
@@ -176,6 +198,10 @@ public final class PerWorldsPlugin extends JavaPlugin {
                 .filter(name -> getServer().getPluginManager().getPlugin(name) != null)
                 .findAny().orElse("None");
         metrics.addCustomChart(new SimplePie("world_management_plugin", () -> worldManager));
+    }
+
+    public boolean isFirstSetup() {
+        return firstSetup;
     }
 
     public GroupProvider groupProvider() {
