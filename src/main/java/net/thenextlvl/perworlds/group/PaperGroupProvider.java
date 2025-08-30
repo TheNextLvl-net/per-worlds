@@ -76,7 +76,7 @@ public class PaperGroupProvider implements GroupProvider {
     private final Set<WorldGroup> groups = new HashSet<>();
     private final NBT nbt;
     private final PerWorldsPlugin plugin;
-    private final WorldGroup unownedWorldGroup;
+    private final PaperWorldGroup unownedWorldGroup;
 
     public PaperGroupProvider(PerWorldsPlugin plugin) {
         this.plugin = plugin;
@@ -161,12 +161,12 @@ public class PaperGroupProvider implements GroupProvider {
     }
 
     @Override
-    public WorldGroup getUnownedWorldGroup() {
+    public PaperWorldGroup getUnownedWorldGroup() {
         return unownedWorldGroup;
     }
 
     @Override
-    public WorldGroup createGroup(String name, Consumer<GroupData> data, Consumer<GroupSettings> settings, Collection<World> worlds) {
+    public PaperWorldGroup createGroup(String name, Consumer<GroupData> data, Consumer<GroupSettings> settings, Collection<World> worlds) {
         Preconditions.checkState(!hasGroup(name), "A WorldGroup named '%s' already exists", name);
         var invalid = worlds.stream().filter(this::hasGroup).map(Keyed::key).map(Key::asString).toList();
         Preconditions.checkState(invalid.isEmpty(), "Worlds cannot be in multiple groups: {}", String.join(", ", invalid));
@@ -182,30 +182,30 @@ public class PaperGroupProvider implements GroupProvider {
     }
 
     @Override
-    public WorldGroup createGroup(String name, Collection<World> worlds) throws IllegalStateException {
+    public PaperWorldGroup createGroup(String name, Collection<World> worlds) throws IllegalStateException {
         return createGroup(name, data -> {
         }, worlds);
     }
 
     @Override
-    public WorldGroup createGroup(String name, Consumer<GroupData> data, World... worlds) throws IllegalStateException {
+    public PaperWorldGroup createGroup(String name, Consumer<GroupData> data, World... worlds) throws IllegalStateException {
         return createGroup(name, data, settings -> {
         }, worlds);
     }
 
     @Override
-    public WorldGroup createGroup(String name, Consumer<GroupData> data, Collection<World> worlds) throws IllegalStateException {
+    public PaperWorldGroup createGroup(String name, Consumer<GroupData> data, Collection<World> worlds) throws IllegalStateException {
         return createGroup(name, data, settings -> {
         }, worlds);
     }
 
     @Override
-    public WorldGroup createGroup(String name, Consumer<GroupData> data, Consumer<GroupSettings> settings, World... worlds) {
+    public PaperWorldGroup createGroup(String name, Consumer<GroupData> data, Consumer<GroupSettings> settings, World... worlds) {
         return createGroup(name, data, settings, List.of(worlds));
     }
 
     @Override
-    public WorldGroup createGroup(String name, World... worlds) throws IllegalStateException {
+    public PaperWorldGroup createGroup(String name, World... worlds) throws IllegalStateException {
         return createGroup(name, data -> {
         }, worlds);
     }
