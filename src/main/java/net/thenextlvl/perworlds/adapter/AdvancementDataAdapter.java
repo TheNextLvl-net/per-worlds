@@ -1,13 +1,13 @@
 package net.thenextlvl.perworlds.adapter;
 
-import core.nbt.serialization.ParserException;
-import core.nbt.serialization.TagAdapter;
-import core.nbt.serialization.TagDeserializationContext;
-import core.nbt.serialization.TagSerializationContext;
-import core.nbt.tag.CompoundTag;
-import core.nbt.tag.ListTag;
-import core.nbt.tag.StringTag;
-import core.nbt.tag.Tag;
+import net.thenextlvl.nbt.serialization.ParserException;
+import net.thenextlvl.nbt.serialization.TagAdapter;
+import net.thenextlvl.nbt.serialization.TagDeserializationContext;
+import net.thenextlvl.nbt.serialization.TagSerializationContext;
+import net.thenextlvl.nbt.tag.CompoundTag;
+import net.thenextlvl.nbt.tag.ListTag;
+import net.thenextlvl.nbt.tag.StringTag;
+import net.thenextlvl.nbt.tag.Tag;
 import net.thenextlvl.perworlds.data.AdvancementData;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
@@ -39,14 +39,14 @@ public class AdvancementDataAdapter implements TagAdapter<AdvancementData> {
 
     @Override
     public Tag serialize(AdvancementData data, TagSerializationContext context) throws ParserException {
-        var tag = new CompoundTag();
-        var awarded = new CompoundTag();
+        var tag = CompoundTag.empty();
+        var awarded = CompoundTag.empty();
         data.forEachAwardedCriteria((criteria, date) -> {
             awarded.add(criteria, context.serialize(date));
         });
         tag.add("advancement", context.serialize(data.getAdvancement().key()));
         tag.add("awarded", awarded);
-        tag.add("remaining", new ListTag<>(data.getRemainingCriteria().stream().map(StringTag::new).toList(), StringTag.ID));
+        tag.add("remaining", ListTag.of(StringTag.ID, data.getRemainingCriteria().stream().map(StringTag::of).toList()));
         return tag;
     }
 }

@@ -1,11 +1,11 @@
 package net.thenextlvl.perworlds.adapter;
 
-import core.nbt.serialization.ParserException;
-import core.nbt.serialization.TagAdapter;
-import core.nbt.serialization.TagDeserializationContext;
-import core.nbt.serialization.TagSerializationContext;
-import core.nbt.tag.LongTag;
-import core.nbt.tag.Tag;
+import net.thenextlvl.nbt.serialization.ParserException;
+import net.thenextlvl.nbt.serialization.TagAdapter;
+import net.thenextlvl.nbt.serialization.TagDeserializationContext;
+import net.thenextlvl.nbt.serialization.TagSerializationContext;
+import net.thenextlvl.nbt.tag.LongTag;
+import net.thenextlvl.nbt.tag.Tag;
 import org.jspecify.annotations.NullMarked;
 
 import java.time.Instant;
@@ -19,6 +19,6 @@ public class InstantAdapter implements TagAdapter<Instant> {
 
     @Override
     public Tag serialize(Instant instant, TagSerializationContext context) throws ParserException {
-        return new LongTag(instant.toEpochMilli());
+        return LongTag.of(instant.toEpochMilli());
     }
 }

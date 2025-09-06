@@ -1,9 +1,9 @@
 package net.thenextlvl.perworlds.adapter.statistic;
 
-import core.nbt.serialization.ParserException;
-import core.nbt.serialization.TagDeserializationContext;
-import core.nbt.tag.Tag;
 import net.kyori.adventure.key.Key;
+import net.thenextlvl.nbt.serialization.ParserException;
+import net.thenextlvl.nbt.serialization.TagDeserializationContext;
+import net.thenextlvl.nbt.tag.Tag;
 import net.thenextlvl.perworlds.model.PaperBlockTypeStat;
 import net.thenextlvl.perworlds.statistics.BlockTypeStat;
 import org.bukkit.Registry;

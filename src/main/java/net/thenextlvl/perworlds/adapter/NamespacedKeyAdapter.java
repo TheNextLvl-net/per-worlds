@@ -1,11 +1,11 @@
 package net.thenextlvl.perworlds.adapter;
 
-import core.nbt.serialization.ParserException;
-import core.nbt.serialization.TagAdapter;
-import core.nbt.serialization.TagDeserializationContext;
-import core.nbt.serialization.TagSerializationContext;
-import core.nbt.tag.StringTag;
-import core.nbt.tag.Tag;
+import net.thenextlvl.nbt.serialization.ParserException;
+import net.thenextlvl.nbt.serialization.TagAdapter;
+import net.thenextlvl.nbt.serialization.TagDeserializationContext;
+import net.thenextlvl.nbt.serialization.TagSerializationContext;
+import net.thenextlvl.nbt.tag.StringTag;
+import net.thenextlvl.nbt.tag.Tag;
 import org.bukkit.NamespacedKey;
 import org.jspecify.annotations.NullMarked;
 
@@ -20,6 +20,6 @@ public class NamespacedKeyAdapter implements TagAdapter<NamespacedKey> {
 
     @Override
     public Tag serialize(NamespacedKey key, TagSerializationContext context) throws ParserException {
-        return new StringTag(key.asString());
+        return StringTag.of(key.asString());
     }
 }

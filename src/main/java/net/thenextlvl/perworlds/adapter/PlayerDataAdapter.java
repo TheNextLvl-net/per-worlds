@@ -1,16 +1,18 @@
 package net.thenextlvl.perworlds.adapter;
 
-import core.nbt.serialization.ParserException;
-import core.nbt.serialization.TagAdapter;
-import core.nbt.serialization.TagDeserializationContext;
-import core.nbt.serialization.TagSerializationContext;
-import core.nbt.tag.ByteTag;
-import core.nbt.tag.CompoundTag;
-import core.nbt.tag.ListTag;
-import core.nbt.tag.StringTag;
-import core.nbt.tag.Tag;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.TriState;
+import net.thenextlvl.nbt.serialization.ParserException;
+import net.thenextlvl.nbt.serialization.TagAdapter;
+import net.thenextlvl.nbt.serialization.TagDeserializationContext;
+import net.thenextlvl.nbt.serialization.TagSerializationContext;
+import net.thenextlvl.nbt.tag.ByteTag;
+import net.thenextlvl.nbt.tag.CompoundTag;
+import net.thenextlvl.nbt.tag.ListTag;
+import net.thenextlvl.nbt.tag.NumberTag;
+import net.thenextlvl.nbt.tag.NumberTagImpl;
+import net.thenextlvl.nbt.tag.StringTag;
+import net.thenextlvl.nbt.tag.Tag;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.data.AdvancementData;
 import net.thenextlvl.perworlds.data.AttributeData;
@@ -120,9 +122,9 @@ public class PlayerDataAdapter implements TagAdapter<PlayerData> {
 
     @Override
     public CompoundTag serialize(PlayerData data, TagSerializationContext context) throws ParserException {
-        var tag = new CompoundTag();
-        tag.add("advancements", new ListTag<>(data.advancements().stream().map(context::serialize).toList(), CompoundTag.ID));
-        tag.add("attributes", new ListTag<>(data.attributes().stream().map(context::serialize).toList(), CompoundTag.ID));
+        var tag = CompoundTag.empty();
+        tag.add("advancements", ListTag.of(CompoundTag.ID, data.advancements().stream().map(context::serialize).toList()));
+        tag.add("attributes", ListTag.of(CompoundTag.ID, data.attributes().stream().map(context::serialize).toList()));
         tag.add("enderChest", context.serialize(data.enderChest()));
         tag.add("inventory", context.serialize(data.inventory()));
         var lastAdvancementTab = data.lastAdvancementTab();
@@ -137,8 +139,8 @@ public class PlayerDataAdapter implements TagAdapter<PlayerData> {
         if (lastLocation != null) tag.add("lastLocation", context.serialize(lastLocation));
         var gameMode = data.gameMode();
         if (gameMode != null) tag.add("gameMode", context.serialize(gameMode));
-        tag.add("recipes", new ListTag<>(data.discoveredRecipes().stream().map(context::serialize).toList(), StringTag.ID));
-        tag.add("potionEffects", new ListTag<>(data.potionEffects().stream().map(context::serialize).toList(), CompoundTag.ID));
+        tag.add("recipes", ListTag.of(StringTag.ID, data.discoveredRecipes().stream().map(context::serialize).toList()));
+        tag.add("potionEffects", ListTag.of(CompoundTag.ID, data.potionEffects().stream().map(context::serialize).toList()));
         tag.add("statistics", context.serialize(data.stats()));
         tag.add("seenCredits", data.seenCredits());
         tag.add("absorption", data.absorption());

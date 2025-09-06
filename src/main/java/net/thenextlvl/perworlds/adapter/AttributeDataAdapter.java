@@ -1,11 +1,11 @@
 package net.thenextlvl.perworlds.adapter;
 
-import core.nbt.serialization.ParserException;
-import core.nbt.serialization.TagAdapter;
-import core.nbt.serialization.TagDeserializationContext;
-import core.nbt.serialization.TagSerializationContext;
-import core.nbt.tag.CompoundTag;
-import core.nbt.tag.Tag;
+import net.thenextlvl.nbt.serialization.ParserException;
+import net.thenextlvl.nbt.serialization.TagAdapter;
+import net.thenextlvl.nbt.serialization.TagDeserializationContext;
+import net.thenextlvl.nbt.serialization.TagSerializationContext;
+import net.thenextlvl.nbt.tag.CompoundTag;
+import net.thenextlvl.nbt.tag.Tag;
 import net.thenextlvl.perworlds.data.AttributeData;
 import org.bukkit.attribute.Attribute;
 import org.jspecify.annotations.NullMarked;
@@ -22,7 +22,7 @@ public class AttributeDataAdapter implements TagAdapter<AttributeData> {
 
     @Override
     public Tag serialize(AttributeData data, TagSerializationContext context) throws ParserException {
-        var tag = new CompoundTag();
+        var tag = CompoundTag.empty();
         tag.add("id", context.serialize(data.attribute()));
         tag.add("base", data.baseValue());
         return tag;

@@ -3,11 +3,11 @@ package net.thenextlvl.perworlds.generator.adapter;
 import com.palantir.javapoet.MethodSpec;
 import com.palantir.javapoet.ParameterizedTypeName;
 import com.palantir.javapoet.TypeSpec;
-import core.nbt.serialization.TagAdapter;
-import core.nbt.serialization.TagDeserializationContext;
-import core.nbt.serialization.TagSerializationContext;
-import core.nbt.tag.CompoundTag;
-import core.nbt.tag.Tag;
+import net.thenextlvl.nbt.serialization.TagAdapter;
+import net.thenextlvl.nbt.serialization.TagDeserializationContext;
+import net.thenextlvl.nbt.serialization.TagSerializationContext;
+import net.thenextlvl.nbt.tag.CompoundTag;
+import net.thenextlvl.nbt.tag.Tag;
 import net.thenextlvl.perworlds.GroupSettings;
 import net.thenextlvl.perworlds.generator.Generator;
 import org.jspecify.annotations.NullMarked;
@@ -61,7 +61,7 @@ public class GroupSettingsAdapterGenerator extends Generator {
                 .returns(CompoundTag.class)
                 .addParameter(GroupSettings.class, "settings")
                 .addParameter(TagSerializationContext.class, "context")
-                .addStatement("var tag = new $T()", CompoundTag.class);
+                .addStatement("var tag = $T.empty()", CompoundTag.class);
         Arrays.stream(GroupSettings.class.getDeclaredMethods())
                 .map(Method::getName)
                 .distinct()

@@ -2,11 +2,11 @@ package net.thenextlvl.perworlds.group;
 
 import com.google.common.base.Preconditions;
 import core.i18n.file.ComponentBundle;
-import core.nbt.serialization.NBT;
-import core.nbt.serialization.adapter.EnumAdapter;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.kyori.adventure.util.TriState;
+import net.thenextlvl.nbt.serialization.NBT;
+import net.thenextlvl.nbt.serialization.adapter.EnumAdapter;
 import net.thenextlvl.perworlds.GroupData;
 import net.thenextlvl.perworlds.GroupProvider;
 import net.thenextlvl.perworlds.GroupSettings;
@@ -81,7 +81,7 @@ public class PaperGroupProvider implements GroupProvider {
     public PaperGroupProvider(PerWorldsPlugin plugin) {
         this.plugin = plugin;
         this.dataFolder = plugin.getDataPath().resolve("groups");
-        this.nbt = new NBT.Builder()
+        this.nbt = NBT.builder()
                 .registerTypeHierarchyAdapter(AdvancementData.class, new AdvancementDataAdapter(getServer()))
                 .registerTypeHierarchyAdapter(Attribute.class, new AttributeAdapter())
                 .registerTypeHierarchyAdapter(AttributeData.class, new AttributeDataAdapter())

@@ -2,10 +2,10 @@ package net.thenextlvl.perworlds.group;
 
 import com.google.common.base.Preconditions;
 import core.io.IO;
-import core.nbt.NBTInputStream;
-import core.nbt.NBTOutputStream;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.TriState;
+import net.thenextlvl.nbt.NBTInputStream;
+import net.thenextlvl.nbt.NBTOutputStream;
 import net.thenextlvl.perworlds.GroupData;
 import net.thenextlvl.perworlds.GroupSettings;
 import net.thenextlvl.perworlds.WorldGroup;
@@ -226,7 +226,7 @@ public class PaperWorldGroup implements WorldGroup {
                     file.outputStream(WRITE, CREATE, TRUNCATE_EXISTING),
                     StandardCharsets.UTF_8
             )) {
-                outputStream.writeTag(null, provider.nbt().toTag(config));
+                outputStream.writeTag(null, provider.nbt().serialize(config));
                 return true;
             }
         } catch (Throwable t) {
@@ -298,7 +298,7 @@ public class PaperWorldGroup implements WorldGroup {
                     file.outputStream(WRITE, CREATE, TRUNCATE_EXISTING),
                     StandardCharsets.UTF_8
             )) {
-                outputStream.writeTag(null, provider.nbt().toTag(data, PaperPlayerData.class));
+                outputStream.writeTag(null, provider.nbt().serialize(data, PaperPlayerData.class));
                 return true;
             }
         } catch (Throwable t) {
@@ -450,13 +450,13 @@ public class PaperWorldGroup implements WorldGroup {
     private <T> Optional<T> readFile(Path file, Path backup, Class<T> type) throws IOException {
         if (!Files.exists(file)) return Optional.empty();
         try (var inputStream = stream(IO.of(file))) {
-            return Optional.of(inputStream.readTag()).map(tag -> provider.nbt().fromTag(tag, type));
+            return Optional.of(inputStream.readTag()).map(tag -> provider.nbt().deserialize(tag, type));
         } catch (Exception e) {
             if (!Files.exists(backup)) throw e;
             provider.getLogger().warn("Failed to load data from {}", file, e);
             provider.getLogger().warn("Falling back to {}", backup);
             try (var inputStream = stream(IO.of(backup))) {
-                return Optional.of(inputStream.readTag()).map(tag -> provider.nbt().fromTag(tag, type));
+                return Optional.of(inputStream.readTag()).map(tag -> provider.nbt().deserialize(tag, type));
             }
         }
     }

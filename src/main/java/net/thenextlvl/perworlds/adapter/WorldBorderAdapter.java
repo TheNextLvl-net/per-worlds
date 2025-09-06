@@ -1,11 +1,11 @@
 package net.thenextlvl.perworlds.adapter;
 
-import core.nbt.serialization.ParserException;
-import core.nbt.serialization.TagAdapter;
-import core.nbt.serialization.TagDeserializationContext;
-import core.nbt.serialization.TagSerializationContext;
-import core.nbt.tag.CompoundTag;
-import core.nbt.tag.Tag;
+import net.thenextlvl.nbt.serialization.ParserException;
+import net.thenextlvl.nbt.serialization.TagAdapter;
+import net.thenextlvl.nbt.serialization.TagDeserializationContext;
+import net.thenextlvl.nbt.serialization.TagSerializationContext;
+import net.thenextlvl.nbt.tag.CompoundTag;
+import net.thenextlvl.nbt.tag.Tag;
 import net.thenextlvl.perworlds.data.WorldBorderData;
 import org.jspecify.annotations.NullMarked;
 
@@ -34,7 +34,7 @@ public class WorldBorderAdapter implements TagAdapter<WorldBorderData> {
 
     @Override
     public Tag serialize(WorldBorderData data, TagSerializationContext context) throws ParserException {
-        var tag = new CompoundTag();
+        var tag = CompoundTag.empty();
         tag.add("x", data.centerX());
         tag.add("z", data.centerZ());
         tag.add("size", data.size());

@@ -1,11 +1,11 @@
 package net.thenextlvl.perworlds.adapter.statistic;
 
-import core.nbt.serialization.ParserException;
-import core.nbt.serialization.TagAdapter;
-import core.nbt.serialization.TagDeserializationContext;
-import core.nbt.serialization.TagSerializationContext;
-import core.nbt.tag.IntTag;
-import core.nbt.tag.Tag;
+import net.thenextlvl.nbt.serialization.ParserException;
+import net.thenextlvl.nbt.serialization.TagAdapter;
+import net.thenextlvl.nbt.serialization.TagDeserializationContext;
+import net.thenextlvl.nbt.serialization.TagSerializationContext;
+import net.thenextlvl.nbt.tag.IntTag;
+import net.thenextlvl.nbt.tag.Tag;
 import net.thenextlvl.perworlds.model.PaperCustomStat;
 import net.thenextlvl.perworlds.statistics.CustomStat;
 import org.jspecify.annotations.NullMarked;
@@ -19,6 +19,6 @@ public class CustomStatAdapter implements TagAdapter<CustomStat> {
 
     @Override
     public Tag serialize(CustomStat stat, TagSerializationContext context) throws ParserException {
-        return new IntTag(stat.getValue());
+        return IntTag.of(stat.getValue());
     }
 }

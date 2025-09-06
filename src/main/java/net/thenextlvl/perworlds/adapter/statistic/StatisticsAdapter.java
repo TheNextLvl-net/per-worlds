@@ -1,12 +1,12 @@
 package net.thenextlvl.perworlds.adapter.statistic;
 
-import core.nbt.serialization.ParserException;
-import core.nbt.serialization.TagAdapter;
-import core.nbt.serialization.TagDeserializationContext;
-import core.nbt.serialization.TagSerializationContext;
-import core.nbt.tag.CompoundTag;
-import core.nbt.tag.Tag;
 import net.kyori.adventure.key.Key;
+import net.thenextlvl.nbt.serialization.ParserException;
+import net.thenextlvl.nbt.serialization.TagAdapter;
+import net.thenextlvl.nbt.serialization.TagDeserializationContext;
+import net.thenextlvl.nbt.serialization.TagSerializationContext;
+import net.thenextlvl.nbt.tag.CompoundTag;
+import net.thenextlvl.nbt.tag.Tag;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.model.PaperStatistics;
 import net.thenextlvl.perworlds.statistics.BlockTypeStat;
@@ -43,7 +43,7 @@ public class StatisticsAdapter implements TagAdapter<Statistics> {
 
     @Override
     public Tag serialize(Statistics statistics, TagSerializationContext context) throws ParserException {
-        var tag = new CompoundTag();
+        var tag = CompoundTag.empty();
         statistics.forEachStatistic((statistic, value) -> {
             if (value.hasData()) tag.add(statistic.key().asString(), context.serialize(value));
         });
