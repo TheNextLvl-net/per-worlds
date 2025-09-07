@@ -9,8 +9,6 @@ import net.thenextlvl.nbt.serialization.TagSerializationContext;
 import net.thenextlvl.nbt.tag.ByteTag;
 import net.thenextlvl.nbt.tag.CompoundTag;
 import net.thenextlvl.nbt.tag.ListTag;
-import net.thenextlvl.nbt.tag.NumberTag;
-import net.thenextlvl.nbt.tag.NumberTagImpl;
 import net.thenextlvl.nbt.tag.StringTag;
 import net.thenextlvl.nbt.tag.Tag;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
