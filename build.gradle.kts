@@ -77,7 +77,7 @@ paper {
     main = "net.thenextlvl.perworlds.PerWorldsPlugin"
     apiVersion = "1.21.5"
     description = "Per-world customization for gameplay and settings"
-    load = BukkitPluginDescription.PluginLoadOrder.STARTUP
+    load = BukkitPluginDescription.PluginLoadOrder.POSTWORLD
     website = "https://thenextlvl.net"
     authors = listOf("NonSwag")
     // foliaSupported = true // way too many events still not being called on folia
