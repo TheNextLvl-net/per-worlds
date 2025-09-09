@@ -8,6 +8,7 @@ import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.WorldGroup;
 import net.thenextlvl.perworlds.command.argument.GroupArgument;
 import net.thenextlvl.perworlds.command.brigadier.BrigadierCommand;
+import net.thenextlvl.perworlds.command.spawn.GroupSpawnCommand;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
@@ -31,7 +32,7 @@ public final class GroupCommand extends BrigadierCommand {
                 .then(GroupTeleportCommand.create(plugin));
     }
 
-    static RequiredArgumentBuilder<CommandSourceStack, WorldGroup> groupArgument(PerWorldsPlugin plugin, boolean listAll) {
+    public static RequiredArgumentBuilder<CommandSourceStack, WorldGroup> groupArgument(PerWorldsPlugin plugin, boolean listAll) {
         return Commands.argument("group", new GroupArgument(plugin, listAll));
     }
 }
