@@ -7,13 +7,18 @@ import io.papermc.paper.command.brigadier.Commands;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.WorldGroup;
 import net.thenextlvl.perworlds.command.argument.GroupArgument;
+import net.thenextlvl.perworlds.command.brigadier.BrigadierCommand;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class GroupCommand {
+public final class GroupCommand extends BrigadierCommand {
+    private GroupCommand(PerWorldsPlugin plugin) {
+        super(plugin, "group", "perworlds.command.group");
+    }
+
     public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
-        return Commands.literal("group")
-                .requires(source -> source.getSender().hasPermission("perworlds.command.group"))
+        var command = new GroupCommand(plugin);
+        return command.create()
                 .then(GroupAddCommand.create(plugin))
                 .then(GroupCreateCommand.create(plugin))
                 .then(GroupDeleteCommand.create(plugin))
