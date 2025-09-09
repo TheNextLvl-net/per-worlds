@@ -17,7 +17,7 @@ import org.jspecify.annotations.NullMarked;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static net.thenextlvl.perworlds.command.GroupCommand.groupArgument;
+import static net.thenextlvl.perworlds.command.WorldCommand.groupArgument;
 
 @NullMarked
 final class GroupOptionCommand extends BrigadierCommand {

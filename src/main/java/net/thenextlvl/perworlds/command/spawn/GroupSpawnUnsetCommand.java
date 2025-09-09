@@ -9,7 +9,7 @@ import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.WorldGroup;
 import net.thenextlvl.perworlds.command.brigadier.SimpleCommand;
 
-import static net.thenextlvl.perworlds.command.GroupCommand.groupArgument;
+import static net.thenextlvl.perworlds.command.WorldCommand.groupArgument;
 
 final class GroupSpawnUnsetCommand extends SimpleCommand {
 

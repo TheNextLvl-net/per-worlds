@@ -14,7 +14,7 @@ import net.thenextlvl.perworlds.command.brigadier.SimpleCommand;
 import net.thenextlvl.perworlds.command.suggestion.GroupMemberSuggestionProvider;
 import org.jspecify.annotations.NullMarked;
 
-import static net.thenextlvl.perworlds.command.GroupCommand.groupArgument;
+import static net.thenextlvl.perworlds.command.WorldCommand.groupArgument;
 
 @NullMarked
 final class GroupRemoveCommand extends SimpleCommand {

@@ -10,7 +10,7 @@ import net.thenextlvl.perworlds.WorldGroup;
 import net.thenextlvl.perworlds.command.brigadier.SimpleCommand;
 import org.jspecify.annotations.NullMarked;
 
-import static net.thenextlvl.perworlds.command.GroupCommand.groupArgument;
+import static net.thenextlvl.perworlds.command.WorldCommand.groupArgument;
 
 @NullMarked
 final class GroupDeleteCommand extends SimpleCommand {

@@ -18,7 +18,7 @@ import net.thenextlvl.perworlds.command.brigadier.SimpleCommand;
 import net.thenextlvl.perworlds.command.suggestion.GroupMemberSuggestionProvider;
 import org.bukkit.World;
 
-import static net.thenextlvl.perworlds.command.GroupCommand.groupArgument;
+import static net.thenextlvl.perworlds.command.WorldCommand.groupArgument;
 
 final class GroupSpawnSetCommand extends SimpleCommand {
     private GroupSpawnSetCommand(PerWorldsPlugin plugin) {

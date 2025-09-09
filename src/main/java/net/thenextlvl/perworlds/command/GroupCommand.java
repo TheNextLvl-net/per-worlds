@@ -1,18 +1,14 @@
 package net.thenextlvl.perworlds.command;
 
 import com.mojang.brigadier.builder.ArgumentBuilder;
-import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import io.papermc.paper.command.brigadier.Commands;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
-import net.thenextlvl.perworlds.WorldGroup;
-import net.thenextlvl.perworlds.command.argument.GroupArgument;
 import net.thenextlvl.perworlds.command.brigadier.BrigadierCommand;
 import net.thenextlvl.perworlds.command.spawn.GroupSpawnCommand;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public final class GroupCommand extends BrigadierCommand {
+final class GroupCommand extends BrigadierCommand {
     private GroupCommand(PerWorldsPlugin plugin) {
         super(plugin, "group", "perworlds.command.group");
     }
@@ -30,9 +26,5 @@ public final class GroupCommand extends BrigadierCommand {
                 .then(GroupRemoveCommand.create(plugin))
                 .then(GroupSpawnCommand.create(plugin))
                 .then(GroupTeleportCommand.create(plugin));
-    }
-
-    public static RequiredArgumentBuilder<CommandSourceStack, WorldGroup> groupArgument(PerWorldsPlugin plugin, boolean listAll) {
-        return Commands.argument("group", new GroupArgument(plugin, listAll));
     }
 }

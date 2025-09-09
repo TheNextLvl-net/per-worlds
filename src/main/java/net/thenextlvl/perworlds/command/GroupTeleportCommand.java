@@ -19,7 +19,7 @@ import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
 
-import static net.thenextlvl.perworlds.command.GroupCommand.groupArgument;
+import static net.thenextlvl.perworlds.command.WorldCommand.groupArgument;
 
 @NullMarked
 final class GroupTeleportCommand extends SimpleCommand {

@@ -14,7 +14,7 @@ import net.thenextlvl.perworlds.command.suggestion.UnassignedWorldsSuggestionPro
 import org.bukkit.World;
 import org.jspecify.annotations.NullMarked;
 
-import static net.thenextlvl.perworlds.command.GroupCommand.groupArgument;
+import static net.thenextlvl.perworlds.command.WorldCommand.groupArgument;
 
 @NullMarked
 final class GroupAddCommand extends SimpleCommand {
