@@ -4,30 +4,27 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.WorldGroup;
+import net.thenextlvl.perworlds.command.brigadier.SimpleCommand;
 import org.jspecify.annotations.NullMarked;
 
 import static net.thenextlvl.perworlds.command.GroupCommand.groupArgument;
 
 @NullMarked
-class GroupDeleteCommand {
-    private final PerWorldsPlugin plugin;
-
+final class GroupDeleteCommand extends SimpleCommand {
     private GroupDeleteCommand(PerWorldsPlugin plugin) {
-        this.plugin = plugin;
+        super(plugin, "delete", "perworlds.command.group.delete");
     }
 
     public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
         var command = new GroupDeleteCommand(plugin);
-        return Commands.literal("delete")
-                .requires(source -> source.getSender().hasPermission("perworlds.command.group.delete"))
-                .then(groupArgument(plugin, true).executes(command::delete));
+        return command.create().then(groupArgument(plugin, true).executes(command));
     }
 
-    private int delete(CommandContext<CommandSourceStack> context) {
+    @Override
+    public int run(CommandContext<CommandSourceStack> context) {
         var sender = context.getSource().getSender();
         var group = context.getArgument("group", WorldGroup.class);
         var success = group.delete();
