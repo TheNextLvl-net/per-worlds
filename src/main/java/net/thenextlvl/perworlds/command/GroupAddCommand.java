@@ -9,6 +9,7 @@ import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.WorldGroup;
+import net.thenextlvl.perworlds.command.brigadier.SimpleCommand;
 import net.thenextlvl.perworlds.command.suggestion.UnassignedWorldsSuggestionProvider;
 import org.bukkit.World;
 import org.jspecify.annotations.NullMarked;
@@ -16,27 +17,24 @@ import org.jspecify.annotations.NullMarked;
 import static net.thenextlvl.perworlds.command.GroupCommand.groupArgument;
 
 @NullMarked
-class GroupAddCommand {
-    private final PerWorldsPlugin plugin;
-
+final class GroupAddCommand extends SimpleCommand {
     private GroupAddCommand(PerWorldsPlugin plugin) {
-        this.plugin = plugin;
+        super(plugin, "add", "perworlds.command.group.add");
     }
 
     public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
         var command = new GroupAddCommand(plugin);
-        return Commands.literal("add")
-                .requires(source -> source.getSender().hasPermission("perworlds.command.group.add"))
-                .then(command.add());
+        return command.create().then(command.add());
     }
 
     private ArgumentBuilder<CommandSourceStack, ?> add() {
         return Commands.argument("world", ArgumentTypes.world())
                 .suggests(new UnassignedWorldsSuggestionProvider<>(plugin))
-                .then(groupArgument(plugin, false).executes(this::add));
+                .then(groupArgument(plugin, false).executes(this));
     }
 
-    private int add(CommandContext<CommandSourceStack> context) {
+    @Override
+    public int run(CommandContext<CommandSourceStack> context) {
         var group = context.getArgument("group", WorldGroup.class);
         var world = context.getArgument("world", World.class);
         var success = group.addWorld(world);
