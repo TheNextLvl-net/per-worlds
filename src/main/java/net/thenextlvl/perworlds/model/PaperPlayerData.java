@@ -63,7 +63,7 @@ import java.util.stream.Collectors;
 import static net.thenextlvl.perworlds.PerWorldsPlugin.ISSUES;
 
 @NullMarked
-public class PaperPlayerData implements PlayerData {
+public final class PaperPlayerData implements PlayerData {
     private static final @Nullable ItemStack[] DEFAULT_ENDERCHEST = new ItemStack[27];
     private static final @Nullable ItemStack[] DEFAULT_INVENTORY = new ItemStack[40];
     private static final @Nullable Location DEFAULT_LAST_DEATH_LOCATION = null;

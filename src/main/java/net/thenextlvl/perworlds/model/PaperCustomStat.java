@@ -5,7 +5,7 @@ import org.bukkit.Statistic;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class PaperCustomStat implements CustomStat {
+public final class PaperCustomStat implements CustomStat {
     private int value;
     
     public PaperCustomStat(int value) {

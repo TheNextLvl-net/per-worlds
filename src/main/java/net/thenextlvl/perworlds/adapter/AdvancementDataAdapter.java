@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.stream.Collectors;
 
 @NullMarked
-public class AdvancementDataAdapter implements TagAdapter<AdvancementData> {
+public final class AdvancementDataAdapter implements TagAdapter<AdvancementData> {
     private final Server server;
 
     public AdvancementDataAdapter(Server server) {

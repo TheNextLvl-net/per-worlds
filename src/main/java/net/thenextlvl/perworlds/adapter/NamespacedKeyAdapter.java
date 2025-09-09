@@ -12,7 +12,7 @@ import org.jspecify.annotations.NullMarked;
 import java.util.Objects;
 
 @NullMarked
-public class NamespacedKeyAdapter implements TagAdapter<NamespacedKey> {
+public final class NamespacedKeyAdapter implements TagAdapter<NamespacedKey> {
     @Override
     public NamespacedKey deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
         return Objects.requireNonNull(NamespacedKey.fromString(tag.getAsString()), "Encountered invalid namespaced key: " + tag.getAsString());

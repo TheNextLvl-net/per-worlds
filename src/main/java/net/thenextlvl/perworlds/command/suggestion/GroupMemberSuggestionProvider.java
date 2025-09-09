@@ -11,7 +11,7 @@ import org.jspecify.annotations.NullMarked;
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
-public class GroupMemberSuggestionProvider<S> implements SuggestionProvider<S> {
+public final class GroupMemberSuggestionProvider<S> implements SuggestionProvider<S> {
     @Override
     public CompletableFuture<Suggestions> getSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
         var group = context.getLastChild().getArgument("group", WorldGroup.class);

@@ -13,7 +13,7 @@ import org.jspecify.annotations.NullMarked;
 import java.util.HashMap;
 
 @NullMarked
-public class ItemTypeStatAdapter extends TypedStatAdapter<ItemTypeStat> {
+public final class ItemTypeStatAdapter extends TypedStatAdapter<ItemTypeStat> {
     @Override
     @SuppressWarnings("PatternValidation")
     public ItemTypeStat deserialize(Tag tag, TagDeserializationContext context) throws ParserException {

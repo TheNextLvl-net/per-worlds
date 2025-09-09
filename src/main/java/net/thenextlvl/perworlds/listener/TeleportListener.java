@@ -9,7 +9,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class TeleportListener implements Listener {
+public final class TeleportListener implements Listener {
     private final PaperGroupProvider provider;
 
     public TeleportListener(PaperGroupProvider provider) {

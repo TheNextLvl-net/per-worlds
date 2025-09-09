@@ -19,7 +19,7 @@ import org.bukkit.Server;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class GroupDataAdapter implements TagAdapter<GroupData> {
+public final class GroupDataAdapter implements TagAdapter<GroupData> {
     private final Server server;
 
     public GroupDataAdapter(Server server) {

@@ -6,7 +6,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-public class WorldsListener implements Listener {
+public final class WorldsListener implements Listener {
     private final PaperGroupProvider provider;
 
     public WorldsListener(PaperGroupProvider provider) {

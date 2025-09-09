@@ -11,7 +11,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class PotionEffectAdapter implements TagAdapter<PotionEffect> {
+public final class PotionEffectAdapter implements TagAdapter<PotionEffect> {
     @Override
     public PotionEffect deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
         var root = tag.getAsCompound();

@@ -71,7 +71,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 @NullMarked
-public class PaperGroupProvider implements GroupProvider {
+public final class PaperGroupProvider implements GroupProvider {
     private final Path dataFolder;
     private final Set<WorldGroup> groups = new HashSet<>();
     private final NBT nbt;

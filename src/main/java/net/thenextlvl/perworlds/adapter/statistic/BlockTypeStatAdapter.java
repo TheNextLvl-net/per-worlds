@@ -13,7 +13,7 @@ import org.jspecify.annotations.NullMarked;
 import java.util.HashMap;
 
 @NullMarked
-public class BlockTypeStatAdapter extends TypedStatAdapter<BlockTypeStat> {
+public final class BlockTypeStatAdapter extends TypedStatAdapter<BlockTypeStat> {
     @Override
     @SuppressWarnings("PatternValidation")
     public BlockTypeStat deserialize(Tag tag, TagDeserializationContext context) throws ParserException {

@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @NullMarked
-public class PaperUnownedWorldGroup extends PaperWorldGroup {
+public final class PaperUnownedWorldGroup extends PaperWorldGroup {
     public PaperUnownedWorldGroup(PaperGroupProvider provider) {
         super(provider, "unowned", new PaperGroupData(), new PaperGroupSettings(), Set.of());
     }

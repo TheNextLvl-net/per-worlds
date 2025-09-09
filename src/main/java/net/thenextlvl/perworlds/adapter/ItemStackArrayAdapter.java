@@ -13,7 +13,7 @@ import org.jspecify.annotations.Nullable;
 import java.util.Base64;
 
 @NullMarked
-public class ItemStackArrayAdapter implements TagAdapter<@Nullable ItemStack[]> {
+public final class ItemStackArrayAdapter implements TagAdapter<@Nullable ItemStack[]> {
     @Override
     public @Nullable ItemStack[] deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
         var bytes = Base64.getDecoder().decode(tag.getAsString());

@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class ChatListener implements Listener {
+public final class ChatListener implements Listener {
     private final GroupProvider provider;
 
     public ChatListener(GroupProvider provider) {

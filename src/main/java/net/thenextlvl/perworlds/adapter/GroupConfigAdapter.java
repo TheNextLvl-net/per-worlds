@@ -19,7 +19,7 @@ import java.util.HashSet;
 import java.util.stream.Collectors;
 
 @NullMarked
-public class GroupConfigAdapter implements TagAdapter<GroupConfig> {
+public final class GroupConfigAdapter implements TagAdapter<GroupConfig> {
     @Override
     public GroupConfig deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
         var data = tag.getAsCompound().optional("data")

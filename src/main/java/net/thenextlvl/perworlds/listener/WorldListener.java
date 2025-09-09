@@ -28,7 +28,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 @NullMarked
-public class WorldListener implements Listener {
+public final class WorldListener implements Listener {
     private final PaperGroupProvider provider;
 
     private final Map<Type, Set<WorldGroup>> lock = new HashMap<>();

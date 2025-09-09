@@ -13,7 +13,7 @@ import org.jspecify.annotations.NullMarked;
 import java.util.HashMap;
 
 @NullMarked
-public class EntityTypeStatAdapter extends TypedStatAdapter<EntityTypeStat> {
+public final class EntityTypeStatAdapter extends TypedStatAdapter<EntityTypeStat> {
     @Override
     @SuppressWarnings("PatternValidation")
     public EntityTypeStat deserialize(Tag tag, TagDeserializationContext context) throws ParserException {

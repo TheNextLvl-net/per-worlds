@@ -10,7 +10,7 @@ import net.thenextlvl.perworlds.data.WardenSpawnTracker;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class WardenSpawnTrackerAdapter implements TagAdapter<WardenSpawnTracker> {
+public final class WardenSpawnTrackerAdapter implements TagAdapter<WardenSpawnTracker> {
     @Override
     public WardenSpawnTracker deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
         var root = tag.getAsCompound();

@@ -12,7 +12,7 @@ import org.jspecify.annotations.NullMarked;
 import java.util.concurrent.CompletableFuture;
 
 @NullMarked
-public class UnassignedWorldsSuggestionProvider<S> implements SuggestionProvider<S> {
+public final class UnassignedWorldsSuggestionProvider<S> implements SuggestionProvider<S> {
     private final PerWorldsPlugin plugin;
 
     public UnassignedWorldsSuggestionProvider(PerWorldsPlugin plugin) {

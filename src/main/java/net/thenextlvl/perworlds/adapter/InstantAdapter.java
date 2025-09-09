@@ -11,7 +11,7 @@ import org.jspecify.annotations.NullMarked;
 import java.time.Instant;
 
 @NullMarked
-public class InstantAdapter implements TagAdapter<Instant> {
+public final class InstantAdapter implements TagAdapter<Instant> {
     @Override
     public Instant deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
         return Instant.ofEpochMilli(tag.getAsLong());

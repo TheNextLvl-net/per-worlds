@@ -10,7 +10,7 @@ import org.bukkit.util.Vector;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class VectorAdapter implements TagAdapter<Vector> {
+public final class VectorAdapter implements TagAdapter<Vector> {
     @Override
     public Vector deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
         var root = tag.getAsCompound();

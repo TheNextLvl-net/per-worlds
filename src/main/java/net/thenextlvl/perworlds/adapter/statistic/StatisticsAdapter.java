@@ -22,7 +22,7 @@ import org.jspecify.annotations.NullMarked;
 import java.util.HashMap;
 
 @NullMarked
-public class StatisticsAdapter implements TagAdapter<Statistics> {
+public final class StatisticsAdapter implements TagAdapter<Statistics> {
     private final PerWorldsPlugin plugin;
 
     public StatisticsAdapter(PerWorldsPlugin plugin) {

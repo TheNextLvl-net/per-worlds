@@ -11,7 +11,7 @@ import org.bukkit.attribute.Attribute;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class AttributeDataAdapter implements TagAdapter<AttributeData> {
+public final class AttributeDataAdapter implements TagAdapter<AttributeData> {
     @Override
     public AttributeData deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
         var root = tag.getAsCompound();

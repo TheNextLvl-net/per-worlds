@@ -26,7 +26,7 @@ import static org.bukkit.GameRule.ANNOUNCE_ADVANCEMENTS;
 import static org.bukkit.GameRule.SHOW_DEATH_MESSAGES;
 
 @NullMarked
-public class MessageListener implements Listener {
+public final class MessageListener implements Listener {
     private final GroupProvider provider;
 
     public MessageListener(GroupProvider provider) {

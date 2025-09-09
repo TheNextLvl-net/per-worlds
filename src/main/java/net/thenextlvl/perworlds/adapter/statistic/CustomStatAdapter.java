@@ -11,7 +11,7 @@ import net.thenextlvl.perworlds.statistics.CustomStat;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class CustomStatAdapter implements TagAdapter<CustomStat> {
+public final class CustomStatAdapter implements TagAdapter<CustomStat> {
     @Override
     public CustomStat deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
         return new PaperCustomStat(tag.getAsInt());

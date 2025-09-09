@@ -2,7 +2,7 @@ package net.thenextlvl.perworlds.group;
 
 import net.thenextlvl.perworlds.GroupSettings;
 
-public class PaperGroupSettings implements GroupSettings {
+public final class PaperGroupSettings implements GroupSettings {
     private boolean absorption = true;
     private boolean advancementMessages = true;
     private boolean advancements = true;

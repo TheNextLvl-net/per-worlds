@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 @NullMarked
-public class PaperStatistics implements Statistics {
+public final class PaperStatistics implements Statistics {
     private final Map<Statistic, Stat> statistics;
     
     public PaperStatistics(HashMap<Statistic, Stat> values) {

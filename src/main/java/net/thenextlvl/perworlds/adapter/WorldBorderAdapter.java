@@ -10,7 +10,7 @@ import net.thenextlvl.perworlds.data.WorldBorderData;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public class WorldBorderAdapter implements TagAdapter<WorldBorderData> {
+public final class WorldBorderAdapter implements TagAdapter<WorldBorderData> {
     @Override
     public WorldBorderData deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
         var border = WorldBorderData.DEFAULT;

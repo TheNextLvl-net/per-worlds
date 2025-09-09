@@ -29,7 +29,7 @@ import org.jspecify.annotations.NullMarked;
 import java.util.Objects;
 
 @NullMarked
-public class PlayerDataAdapter implements TagAdapter<PlayerData> {
+public final class PlayerDataAdapter implements TagAdapter<PlayerData> {
     private final PerWorldsPlugin plugin;
 
     public PlayerDataAdapter(PerWorldsPlugin plugin) {

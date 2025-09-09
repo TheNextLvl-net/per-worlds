@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 @NullMarked
-public class PaperBlockTypeStat extends PaperSubstatistic<BlockType> implements BlockTypeStat {
+public final class PaperBlockTypeStat extends PaperSubstatistic<BlockType> implements BlockTypeStat {
     public PaperBlockTypeStat(Map<BlockType, Integer> values) {
         super(values);
     }

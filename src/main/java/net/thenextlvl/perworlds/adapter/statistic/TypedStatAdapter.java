@@ -9,7 +9,7 @@ import net.thenextlvl.perworlds.statistics.Substatistic;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public abstract class TypedStatAdapter<T extends Substatistic<?>> implements TagAdapter<T> {
+abstract class TypedStatAdapter<T extends Substatistic<?>> implements TagAdapter<T> {
     @Override
     public Tag serialize(T stat, TagSerializationContext context) throws ParserException {
         var tag = CompoundTag.empty();

@@ -15,7 +15,7 @@ import org.jspecify.annotations.NullMarked;
 import java.util.List;
 
 @NullMarked
-public class RespawnListener implements Listener {
+public final class RespawnListener implements Listener {
     private final PaperGroupProvider provider;
 
     public RespawnListener(PaperGroupProvider provider) {

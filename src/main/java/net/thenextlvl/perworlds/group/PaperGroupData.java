@@ -16,7 +16,7 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 
 @NullMarked
-public class PaperGroupData implements GroupData {
+public final class PaperGroupData implements GroupData {
     private final Map<GameRule<?>, Object> gameRules = new HashMap<>();
     private @Nullable GameMode defaultGameMode = null;
     private @Nullable Location spawnLocation = null;

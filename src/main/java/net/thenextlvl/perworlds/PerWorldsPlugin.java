@@ -29,7 +29,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @NullMarked
-public class PerWorldsPlugin extends JavaPlugin {
+public final class PerWorldsPlugin extends JavaPlugin {
     public static final String ISSUES = "https://github.com/TheNextLvl-net/per-worlds/issues/new?template=bug_report.yml";
 
     private final PluginVersionChecker versionChecker = new PluginVersionChecker(this);
