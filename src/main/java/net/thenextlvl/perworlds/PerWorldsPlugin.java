@@ -55,7 +55,6 @@ public final class PerWorldsPlugin extends JavaPlugin {
         versionChecker.checkVersion();
         addCustomCharts();
         registerServices();
-        loadGroups();
     }
 
     @Override
@@ -63,6 +62,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
         scheduleDefaultGroupCreation();
         registerListeners();
         warnWorldManager();
+        loadGroups();
     }
 
     @Override
