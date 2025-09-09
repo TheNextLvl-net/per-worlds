@@ -11,7 +11,7 @@ import net.thenextlvl.perworlds.command.brigadier.SimpleCommand;
 final class GroupHelpCommand extends SimpleCommand {
     private static final String DOCS_URL = "https://thenextlvl.net/docs/perworlds";
 
-    GroupHelpCommand(PerWorldsPlugin plugin) {
+    private GroupHelpCommand(PerWorldsPlugin plugin) {
         super(plugin, "help", null);
     }
 
