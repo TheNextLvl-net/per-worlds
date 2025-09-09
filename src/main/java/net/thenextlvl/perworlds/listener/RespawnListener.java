@@ -59,6 +59,7 @@ public final class RespawnListener implements Listener {
             playerData.health(attribute != null ? attribute.getValue() : 20);
         });
 
+        if (event.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.END_PORTAL)) return;
         if (event.isBedSpawn() || event.isAnchorSpawn()) return;
         group.getGroupData().getSpawnLocation().ifPresentOrElse(event::setRespawnLocation,
                 () -> group.getSpawnLocation().ifPresent(event::setRespawnLocation));
