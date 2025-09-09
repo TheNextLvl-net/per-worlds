@@ -1,27 +1,24 @@
-package net.thenextlvl.perworlds.command;
+package net.thenextlvl.perworlds.command.spawn;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.minimessage.tag.resolver.Formatter;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.WorldGroup;
 import net.thenextlvl.perworlds.command.brigadier.SimpleCommand;
-import org.jspecify.annotations.NullMarked;
 
 import static net.thenextlvl.perworlds.command.WorldCommand.groupArgument;
 
-@NullMarked
-final class GroupInfoCommand extends SimpleCommand {
-    private GroupInfoCommand(PerWorldsPlugin plugin) {
-        super(plugin, "info", "perworlds.command.group.info");
+final class GroupSpawnUnsetCommand extends SimpleCommand {
+
+    private GroupSpawnUnsetCommand(PerWorldsPlugin plugin) {
+        super(plugin, "unset", "perworlds.command.group.spawn.unset");
     }
 
     public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
-        var command = new GroupInfoCommand(plugin);
+        var command = new GroupSpawnUnsetCommand(plugin);
         return command.create()
                 .then(groupArgument(plugin, true).executes(command))
                 .executes(command);
@@ -33,15 +30,9 @@ final class GroupInfoCommand extends SimpleCommand {
             return plugin.groupProvider().getGroup(context.getSource().getLocation().getWorld())
                     .orElse(plugin.groupProvider().getUnownedWorldGroup());
         });
-        var worlds = group.getPersistedWorlds().stream().map(key -> {
-            var world = plugin.getServer().getWorld(key);
-            return world != null ? world.getName() : key.asString();
-        }).map(Component::text).toList();
-        plugin.bundle().sendMessage(context.getSource().getSender(), "group.info",
-                Formatter.booleanChoice("single", worlds.size() == 1),
-                Formatter.joining("worlds", worlds),
-                Formatter.number("amount", worlds.size()),
-                Placeholder.unparsed("group", group.getName()));
+        group.getGroupData().setSpawnLocation(null);
+        plugin.bundle().sendMessage(context.getSource().getSender(), "group.spawn.unset",
+                Placeholder.parsed("group", group.getName()));
         return Command.SINGLE_SUCCESS;
     }
 }

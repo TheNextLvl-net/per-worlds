@@ -10,33 +10,31 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.WorldGroup;
+import net.thenextlvl.perworlds.command.brigadier.SimpleCommand;
 import net.thenextlvl.perworlds.command.suggestion.GroupMemberSuggestionProvider;
 import org.jspecify.annotations.NullMarked;
 
-import static net.thenextlvl.perworlds.command.GroupCommand.groupArgument;
+import static net.thenextlvl.perworlds.command.WorldCommand.groupArgument;
 
 @NullMarked
-class GroupRemoveCommand {
-    private final PerWorldsPlugin plugin;
-
+final class GroupRemoveCommand extends SimpleCommand {
     private GroupRemoveCommand(PerWorldsPlugin plugin) {
-        this.plugin = plugin;
+        super(plugin, "remove", "perworlds.command.group.remove");
     }
 
     public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
         var command = new GroupRemoveCommand(plugin);
-        return Commands.literal("remove")
-                .requires(source -> source.getSender().hasPermission("perworlds.command.group.remove"))
-                .then(command.remove());
+        return command.create().then(command.remove());
     }
 
     private ArgumentBuilder<CommandSourceStack, ?> remove() {
         return groupArgument(plugin, false).then(Commands.argument("world", ArgumentTypes.key())
                 .suggests(new GroupMemberSuggestionProvider<>())
-                .executes(this::remove));
+                .executes(this));
     }
 
-    private int remove(CommandContext<CommandSourceStack> context) {
+    @Override
+    public int run(CommandContext<CommandSourceStack> context) {
         var group = context.getArgument("group", WorldGroup.class);
         var key = context.getArgument("world", Key.class);
         var world = plugin.getServer().getWorld(key);

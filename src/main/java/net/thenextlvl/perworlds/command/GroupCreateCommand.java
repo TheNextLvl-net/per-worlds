@@ -8,25 +8,22 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
+import net.thenextlvl.perworlds.command.brigadier.SimpleCommand;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-class GroupCreateCommand {
-    private final PerWorldsPlugin plugin;
-
+final class GroupCreateCommand extends SimpleCommand {
     private GroupCreateCommand(PerWorldsPlugin plugin) {
-        this.plugin = plugin;
+        super(plugin, "create", "perworlds.command.group.create");
     }
 
     public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
         var command = new GroupCreateCommand(plugin);
-        return Commands.literal("create")
-                .requires(source -> source.getSender().hasPermission("perworlds.command.group.create"))
-                .then(Commands.argument("name", StringArgumentType.string())
-                        .executes(command::create));
+        return command.create().then(Commands.argument("name", StringArgumentType.string()).executes(command));
     }
 
-    private int create(CommandContext<CommandSourceStack> context) {
+    @Override
+    public int run(CommandContext<CommandSourceStack> context) {
         var sender = context.getSource().getSender();
         var name = context.getArgument("name", String.class);
         var success = !plugin.groupProvider().hasGroup(name);

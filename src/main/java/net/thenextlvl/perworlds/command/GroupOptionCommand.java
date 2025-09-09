@@ -11,25 +11,23 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.thenextlvl.perworlds.GroupSettings;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.WorldGroup;
+import net.thenextlvl.perworlds.command.brigadier.BrigadierCommand;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static net.thenextlvl.perworlds.command.GroupCommand.groupArgument;
+import static net.thenextlvl.perworlds.command.WorldCommand.groupArgument;
 
 @NullMarked
-class GroupOptionCommand {
-    private final PerWorldsPlugin plugin;
-
+final class GroupOptionCommand extends BrigadierCommand {
     private GroupOptionCommand(PerWorldsPlugin plugin) {
-        this.plugin = plugin;
+        super(plugin, "option", "perworlds.command.group.option");
     }
 
     public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
         var command = new GroupOptionCommand(plugin);
-        return Commands.literal("option")
-                .requires(source -> source.getSender().hasPermission("perworlds.command.group.option"))
+        return command.create()
                 .then(command.option("absorption", GroupSettings::absorption, GroupSettings::absorption))
                 .then(command.option("advancementMessages", GroupSettings::advancementMessages, GroupSettings::advancementMessages))
                 .then(command.option("advancements", GroupSettings::advancements, GroupSettings::advancements))
