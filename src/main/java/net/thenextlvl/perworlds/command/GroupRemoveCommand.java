@@ -18,11 +18,8 @@ import static net.thenextlvl.perworlds.command.WorldCommand.groupArgument;
 
 @NullMarked
 final class GroupRemoveCommand extends SimpleCommand {
-    private final PerWorldsPlugin plugin;
-
     private GroupRemoveCommand(PerWorldsPlugin plugin) {
         super(plugin, "remove", "perworlds.command.group.remove");
-        this.plugin = plugin;
     }
 
     public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
