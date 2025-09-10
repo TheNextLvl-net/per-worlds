@@ -14,7 +14,7 @@ final class GroupHelpCommand extends SimpleCommand {
     private GroupHelpCommand(PerWorldsPlugin plugin) {
         super(plugin, "help", null);
     }
-    
+
     public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
         var command = new GroupHelpCommand(plugin);
         return command.create().executes(command);
