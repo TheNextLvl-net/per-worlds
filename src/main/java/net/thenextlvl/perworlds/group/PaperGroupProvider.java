@@ -71,6 +71,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
+import java.util.regex.Pattern;
 
 @NullMarked
 public final class PaperGroupProvider implements GroupProvider {
@@ -218,6 +219,31 @@ public final class PaperGroupProvider implements GroupProvider {
     public boolean hasGroup(String name) {
         return unownedWorldGroup.getName().equals(name)
                 || groups.stream().anyMatch(group -> group.getName().equals(name));
+    }
+    
+    public String findFreeName(String name) {
+        var usedNames = getAllGroups().stream().map(WorldGroup::getName).toList();
+        if (!usedNames.contains(name)) return name;
+
+        var baseName = name;
+        int suffix = 1;
+        String candidate = baseName + " (1)";
+
+        var pattern = Pattern.compile("^(.+) \\((\\d+)\\)$");
+        var matcher = pattern.matcher(name);
+
+        if (matcher.matches()) {
+            baseName = matcher.group(1);
+            suffix = Integer.parseInt(matcher.group(2)) + 1;
+            candidate = baseName + " (" + suffix + ")";
+            suffix++;
+        }
+
+        while (usedNames.contains(candidate)) {
+            candidate = baseName + " (" + suffix++ + ")";
+        }
+
+        return candidate;
     }
 
     @Override
