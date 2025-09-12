@@ -189,7 +189,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
         return firstSetup;
     }
 
-    public GroupProvider groupProvider() {
+    public PaperGroupProvider groupProvider() {
         return provider;
     }
 
