@@ -4,12 +4,9 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
-import net.thenextlvl.perworlds.WorldGroup;
 import net.thenextlvl.perworlds.command.brigadier.SimpleCommand;
-import net.thenextlvl.perworlds.group.PaperGroupData;
-import net.thenextlvl.perworlds.group.PaperGroupSettings;
-import net.thenextlvl.perworlds.group.PaperWorldGroup;
 import org.bukkit.World;
+import org.jetbrains.annotations.Contract;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,20 +27,35 @@ final class SetupAutoCommand extends SimpleCommand {
 
     @Override
     public int run(CommandContext<CommandSourceStack> context) {
-        var group = group();
-        group.forEach(g -> {
-            System.out.println(g.getName() + ": " + g.getWorlds().map(World::getName).collect(Collectors.joining(", "))); // todo: remove
+        var sender = context.getSource().getSender();
+        group().forEach((name, worlds) -> {
+            if (worlds.size() == 1) {
+                sender.sendMessage("Skipping world '" + worlds.getFirst().key() + "'");
+                return;
+            }
+            var group = plugin.groupProvider().getGroup(name).orElseGet(() -> {
+                sender.sendMessage("Creating new group '" + name + "'");
+                return plugin.groupProvider().createGroup(name);
+            });
+            worlds.forEach(world -> {
+                if (group.addWorld(world)) {
+                    sender.sendMessage("Added world '" + world.key() + "' to group '" + group.getName() + "'");
+                } else {
+                    sender.sendMessage("Failed to add world '" + world.key() + "' to group '" + group.getName() + "'");
+                }
+            });
         });
+        sender.sendMessage("Skipped worlds will remain in the 'unowned' group.");
         return 0;
     }
 
     // todo: cleanup
-    private List<WorldGroup> group() {
+    @Contract(pure = true)
+    private Map<String, List<World>> group() {
         var worlds = plugin.getServer().getWorlds();
         var groups = worlds.stream().collect(Collectors.groupingBy(w -> w.key().namespace()));
-        System.out.println(groups); // todo: remove
 
-        var result = new ArrayList<WorldGroup>();
+        var result = new HashMap<String, List<World>>();
         for (var entry : groups.entrySet()) {
             var nameGroups = new ArrayList<List<World>>();
             for (var world : entry.getValue()) {
@@ -52,7 +64,6 @@ final class SetupAutoCommand extends SimpleCommand {
                 for (var group : nameGroups) {
                     var groupParts = splitParts(group.getFirst().getName());
                     var matches = countMatches(worldParts, groupParts);
-                    System.out.println(matches + " matches between " + group.getFirst().getName() + " and " + world.getName()); // todo: remove
                     if (matches > 0) {
                         group.add(world);
                         added = true;
@@ -66,18 +77,19 @@ final class SetupAutoCommand extends SimpleCommand {
                 }
             }
             for (var group : nameGroups) {
-                if (group.size() <= 1) continue;
                 var name = mostCommonPart(group).orElse(entry.getKey());
-                result.add(new PaperWorldGroup(plugin.groupProvider(), name, new PaperGroupData(), new PaperGroupSettings(), group));
+                result.put(name, group);
             }
         }
         return result;
     }
 
+    @Contract(pure = true)
     private long countMatches(List<String> a, List<String> b) {
         return a.stream().filter(b::contains).count();
     }
 
+    @Contract(pure = true)
     private Optional<String> mostCommonPart(List<World> worlds) {
         var partCount = new HashMap<String, Integer>();
         for (var world : worlds) {
@@ -90,6 +102,7 @@ final class SetupAutoCommand extends SimpleCommand {
                 .map(Map.Entry::getKey);
     }
 
+    @Contract(pure = true)
     private List<String> splitParts(String name) {
         return List.of(name.toLowerCase().split("[\\-_\\s]+"));
     }
