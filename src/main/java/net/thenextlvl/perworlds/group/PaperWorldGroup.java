@@ -30,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -58,7 +59,7 @@ public class PaperWorldGroup implements WorldGroup {
     private final GroupConfig config;
     private final String name;
 
-    public PaperWorldGroup(PaperGroupProvider provider, String name, GroupData data, GroupSettings settings, Set<World> worlds) {
+    public PaperWorldGroup(PaperGroupProvider provider, String name, GroupData data, GroupSettings settings, Collection<World> worlds) {
         this.name = name;
         this.provider = provider;
         this.dataFolder = provider.getDataFolder().resolve(name);
@@ -324,7 +325,7 @@ public class PaperWorldGroup implements WorldGroup {
         if (!getSettings().enabled()) return CompletableFuture.completedFuture(false);
         if (isLoadingData(player)) return CompletableFuture.completedFuture(false);
         player.setMetadata(LOADING_METADATA_KEY, new FixedMetadataValue(provider.getPlugin(), null));
-        return readPlayerData(player).orElseGet(() -> new PaperPlayerData(player.getUniqueId(), this)).load(player, position)
+        return readPlayerData(player).orElseGet(() -> migratePlayerData(player)).load(player, position)
                 .whenComplete((success, throwable) -> player.removeMetadata(LOADING_METADATA_KEY, provider.getPlugin()))
                 .exceptionally(throwable -> {
                     provider.getLogger().error("Failed to load group data for player {}", player.getName(), throwable);
@@ -332,6 +333,14 @@ public class PaperWorldGroup implements WorldGroup {
                     player.kick(provider.bundle().component("group.load.failed", player));
                     return false;
                 });
+    }
+
+    private PaperPlayerData migratePlayerData(Player player) {
+        var unowned = provider.getUnownedWorldGroup();
+        var data = PaperPlayerData.of(player, unowned);
+        if (equals(unowned)) return data;
+        writePlayerData(player, data);
+        return new PaperPlayerData(player.getUniqueId(), this);
     }
 
     @Override
