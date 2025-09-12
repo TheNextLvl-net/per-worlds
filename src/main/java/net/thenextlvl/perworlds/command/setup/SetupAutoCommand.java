@@ -3,6 +3,8 @@ package net.thenextlvl.perworlds.command.setup;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.minimessage.tag.resolver.Formatter;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.command.brigadier.SimpleCommand;
 import org.bukkit.World;
@@ -13,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 final class SetupAutoCommand extends SimpleCommand {
@@ -28,34 +31,42 @@ final class SetupAutoCommand extends SimpleCommand {
     @Override
     public int run(CommandContext<CommandSourceStack> context) {
         var sender = context.getSource().getSender();
-        group().forEach((name, worlds) -> {
-            if (worlds.size() == 1) {
-                sender.sendMessage("Skipping world '" + worlds.getFirst().key() + "'");
+        var groupCount = new AtomicInteger();
+        var worldCount = new AtomicInteger();
+        autoGroup().forEach((worlds, name) -> {
+            if (worlds.size() == 1 || worlds.stream().allMatch(plugin.groupProvider()::hasGroup)) {
+                worlds.forEach(world -> plugin.bundle().sendMessage(sender, "group.auto.skipped",
+                        Placeholder.parsed("world", world.getName())));
                 return;
             }
-            var group = plugin.groupProvider().getGroup(name).orElseGet(() -> {
-                sender.sendMessage("Creating new group '" + name + "'");
-                return plugin.groupProvider().createGroup(name);
-            });
+
+            var group = plugin.groupProvider().createGroup(plugin.groupProvider().findFreeName(name));
+            plugin.bundle().sendMessage(sender, "group.auto.created",
+                    Placeholder.parsed("group", group.getName()));
+            groupCount.incrementAndGet();
+
             worlds.forEach(world -> {
-                if (group.addWorld(world)) {
-                    sender.sendMessage("Added world '" + world.key() + "' to group '" + group.getName() + "'");
-                } else {
-                    sender.sendMessage("Failed to add world '" + world.key() + "' to group '" + group.getName() + "'");
-                }
+                var added = group.addWorld(world);
+                if (added) worldCount.incrementAndGet();
+                var message = added ? "group.auto.added" : "group.auto.failed";
+                plugin.bundle().sendMessage(sender, message,
+                        Placeholder.parsed("world", world.getName()),
+                        Placeholder.parsed("group", group.getName()));
             });
         });
-        sender.sendMessage("Skipped worlds will remain in the 'unowned' group.");
+        plugin.bundle().sendMessage(sender, "group.auto.done",
+                Formatter.number("groups", groupCount.get()),
+                Formatter.number("worlds", worldCount.get()));
         return 0;
     }
 
     // todo: cleanup
     @Contract(pure = true)
-    private Map<String, List<World>> group() {
+    private Map<List<World>, String> autoGroup() {
         var worlds = plugin.getServer().getWorlds();
-        var groups = worlds.stream().collect(Collectors.groupingBy(w -> w.key().namespace()));
+        var groups = worlds.stream().collect(Collectors.groupingBy(world -> world.key().namespace()));
 
-        var result = new HashMap<String, List<World>>();
+        var result = new HashMap<List<World>, String>();
         for (var entry : groups.entrySet()) {
             var nameGroups = new ArrayList<List<World>>();
             for (var world : entry.getValue()) {
@@ -78,7 +89,7 @@ final class SetupAutoCommand extends SimpleCommand {
             }
             for (var group : nameGroups) {
                 var name = mostCommonPart(group).orElse(entry.getKey());
-                result.put(name, group);
+                result.put(group, name);
             }
         }
         return result;
