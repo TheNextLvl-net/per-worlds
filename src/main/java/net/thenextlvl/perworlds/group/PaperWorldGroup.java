@@ -29,6 +29,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -56,7 +57,7 @@ public class PaperWorldGroup implements WorldGroup {
     private final GroupConfig config;
     private final String name;
 
-    public PaperWorldGroup(PaperGroupProvider provider, String name, GroupData data, GroupSettings settings, Set<World> worlds) {
+    public PaperWorldGroup(PaperGroupProvider provider, String name, GroupData data, GroupSettings settings, Collection<World> worlds) {
         this.name = name;
         this.provider = provider;
         this.dataFolder = provider.getDataFolder().resolve(name);
