@@ -90,6 +90,7 @@ paper {
                 "perworlds.command.group.add",
                 "perworlds.command.group.create",
                 "perworlds.command.group.delete",
+                "perworlds.command.group.info",
                 "perworlds.command.group.list",
                 "perworlds.command.group.option",
                 "perworlds.command.group.remove",
@@ -103,6 +104,7 @@ paper {
         register("perworlds.command.group.add") { children = listOf("perworlds.command.group") }
         register("perworlds.command.group.create") { children = listOf("perworlds.command.group") }
         register("perworlds.command.group.delete") { children = listOf("perworlds.command.group") }
+        register("perworlds.command.group.info") { children = listOf("perworlds.command.group") }
         register("perworlds.command.group.list") { children = listOf("perworlds.command.group") }
         register("perworlds.command.group.option") { children = listOf("perworlds.command.group") }
         register("perworlds.command.group.remove") { children = listOf("perworlds.command.group") }
