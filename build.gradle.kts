@@ -31,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.21.8-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.9-pre2-R0.1-SNAPSHOT")
 
     compileOnly("net.thenextlvl:worlds:3.6.0") { isTransitive = false }
 
