@@ -33,7 +33,7 @@ repositories {
 dependencies {
     paperweight.paperDevBundle("1.21.9-R0.1-SNAPSHOT")
 
-    compileOnly("net.thenextlvl:worlds:3.7.0") { isTransitive = false }
+    compileOnly("net.thenextlvl:worlds:3.8.0-pre1") { isTransitive = false }
 
     implementation("net.thenextlvl.core:adapters:2.0.3")
     implementation("net.thenextlvl.core:i18n:3.2.2")
