@@ -31,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.21.8-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("1.21.9-R0.1-SNAPSHOT")
 
     compileOnly("net.thenextlvl:worlds:3.7.0") { isTransitive = false }
 
@@ -75,7 +75,7 @@ tasks.compileJava {
 paper {
     name = "PerWorlds"
     main = "net.thenextlvl.perworlds.PerWorldsPlugin"
-    apiVersion = "1.21.5"
+    apiVersion = "1.21.8"
     description = "Per-world customization for gameplay and settings"
     load = BukkitPluginDescription.PluginLoadOrder.POSTWORLD
     website = "https://thenextlvl.net"
