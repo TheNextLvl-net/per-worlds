@@ -48,7 +48,7 @@ final class GroupAutoCommand extends SimpleCommand {
             worlds.forEach(world -> {
                 var added = group.addWorld(world);
                 if (added) worldCount.incrementAndGet();
-                var message = added ? "group.auto.added" : "group.auto.failed";
+                var message = added ? "group.world.added" : "group.auto.failed";
                 plugin.bundle().sendMessage(sender, message,
                         Placeholder.parsed("world", world.getName()),
                         Placeholder.parsed("group", group.getName()));
