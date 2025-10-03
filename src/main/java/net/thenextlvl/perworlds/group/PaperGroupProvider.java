@@ -54,6 +54,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -68,12 +69,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 @NullMarked
 public final class PaperGroupProvider implements GroupProvider {
-    private final Path dataFolder;
+    public final Set<UUID> loadingPlayers = new HashSet<>();
     private final Set<WorldGroup> groups = new HashSet<>();
+
+    private final Path dataFolder;
     private final NBT nbt;
     private final PerWorldsPlugin plugin;
     private final PaperWorldGroup unownedWorldGroup;
@@ -213,7 +217,7 @@ public final class PaperGroupProvider implements GroupProvider {
     @Override
     public boolean hasGroup(String name) {
         return unownedWorldGroup.getName().equals(name)
-               || groups.stream().anyMatch(group -> group.getName().equals(name));
+                || groups.stream().anyMatch(group -> group.getName().equals(name));
     }
 
     @Override
@@ -236,5 +240,10 @@ public final class PaperGroupProvider implements GroupProvider {
         if (!groups.remove(group)) return false;
         group.getPlayers().forEach(getUnownedWorldGroup()::loadPlayerData);
         return true;
+    }
+
+    @Override
+    public boolean isLoadingData(Player player) {
+        return loadingPlayers.contains(player.getUniqueId());
     }
 }

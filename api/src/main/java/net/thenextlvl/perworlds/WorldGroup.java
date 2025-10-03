@@ -321,9 +321,13 @@ public interface WorldGroup {
      *
      * @param player the player for whom the loading status is to be checked
      * @return {@code true} if the player's data is currently being loaded, {@code false} otherwise
+     * @deprecated Use {@link GroupProvider#isLoadingData(Player)}
      */
     @Contract(pure = true)
-    boolean isLoadingData(Player player);
+    @Deprecated(forRemoval = true, since = "1.2.0")
+    default boolean isLoadingData(Player player) {
+        return getGroupProvider().isLoadingData(player);
+    }
 
     /**
      * Persists the settings and worlds of this group to the configuration.

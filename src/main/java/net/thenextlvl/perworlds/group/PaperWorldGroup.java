@@ -20,7 +20,6 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
@@ -49,7 +48,6 @@ import static net.thenextlvl.perworlds.PerWorldsPlugin.ISSUES;
 
 @NullMarked
 public class PaperWorldGroup implements WorldGroup {
-    public static final String LOADING_METADATA_KEY = "perworlds_loading_data";
     protected final PaperGroupProvider provider;
 
     private final Path dataFolder;
@@ -322,10 +320,10 @@ public class PaperWorldGroup implements WorldGroup {
     @Override
     public CompletableFuture<Boolean> loadPlayerData(Player player, boolean position) {
         if (!getSettings().enabled()) return CompletableFuture.completedFuture(false);
-        if (isLoadingData(player)) return CompletableFuture.completedFuture(false);
-        player.setMetadata(LOADING_METADATA_KEY, new FixedMetadataValue(provider.getPlugin(), null));
+        if (provider.isLoadingData(player)) return CompletableFuture.completedFuture(false);
+        provider.loadingPlayers.add(player.getUniqueId());
         return readPlayerData(player).orElseGet(() -> new PaperPlayerData(player.getUniqueId(), this)).load(player, position)
-                .whenComplete((success, throwable) -> player.removeMetadata(LOADING_METADATA_KEY, provider.getPlugin()))
+                .whenComplete((success, throwable) -> provider.loadingPlayers.remove(player.getUniqueId()))
                 .exceptionally(throwable -> {
                     provider.getLogger().error("Failed to load group data for player {}", player.getName(), throwable);
                     provider.getLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
@@ -418,11 +416,6 @@ public class PaperWorldGroup implements WorldGroup {
         worldBorder.setDamageBuffer(border.damageBuffer());
         worldBorder.setWarningDistance(border.warningDistance());
         worldBorder.setWarningTime(border.warningTime());
-    }
-
-    @Override
-    public boolean isLoadingData(Player player) {
-        return player.hasMetadata(LOADING_METADATA_KEY);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package net.thenextlvl.perworlds;
 
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.Unmodifiable;
@@ -211,4 +212,14 @@ public interface GroupProvider {
      */
     @Contract(mutates = "this")
     boolean removeGroup(WorldGroup group);
+
+    /**
+     * Checks whether data for the specified player is currently being loaded.
+     *
+     * @param player the player for whom the loading status is to be checked
+     * @return {@code true} if the player's data is currently being loaded, {@code false} otherwise
+     * @since 1.2.0
+     */
+    @Contract(pure = true)
+    boolean isLoadingData(Player player);
 }
