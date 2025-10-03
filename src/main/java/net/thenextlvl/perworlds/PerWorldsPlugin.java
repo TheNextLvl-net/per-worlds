@@ -1,6 +1,9 @@
 package net.thenextlvl.perworlds;
 
+import core.file.FileIO;
+import core.file.format.GsonFile;
 import core.i18n.file.ComponentBundle;
+import core.io.IO;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.key.Key;
 import net.thenextlvl.perworlds.command.WorldCommand;
@@ -12,6 +15,7 @@ import net.thenextlvl.perworlds.listener.RespawnListener;
 import net.thenextlvl.perworlds.listener.TeleportListener;
 import net.thenextlvl.perworlds.listener.WorldListener;
 import net.thenextlvl.perworlds.listener.WorldsListener;
+import net.thenextlvl.perworlds.model.config.PluginConfig;
 import net.thenextlvl.perworlds.version.PluginVersionChecker;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
@@ -45,6 +49,10 @@ public final class PerWorldsPlugin extends JavaPlugin {
 
     private final PaperGroupProvider provider = new PaperGroupProvider(this);
     private final boolean groupsExist = Files.exists(provider.getDataFolder());
+
+    private final FileIO<PluginConfig> config = new GsonFile<>(
+            IO.of(getDataPath().resolve("config.json")), new PluginConfig()
+    ).saveIfAbsent();
 
     public PerWorldsPlugin() {
         registerCommands();
@@ -179,6 +187,14 @@ public final class PerWorldsPlugin extends JavaPlugin {
                 .filter(name -> getServer().getPluginManager().getPlugin(name) != null)
                 .findAny().orElse("None");
         metrics.addCustomChart(new SimplePie("world_management_plugin", () -> worldManager));
+    }
+
+    public FileIO<PluginConfig> configFile() {
+        return config;
+    }
+
+    public PluginConfig config() {
+        return config.getRoot();
     }
 
     public PaperGroupProvider groupProvider() {
