@@ -8,9 +8,9 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.command.brigadier.SimpleCommand;
 
-final class GroupHelpCommand extends SimpleCommand {
-    private static final String DOCS_URL = "https://thenextlvl.net/docs/perworlds";
+import static net.thenextlvl.perworlds.PerWorldsPlugin.DOCS_URL;
 
+final class GroupHelpCommand extends SimpleCommand {
     private GroupHelpCommand(PerWorldsPlugin plugin) {
         super(plugin, "help", null);
     }
