@@ -33,7 +33,7 @@ final class GroupAutoCommand extends SimpleCommand {
         var sender = context.getSource().getSender();
         var groupCount = new AtomicInteger();
         var worldCount = new AtomicInteger();
-        autoGroup().forEach((worlds, name) -> {
+        autoGroup(plugin.getServer().getWorlds()).forEach((worlds, name) -> {
             if (worlds.size() == 1 || worlds.stream().allMatch(plugin.groupProvider()::hasGroup)) {
                 worlds.forEach(world -> plugin.bundle().sendMessage(sender, "group.auto.skipped",
                         Placeholder.parsed("world", world.getName())));
@@ -61,8 +61,7 @@ final class GroupAutoCommand extends SimpleCommand {
     }
 
     @Contract(pure = true)
-    private Map<List<World>, String> autoGroup() {
-        var worlds = plugin.getServer().getWorlds();
+    private Map<List<World>, String> autoGroup(List<World> worlds) {
         var groups = worlds.stream().collect(Collectors.groupingBy(world -> world.key().namespace()));
 
         var result = new HashMap<List<World>, String>();
