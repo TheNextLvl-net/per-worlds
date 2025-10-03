@@ -65,10 +65,6 @@ public final class PerWorldsPlugin extends JavaPlugin {
         loadGroups();
     }
 
-    private void scheduleDelayedInitTask() {
-        if (groupsExist) getServer().getGlobalRegionScheduler().execute(this, this::firstUseNotice);
-    }
-
     @Override
     public void onDisable() {
         metrics.shutdown();
@@ -79,9 +75,13 @@ public final class PerWorldsPlugin extends JavaPlugin {
         getServer().getServicesManager().register(GroupProvider.class, provider, this, ServicePriority.Highest);
     }
 
+    private void scheduleDelayedInitTask() {
+        if (!groupsExist) getServer().getGlobalRegionScheduler().execute(this, this::firstUseNotice);
+    }
+
     // fixme: not final
     private void firstUseNotice() {
-        var separator = "-".repeat(80);
+        var separator = "-".repeat(85);
         getComponentLogger().warn(separator);
         getComponentLogger().warn("This is your first startup using PerWorlds");
         getComponentLogger().warn("Before you are able to connect to the server make sure to set up some world groups");
