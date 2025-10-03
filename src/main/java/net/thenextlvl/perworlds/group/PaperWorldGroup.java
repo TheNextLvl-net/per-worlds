@@ -285,7 +285,7 @@ public class PaperWorldGroup implements WorldGroup {
     public boolean writePlayerData(OfflinePlayer player, PlayerData data) {
         if (player instanceof Player online) Preconditions.checkState(containsWorld(online.getWorld()),
                 "Failed to persist player data: World mismatch between group '%s' and player '%s'. Expected any of %s but got %s",
-                getName(), player.getName(), getPersistedWorlds(), online.getWorld().getKey());
+                getName(), player.getName(), getPersistedWorlds(), online.getWorld().key());
 
         var file = IO.of(getDataFolder().resolve(player.getUniqueId() + ".dat"));
         var backup = IO.of(getDataFolder().resolve(player.getUniqueId() + ".dat_old"));
