@@ -88,6 +88,7 @@ paper {
             description = "Allows access to all group commands"
             children = listOf(
                 "perworlds.command.group.add",
+                "perworlds.command.group.auto",
                 "perworlds.command.group.create",
                 "perworlds.command.group.delete",
                 "perworlds.command.group.info",
@@ -102,6 +103,7 @@ paper {
 
         register("perworlds.command.group") { children = listOf("perworlds.command") }
         register("perworlds.command.group.add") { children = listOf("perworlds.command.group") }
+        register("perworlds.command.group.auto") { children = listOf("perworlds.command.group") }
         register("perworlds.command.group.create") { children = listOf("perworlds.command.group") }
         register("perworlds.command.group.delete") { children = listOf("perworlds.command.group") }
         register("perworlds.command.group.info") { children = listOf("perworlds.command.group") }

@@ -17,6 +17,7 @@ final class GroupCommand extends BrigadierCommand {
         var command = new GroupCommand(plugin);
         return command.create()
                 .then(GroupAddCommand.create(plugin))
+                .then(GroupAutoCommand.create(plugin))
                 .then(GroupCreateCommand.create(plugin))
                 .then(GroupDeleteCommand.create(plugin))
                 .then(GroupHelpCommand.create(plugin))

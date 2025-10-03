@@ -3,7 +3,6 @@ package net.thenextlvl.perworlds;
 import core.i18n.file.ComponentBundle;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.key.Key;
-import net.thenextlvl.perworlds.command.PerWorldsCommand;
 import net.thenextlvl.perworlds.command.WorldCommand;
 import net.thenextlvl.perworlds.group.PaperGroupProvider;
 import net.thenextlvl.perworlds.listener.ChatListener;
@@ -47,9 +46,6 @@ public final class PerWorldsPlugin extends JavaPlugin {
     private final PaperGroupProvider provider = new PaperGroupProvider(this);
     private final boolean groupsExist = Files.exists(provider.getDataFolder());
 
-    public final Path setupSuccess = getDataPath().resolve(".setup_success");
-    private final boolean firstSetup = !Files.isRegularFile(setupSuccess); // todo: uncomment when finalized
-
     public PerWorldsPlugin() {
         registerCommands();
     }
@@ -70,7 +66,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
     }
 
     private void scheduleDelayedInitTask() {
-        if (firstSetup) getServer().getGlobalRegionScheduler().execute(this, this::setupNotice);
+        if (groupsExist) getServer().getGlobalRegionScheduler().execute(this, this::firstUseNotice);
     }
 
     @Override
@@ -84,7 +80,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
     }
 
     // fixme: not final
-    private void setupNotice() {
+    private void firstUseNotice() {
         var separator = "-".repeat(80);
         getComponentLogger().warn(separator);
         getComponentLogger().warn("This is your first startup using PerWorlds");
@@ -154,7 +150,6 @@ public final class PerWorldsPlugin extends JavaPlugin {
                 var requirement = command.getRequirement();
                 command.requirement = source -> requirement.test(source) || world.canUse(source);
             }
-            event.registrar().register(PerWorldsCommand.create(this));
             event.registrar().register(command);
         });
     }
@@ -183,10 +178,6 @@ public final class PerWorldsPlugin extends JavaPlugin {
                 .filter(name -> getServer().getPluginManager().getPlugin(name) != null)
                 .findAny().orElse("None");
         metrics.addCustomChart(new SimplePie("world_management_plugin", () -> worldManager));
-    }
-
-    public boolean isFirstSetup() {
-        return firstSetup;
     }
 
     public PaperGroupProvider groupProvider() {
