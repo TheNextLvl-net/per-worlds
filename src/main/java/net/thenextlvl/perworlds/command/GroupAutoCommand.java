@@ -1,4 +1,4 @@
-package net.thenextlvl.perworlds.command.setup;
+package net.thenextlvl.perworlds.command;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -18,13 +18,13 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-final class SetupAutoCommand extends SimpleCommand {
-    private SetupAutoCommand(PerWorldsPlugin plugin) {
-        super(plugin, "auto", "perworlds.command.setup.auto");
+final class GroupAutoCommand extends SimpleCommand {
+    private GroupAutoCommand(PerWorldsPlugin plugin) {
+        super(plugin, "auto", "perworlds.command.group.auto");
     }
 
     public static LiteralArgumentBuilder<CommandSourceStack> create(PerWorldsPlugin plugin) {
-        var command = new SetupAutoCommand(plugin);
+        var command = new GroupAutoCommand(plugin);
         return command.create().executes(command);
     }
 
