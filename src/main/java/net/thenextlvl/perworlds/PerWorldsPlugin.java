@@ -146,7 +146,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
                 var requirement = command.getRequirement();
                 command.requirement = source -> requirement.test(source) || world.canUse(source);
             }
-            event.registrar().register(command);
+            event.registrar().register(command, "The main command to interact with this plugin");
         });
     }
 
