@@ -79,17 +79,13 @@ public final class PerWorldsPlugin extends JavaPlugin {
         if (!groupsExist) getServer().getGlobalRegionScheduler().execute(this, this::firstUseNotice);
     }
 
-    // fixme: not final
     private void firstUseNotice() {
-        var separator = "-".repeat(85);
+        var separator = "-".repeat(86);
         getComponentLogger().warn(separator);
         getComponentLogger().warn("This is your first startup using PerWorlds");
-        getComponentLogger().warn("Before you are able to connect to the server make sure to set up some world groups");
         getComponentLogger().warn("The main command to interact with PerWorlds is '/world group'");
+        getComponentLogger().warn("To automatically group all existing worlds, run '/world group auto'");
         getComponentLogger().warn("Refer to the wiki to learn how to manage groups: {}", DOCS_URL);
-        getComponentLogger().warn("If you are done with the group setup run '/perworlds setup finish'");
-        getComponentLogger().warn("To prevent data corruption, players are unable to connect until the setup is done");
-        getComponentLogger().warn("To automatically group all existing worlds, run '/perworlds setup auto'");
         getComponentLogger().warn(separator);
     }
 
