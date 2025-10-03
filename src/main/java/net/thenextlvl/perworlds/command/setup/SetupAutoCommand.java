@@ -60,7 +60,6 @@ final class SetupAutoCommand extends SimpleCommand {
         return 0;
     }
 
-    // todo: cleanup
     @Contract(pure = true)
     private Map<List<World>, String> autoGroup() {
         var worlds = plugin.getServer().getWorlds();
@@ -70,7 +69,7 @@ final class SetupAutoCommand extends SimpleCommand {
         for (var entry : groups.entrySet()) {
             var nameGroups = new ArrayList<List<World>>();
             for (var world : entry.getValue()) {
-                boolean added = false;
+                var added = false;
                 var worldParts = splitParts(world.getName());
                 for (var group : nameGroups) {
                     var groupParts = splitParts(group.getFirst().getName());
