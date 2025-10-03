@@ -85,6 +85,11 @@ public final class PerWorldsPlugin extends JavaPlugin {
         getComponentLogger().warn("This is your first startup using PerWorlds");
         getComponentLogger().warn("The main command to interact with PerWorlds is '/world group'");
         getComponentLogger().warn("To automatically group all existing worlds, run '/world group auto'");
+        getComponentLogger().warn("");
+        getComponentLogger().warn("Before your settings come into effect, you have to define a group");
+        getComponentLogger().warn("to migrate all pre-existing player data to");
+        getComponentLogger().warn("You can do this by running '/world group migrate <group>'");
+        getComponentLogger().warn("");
         getComponentLogger().warn("Refer to the wiki to learn how to manage groups: {}", DOCS_URL);
         getComponentLogger().warn(separator);
     }
