@@ -84,13 +84,15 @@ public final class PerWorldsPlugin extends JavaPlugin {
     }
 
     private void scheduleDelayedInitTask() {
-        if (!groupsExist) getServer().getGlobalRegionScheduler().execute(this, this::firstUseNotice);
+        if (groupsExist && config().migrateToGroup != null) return;
+        getServer().getGlobalRegionScheduler().execute(this, this::setupNotice);
     }
 
-    private void firstUseNotice() {
+    private void setupNotice() {
         var separator = "-".repeat(86);
         getComponentLogger().warn(separator);
-        getComponentLogger().warn("This is your first startup using PerWorlds");
+        if (groupsExist) getComponentLogger().warn("PerWorlds is not properly configured yet!");
+        else getComponentLogger().warn("This is your first startup using PerWorlds");
         getComponentLogger().warn("The main command to interact with PerWorlds is '/world group'");
         getComponentLogger().warn("To automatically group all existing worlds, run '/world group auto'");
         getComponentLogger().warn("");
