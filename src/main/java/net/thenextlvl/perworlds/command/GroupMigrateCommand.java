@@ -35,11 +35,10 @@ final class GroupMigrateCommand extends SimpleCommand {
                     Placeholder.parsed("group", String.valueOf(migrate)));
             return SINGLE_SUCCESS;
         }
-        var success = plugin.config().migrateToGroup(group);
+        var success = plugin.config().migrateToGroup(plugin, group);
         var message = success ? "group.migrate" : "nothing.changed";
         plugin.bundle().sendMessage(context.getSource().getSender(), message,
                 Placeholder.parsed("group", group.getName()));
-        if (success) plugin.configFile().save();
         return success ? SINGLE_SUCCESS : 0;
     }
 }
