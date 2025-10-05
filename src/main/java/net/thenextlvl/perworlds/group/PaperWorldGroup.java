@@ -295,6 +295,10 @@ public class PaperWorldGroup implements WorldGroup {
             return false;
         }
 
+        return writePlayerDataUnsafe(player, data);
+    }
+
+    public boolean writePlayerDataUnsafe(OfflinePlayer player, PlayerData data) {
         var file = IO.of(getDataFolder().resolve(player.getUniqueId() + ".dat"));
         var backup = IO.of(getDataFolder().resolve(player.getUniqueId() + ".dat_old"));
         try {
@@ -359,9 +363,12 @@ public class PaperWorldGroup implements WorldGroup {
     }
 
     private PaperPlayerData migratePlayerData(PaperWorldGroup group, Player player) {
-        var data = PaperPlayerData.of(player, group);
-        if (equals(group)) return data;
-        writePlayerData(player, data);
+        if (!group.hasPlayerData(player)) {
+            provider.getLogger().info("Migrating player data for {} to group {}", player.getName(), group.getName());
+            var data = PaperPlayerData.of(player, group);
+            if (equals(group)) return data;
+            group.writePlayerDataUnsafe(player, data);
+        }
         return new PaperPlayerData(player.getUniqueId(), this);
     }
 
