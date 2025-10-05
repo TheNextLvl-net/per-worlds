@@ -62,6 +62,7 @@ public interface WorldGroup {
      *
      * @return the {@link GroupData} object representing the data of this world group
      */
+    @Contract(pure = true)
     GroupData getGroupData();
 
     /**
@@ -69,6 +70,7 @@ public interface WorldGroup {
      *
      * @return the GroupProvider instance
      */
+    @Contract(pure = true)
     GroupProvider getGroupProvider();
 
     /**
@@ -78,6 +80,7 @@ public interface WorldGroup {
      *
      * @return the {@link GroupSettings} object containing the configurations for the group
      */
+    @Contract(pure = true)
     GroupSettings getSettings();
 
     /**
@@ -88,6 +91,7 @@ public interface WorldGroup {
      * @return an unmodifiable list of players within the group
      */
     @Unmodifiable
+    @Contract(pure = true)
     List<Player> getPlayers();
 
     /**
@@ -129,6 +133,7 @@ public interface WorldGroup {
      * @return an {@link Optional} containing the spawn {@link World} if it exists,
      * or an empty {@link Optional} if no spawn world is defined for the group
      */
+    @Contract(pure = true)
     Optional<World> getSpawnWorld();
 
     /**
@@ -168,6 +173,7 @@ public interface WorldGroup {
      *
      * @return a stream of all loaded worlds associated with this group
      */
+    @Contract(pure = true)
     Stream<World> getWorlds();
 
     /**
