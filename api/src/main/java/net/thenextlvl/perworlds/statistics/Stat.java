@@ -2,6 +2,7 @@ package net.thenextlvl.perworlds.statistics;
 
 import org.bukkit.Statistic;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 
 /**
@@ -16,6 +17,7 @@ public interface Stat {
      * @return {@code true} if the statistic has data, otherwise {@code false}.
      * @since 1.0.0
      */
+    @Contract(pure = true)
     boolean hasData();
 
     /**
@@ -24,5 +26,6 @@ public interface Stat {
      * @return the type of the statistic.
      * @since 1.0.0
      */
+    @Contract(pure = true)
     Statistic.Type getType();
 }

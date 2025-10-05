@@ -42,6 +42,7 @@ public interface GroupProvider {
      * @see #getGroups()
      */
     @Unmodifiable
+    @Contract(pure = true)
     Set<WorldGroup> getAllGroups();
 
     /**
@@ -59,6 +60,7 @@ public interface GroupProvider {
      * @param name the name of the world group to retrieve
      * @return an {@link Optional} containing the {@link WorldGroup} if found, otherwise {@link Optional#empty()}
      */
+    @Contract(pure = true)
     Optional<WorldGroup> getGroup(String name);
 
     /**
@@ -68,6 +70,7 @@ public interface GroupProvider {
      * @return an {@link Optional} containing the {@link WorldGroup} if the specified world is
      * part of a group, or {@link Optional#empty()} if the world does not belong to any group
      */
+    @Contract(pure = true)
     Optional<WorldGroup> getGroup(World world);
 
     /**
@@ -77,6 +80,7 @@ public interface GroupProvider {
      *
      * @return the {@link WorldGroup} instance representing unassociated worlds
      */
+    @Contract(pure = true)
     WorldGroup getUnownedWorldGroup();
 
     /**

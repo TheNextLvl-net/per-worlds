@@ -34,6 +34,7 @@ public interface PlayerData {
     /**
      * @since 0.2.4
      */
+    @Contract(pure = true)
     WorldGroup group();
 
     /**
@@ -42,6 +43,7 @@ public interface PlayerData {
      * @return the uuid of the owning player
      * @since 1.0.0
      */
+    @Contract(pure = true)
     UUID uuid();
 
     @Nullable

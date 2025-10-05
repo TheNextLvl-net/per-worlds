@@ -46,6 +46,7 @@ public interface Statistics {
     @Contract(mutates = "this")
     void setStatistic(Statistic statistic, int value);
 
+    @Contract(pure = true)
     boolean hasData(Statistic statistic);
 
     void forEachStatistic(BiConsumer<Statistic, Stat> action);
