@@ -17,11 +17,13 @@ final class GroupCommand extends BrigadierCommand {
         var command = new GroupCommand(plugin);
         return command.create()
                 .then(GroupAddCommand.create(plugin))
+                .then(GroupAutoCommand.create(plugin))
                 .then(GroupCreateCommand.create(plugin))
                 .then(GroupDeleteCommand.create(plugin))
                 .then(GroupHelpCommand.create(plugin))
                 .then(GroupInfoCommand.create(plugin))
                 .then(GroupListCommand.create(plugin))
+                .then(GroupMigrateCommand.create(plugin))
                 .then(GroupOptionCommand.create(plugin))
                 .then(GroupRemoveCommand.create(plugin))
                 .then(GroupSpawnCommand.create(plugin))

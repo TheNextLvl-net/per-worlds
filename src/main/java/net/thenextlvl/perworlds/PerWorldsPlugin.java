@@ -1,6 +1,9 @@
 package net.thenextlvl.perworlds;
 
+import core.file.FileIO;
+import core.file.format.GsonFile;
 import core.i18n.file.ComponentBundle;
+import core.io.IO;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.key.Key;
 import net.thenextlvl.perworlds.command.WorldCommand;
@@ -12,6 +15,7 @@ import net.thenextlvl.perworlds.listener.RespawnListener;
 import net.thenextlvl.perworlds.listener.TeleportListener;
 import net.thenextlvl.perworlds.listener.WorldListener;
 import net.thenextlvl.perworlds.listener.WorldsListener;
+import net.thenextlvl.perworlds.model.config.PluginConfig;
 import net.thenextlvl.perworlds.version.PluginVersionChecker;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
@@ -25,12 +29,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 @NullMarked
 public final class PerWorldsPlugin extends JavaPlugin {
     public static final String ISSUES = "https://github.com/TheNextLvl-net/per-worlds/issues/new?template=bug_report.yml";
+    public static final String DOCS_URL = "https://thenextlvl.net/docs/perworlds";
 
     private final PluginVersionChecker versionChecker = new PluginVersionChecker(this);
     private final Metrics metrics = new Metrics(this, 25295);
@@ -46,6 +50,10 @@ public final class PerWorldsPlugin extends JavaPlugin {
     private final PaperGroupProvider provider = new PaperGroupProvider(this);
     private final boolean groupsExist = Files.exists(provider.getDataFolder());
 
+    private final FileIO<PluginConfig> config = new GsonFile<>(
+            IO.of(getDataPath().resolve("config.json")), new PluginConfig()
+    ).saveIfAbsent();
+
     public PerWorldsPlugin() {
         registerCommands();
     }
@@ -59,7 +67,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        scheduleDefaultGroupCreation();
+        scheduleDelayedInitTask();
         registerListeners();
         warnWorldManager();
         loadGroups();
@@ -75,6 +83,27 @@ public final class PerWorldsPlugin extends JavaPlugin {
         getServer().getServicesManager().register(GroupProvider.class, provider, this, ServicePriority.Highest);
     }
 
+    private void scheduleDelayedInitTask() {
+        if (groupsExist && config().migrateToGroup != null) return;
+        getServer().getGlobalRegionScheduler().execute(this, this::setupNotice);
+    }
+
+    private void setupNotice() {
+        var separator = "-".repeat(86);
+        getComponentLogger().warn(separator);
+        if (groupsExist) getComponentLogger().warn("PerWorlds is not properly configured yet!");
+        else getComponentLogger().warn("This is your first startup using PerWorlds");
+        getComponentLogger().warn("The main command to interact with PerWorlds is '/world group'");
+        getComponentLogger().warn("To automatically group all existing worlds, run '/world group auto'");
+        getComponentLogger().warn("");
+        getComponentLogger().warn("Before your settings come into effect, you have to define a group");
+        getComponentLogger().warn("to migrate all pre-existing player data to");
+        getComponentLogger().warn("You can do this by running '/world group migrate <group>'");
+        getComponentLogger().warn("");
+        getComponentLogger().warn("Refer to the wiki to learn how to manage groups: {}", DOCS_URL);
+        getComponentLogger().warn(separator);
+    }
+
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(new ChatListener(provider), this);
         getServer().getPluginManager().registerEvents(new ConnectionListener(provider), this);
@@ -85,22 +114,6 @@ public final class PerWorldsPlugin extends JavaPlugin {
 
         if (getServer().getPluginManager().getPlugin("Worlds") == null) return;
         getServer().getPluginManager().registerEvents(new WorldsListener(provider), this);
-    }
-
-    private void scheduleDefaultGroupCreation() {
-        if (!groupsExist) getServer().getGlobalRegionScheduler().execute(this, () -> {
-            var defaultGroupName = "default";
-
-            var defaultGroup = groupProvider().getGroup(defaultGroupName)
-                    .orElseGet(() -> groupProvider().createGroup(defaultGroupName));
-
-            Optional.ofNullable(getServer().getWorld(Key.key(Key.MINECRAFT_NAMESPACE, "overworld")))
-                    .ifPresent(defaultGroup::addWorld);
-            Optional.ofNullable(getServer().getWorld(Key.key(Key.MINECRAFT_NAMESPACE, "the_nether")))
-                    .ifPresent(defaultGroup::addWorld);
-            Optional.ofNullable(getServer().getWorld(Key.key(Key.MINECRAFT_NAMESPACE, "the_end")))
-                    .ifPresent(defaultGroup::addWorld);
-        });
     }
 
     private void warnWorldManager() {
@@ -148,7 +161,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
                 var requirement = command.getRequirement();
                 command.requirement = source -> requirement.test(source) || world.canUse(source);
             }
-            event.registrar().register(command);
+            event.registrar().register(command, "The main command to interact with this plugin");
         });
     }
 
@@ -178,7 +191,15 @@ public final class PerWorldsPlugin extends JavaPlugin {
         metrics.addCustomChart(new SimplePie("world_management_plugin", () -> worldManager));
     }
 
-    public GroupProvider groupProvider() {
+    public FileIO<PluginConfig> configFile() {
+        return config;
+    }
+
+    public PluginConfig config() {
+        return config.getRoot();
+    }
+
+    public PaperGroupProvider groupProvider() {
         return provider;
     }
 

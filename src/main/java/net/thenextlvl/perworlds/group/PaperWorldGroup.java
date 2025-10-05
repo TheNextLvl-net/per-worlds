@@ -22,6 +22,7 @@ import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -29,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -56,7 +58,7 @@ public class PaperWorldGroup implements WorldGroup {
     private final GroupConfig config;
     private final String name;
 
-    public PaperWorldGroup(PaperGroupProvider provider, String name, GroupData data, GroupSettings settings, Set<World> worlds) {
+    public PaperWorldGroup(PaperGroupProvider provider, String name, GroupData data, GroupSettings settings, Collection<World> worlds) {
         this.name = name;
         this.provider = provider;
         this.dataFolder = provider.getDataFolder().resolve(name);
@@ -287,6 +289,16 @@ public class PaperWorldGroup implements WorldGroup {
                 "Failed to persist player data: World mismatch between group '%s' and player '%s'. Expected any of %s but got %s",
                 getName(), player.getName(), getPersistedWorlds(), online.getWorld().key());
 
+        if (!hasPlayerData(player) && getMigratingTo() == null) {
+            provider.getLogger().warn("Failed to persist player data for {}: No group to migrate to", player.getName());
+            provider.getLogger().warn("Use '/world group migrate <group>' to define a group to migrate to");
+            return false;
+        }
+
+        return writePlayerDataUnsafe(player, data);
+    }
+
+    public boolean writePlayerDataUnsafe(OfflinePlayer player, PlayerData data) {
         var file = IO.of(getDataFolder().resolve(player.getUniqueId() + ".dat"));
         var backup = IO.of(getDataFolder().resolve(player.getUniqueId() + ".dat_old"));
         try {
@@ -321,8 +333,21 @@ public class PaperWorldGroup implements WorldGroup {
     public CompletableFuture<Boolean> loadPlayerData(Player player, boolean position) {
         if (!getSettings().enabled()) return CompletableFuture.completedFuture(false);
         if (provider.isLoadingData(player)) return CompletableFuture.completedFuture(false);
+
         provider.loadingPlayers.add(player.getUniqueId());
-        return readPlayerData(player).orElseGet(() -> new PaperPlayerData(player.getUniqueId(), this)).load(player, position)
+        var playerData = readPlayerData(player);
+        var group = playerData.isEmpty() ? getMigratingTo() : null;
+
+        if (group == null && playerData.isEmpty()) {
+            provider.loadingPlayers.remove(player.getUniqueId());
+            provider.getLogger().warn("Failed to load player data for {}: No group to migrate to", player.getName());
+            provider.getLogger().warn("Use '/world group migrate <group>' to define a group to migrate to");
+            if (player.hasPermission("perworlds.command.group.migrate"))
+                provider.bundle().sendMessage(player, "group.migrate.prompt");
+            return CompletableFuture.completedFuture(false);
+        }
+
+        return playerData.orElseGet(() -> migratePlayerData(group, player)).load(player, position)
                 .whenComplete((success, throwable) -> provider.loadingPlayers.remove(player.getUniqueId()))
                 .exceptionally(throwable -> {
                     provider.getLogger().error("Failed to load group data for player {}", player.getName(), throwable);
@@ -330,6 +355,20 @@ public class PaperWorldGroup implements WorldGroup {
                     player.kick(provider.bundle().component("group.load.failed", player));
                     return false;
                 });
+    }
+
+    private @Nullable PaperWorldGroup getMigratingTo() {
+        return provider.getPlugin().config().getMigrateToGroup(provider)
+                .map(PaperWorldGroup.class::cast).orElse(null);
+    }
+
+    private PaperPlayerData migratePlayerData(PaperWorldGroup group, Player player) {
+        if (!group.hasPlayerData(player)) {
+            var data = PaperPlayerData.of(player, group);
+            if (equals(group)) return data;
+            group.writePlayerDataUnsafe(player, data);
+        }
+        return new PaperPlayerData(player.getUniqueId(), this);
     }
 
     @Override
