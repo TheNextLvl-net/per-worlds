@@ -364,7 +364,6 @@ public class PaperWorldGroup implements WorldGroup {
 
     private PaperPlayerData migratePlayerData(PaperWorldGroup group, Player player) {
         if (!group.hasPlayerData(player)) {
-            provider.getLogger().info("Migrating player data for {} to group {}", player.getName(), group.getName());
             var data = PaperPlayerData.of(player, group);
             if (equals(group)) return data;
             group.writePlayerDataUnsafe(player, data);
