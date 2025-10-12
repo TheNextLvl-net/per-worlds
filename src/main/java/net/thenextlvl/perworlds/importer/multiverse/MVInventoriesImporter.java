@@ -19,7 +19,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.generator.WorldInfo;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
-import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -261,7 +260,6 @@ public class MVInventoriesImporter extends Importer {
         return element instanceof JsonPrimitive primitive ? primitive.getAsString() : null;
     }
 
-    @Contract("null, _ -> null; !null, null -> null; !null, !null -> !null")
     private @Nullable String asString(@Nullable JsonElement element, @Nullable String defaultValue) {
         return element instanceof JsonPrimitive primitive ? primitive.getAsString() : defaultValue;
     }
