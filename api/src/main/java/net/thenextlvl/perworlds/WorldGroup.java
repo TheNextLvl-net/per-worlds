@@ -366,7 +366,23 @@ public interface WorldGroup {
      *
      * @param player the player whose data is to be persisted and modified
      * @param data   a {@link Consumer} that manipulates the {@link PlayerData} object
+     * @see #persistPlayerData(OfflinePlayer, Consumer)
      */
     @Contract(mutates = "io")
     void persistPlayerData(Player player, Consumer<PlayerData> data);
+
+    /**
+     * Persists and modifies the data of the specified offline player using the provided consumer.
+     * The method allows manipulation through the consumer and ensures the updated data is saved to persistent storage.
+     * <p>
+     * Opposed to {@link #persistPlayerData(Player, Consumer)},
+     * this method does not try to resolve the player's data even if they are online.
+     *
+     * @param player the offline player whose data is to be persisted and modified
+     * @param data   a {@link Consumer} that manipulates the {@link PlayerData} object
+     * @see #persistPlayerData(Player, Consumer)
+     * @since 1.1.0
+     */
+    @Contract(mutates = "io")
+    void persistPlayerData(OfflinePlayer player, Consumer<PlayerData> data);
 }
