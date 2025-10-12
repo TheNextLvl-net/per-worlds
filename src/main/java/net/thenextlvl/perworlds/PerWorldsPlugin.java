@@ -113,8 +113,19 @@ public final class PerWorldsPlugin extends JavaPlugin {
     }
 
     private void scheduleDelayedInitTask() {
-        if (groupsExist && config().migrateToGroup != null) return;
-        getServer().getGlobalRegionScheduler().execute(this, this::setupNotice);
+        var pluginsFolder = getServer().getPluginsFolder().toPath();
+        if (!groupsExist || config().migrateToGroup == null)
+            getServer().getGlobalRegionScheduler().execute(this, this::setupNotice);
+        if (Files.isDirectory(pluginsFolder.resolve("Multiverse-Inventories")))
+            getServer().getGlobalRegionScheduler().execute(this, () -> importNotice("Multiverse-Inventories"));
+    }
+
+    private void importNotice(String pluginName) {
+        var separator = "-".repeat(86);
+        getComponentLogger().info(separator);
+        getComponentLogger().info("It appears you have been using {} before!", pluginName);
+        getComponentLogger().info("To migrate your data to PerWorlds, run '/world group import {}'", pluginName);
+        getComponentLogger().info(separator);
     }
 
     private void setupNotice() {
