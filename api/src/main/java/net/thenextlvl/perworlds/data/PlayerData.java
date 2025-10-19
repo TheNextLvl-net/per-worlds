@@ -47,14 +47,14 @@ public interface PlayerData {
     UUID uuid();
 
     @Nullable
-    @Contract(pure = true)
+    @Contract(value = " -> new", pure = true)
     ItemStack[] enderChest();
 
     @Contract(mutates = "this")
     PlayerData enderChest(@Nullable ItemStack[] contents);
 
     @Nullable
-    @Contract(pure = true)
+    @Contract(value = " -> new", pure = true)
     ItemStack[] inventory();
 
     @Contract(mutates = "this")
