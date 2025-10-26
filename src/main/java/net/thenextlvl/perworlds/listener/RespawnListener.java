@@ -62,8 +62,7 @@ public final class RespawnListener implements Listener {
         });
 
         if (event.isBedSpawn() || event.isAnchorSpawn()) return;
-        group.getGroupData().getSpawnLocation().ifPresentOrElse(event::setRespawnLocation,
-                () -> group.getSpawnLocation().ifPresent(event::setRespawnLocation));
+        group.getSpawnLocation().ifPresent(event::setRespawnLocation);
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
