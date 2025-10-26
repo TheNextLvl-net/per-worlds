@@ -67,8 +67,8 @@ public final class RespawnListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerPostRespawn(PlayerPostRespawnEvent event) {
-        provider.getGroup(event.getRespawnedLocation().getWorld())
-                .orElse(provider.getUnownedWorldGroup())
-                .loadPlayerData(event.getPlayer(), false);
+        var location = event.getRespawnLocation();
+        var world = location.getWorld() != null ? location.getWorld() : event.getPlayer().getWorld();
+        provider.getGroup(world).orElse(provider.getUnownedWorldGroup()).loadPlayerData(event.getPlayer(), false);
     }
 }
