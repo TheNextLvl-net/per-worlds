@@ -67,7 +67,7 @@ public final class RespawnListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerPostRespawn(PlayerPostRespawnEvent event) {
-        var location = event.getRespawnLocation();
+        var location = event.getRespawnedLocation(); // fixme: keep only for 1.21.8 compatibility
         var world = location.getWorld() != null ? location.getWorld() : event.getPlayer().getWorld();
         provider.getGroup(world).orElse(provider.getUnownedWorldGroup()).loadPlayerData(event.getPlayer(), false);
     }
