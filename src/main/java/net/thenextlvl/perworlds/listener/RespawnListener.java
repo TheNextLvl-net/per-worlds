@@ -35,6 +35,8 @@ public final class RespawnListener implements Listener {
                 .orElse(provider.getUnownedWorldGroup());
 
         group.persistPlayerData(event.getPlayer(), playerData -> {
+            if (event.getRespawnReason().equals(PlayerRespawnEvent.RespawnReason.END_PORTAL)) return;
+
             // The PlayerRespawnEvent is fired before the player data is reset,
             // so to prevent duplication and preserve data integrity, we have to reset everything manually
             if (Boolean.FALSE.equals(event.getPlayer().getWorld().getGameRuleValue(GameRule.KEEP_INVENTORY))) {
