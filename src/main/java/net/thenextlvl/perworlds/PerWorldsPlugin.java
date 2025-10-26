@@ -11,10 +11,10 @@ import net.thenextlvl.perworlds.group.PaperGroupProvider;
 import net.thenextlvl.perworlds.listener.ChatListener;
 import net.thenextlvl.perworlds.listener.ConnectionListener;
 import net.thenextlvl.perworlds.listener.MessageListener;
+import net.thenextlvl.perworlds.listener.PluginListener;
 import net.thenextlvl.perworlds.listener.RespawnListener;
 import net.thenextlvl.perworlds.listener.TeleportListener;
 import net.thenextlvl.perworlds.listener.WorldListener;
-import net.thenextlvl.perworlds.listener.WorldsListener;
 import net.thenextlvl.perworlds.model.config.PluginConfig;
 import net.thenextlvl.perworlds.version.PluginVersionChecker;
 import org.bstats.bukkit.Metrics;
@@ -54,15 +54,12 @@ public final class PerWorldsPlugin extends JavaPlugin {
             IO.of(getDataPath().resolve("config.json")), new PluginConfig()
     ).saveIfAbsent();
 
-    public PerWorldsPlugin() {
-        registerCommands();
-    }
-
     @Override
     public void onLoad() {
         versionChecker.checkVersion();
         addCustomCharts();
         registerServices();
+        registerCommands();
     }
 
     @Override
@@ -108,12 +105,10 @@ public final class PerWorldsPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ChatListener(provider), this);
         getServer().getPluginManager().registerEvents(new ConnectionListener(provider), this);
         getServer().getPluginManager().registerEvents(new MessageListener(provider), this);
+        getServer().getPluginManager().registerEvents(new PluginListener(provider), this);
         getServer().getPluginManager().registerEvents(new RespawnListener(provider), this);
         getServer().getPluginManager().registerEvents(new TeleportListener(provider), this);
         getServer().getPluginManager().registerEvents(new WorldListener(provider), this);
-
-        if (getServer().getPluginManager().getPlugin("Worlds") == null) return;
-        getServer().getPluginManager().registerEvents(new WorldsListener(provider), this);
     }
 
     private void warnWorldManager() {
