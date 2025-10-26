@@ -17,7 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.TimeSkipEvent;
-import org.bukkit.event.world.WorldInitEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 import org.jspecify.annotations.NullMarked;
 
@@ -39,7 +39,7 @@ public final class WorldListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onWorldInit(WorldInitEvent event) {
+    public void onWorldInit(WorldLoadEvent event) {
         provider.getGroup(event.getWorld())
                 .orElse(provider.getUnownedWorldGroup())
                 .updateWorldData(event.getWorld());
