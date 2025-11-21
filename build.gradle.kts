@@ -35,7 +35,7 @@ dependencies {
 
     compileOnly("net.thenextlvl:worlds:3.9.0") { isTransitive = false }
 
-    implementation("net.thenextlvl.core:adapters:2.0.3")
+    implementation("net.thenextlvl.core:adapters:2.0.4")
     implementation("net.thenextlvl.core:paper:2.3.1")
     implementation("net.thenextlvl:i18n:1.0.0")
     implementation("net.thenextlvl:nbt:3.0.1")
