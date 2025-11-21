@@ -2,10 +2,10 @@ package net.thenextlvl.perworlds;
 
 import core.file.FileIO;
 import core.file.format.GsonFile;
-import core.i18n.file.ComponentBundle;
 import core.io.IO;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.key.Key;
+import net.thenextlvl.i18n.ComponentBundle;
 import net.thenextlvl.perworlds.command.WorldCommand;
 import net.thenextlvl.perworlds.group.PaperGroupProvider;
 import net.thenextlvl.perworlds.listener.ChatListener;

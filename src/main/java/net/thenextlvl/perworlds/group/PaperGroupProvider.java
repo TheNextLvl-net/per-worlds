@@ -1,10 +1,10 @@
 package net.thenextlvl.perworlds.group;
 
 import com.google.common.base.Preconditions;
-import core.i18n.file.ComponentBundle;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.kyori.adventure.util.TriState;
+import net.thenextlvl.i18n.ComponentBundle;
 import net.thenextlvl.nbt.serialization.NBT;
 import net.thenextlvl.nbt.serialization.adapter.EnumAdapter;
 import net.thenextlvl.perworlds.GroupData;
