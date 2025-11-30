@@ -1,7 +1,6 @@
 package net.thenextlvl.perworlds.group;
 
 import com.google.common.base.Preconditions;
-import core.io.IO;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.TriState;
 import net.thenextlvl.nbt.NBTInputStream;
@@ -219,11 +218,11 @@ public class PaperWorldGroup implements WorldGroup {
     @Override
     public boolean persist() {
         try {
-            var file = IO.of(configFile);
-            if (file.exists()) Files.move(file.getPath(), configFileBackup, REPLACE_EXISTING);
-            else file.createParents();
+            var file = configFile;
+            if (Files.exists(file)) Files.move(file, configFileBackup, REPLACE_EXISTING);
+            else Files.createDirectories(file.toAbsolutePath().getParent());
             try (var outputStream = new NBTOutputStream(
-                    file.outputStream(WRITE, CREATE, TRUNCATE_EXISTING),
+                    Files.newOutputStream(file, WRITE, CREATE, TRUNCATE_EXISTING),
                     StandardCharsets.UTF_8
             )) {
                 outputStream.writeTag(null, provider.nbt().serialize(config));
@@ -299,21 +298,21 @@ public class PaperWorldGroup implements WorldGroup {
     }
 
     public boolean writePlayerDataUnsafe(OfflinePlayer player, PlayerData data) {
-        var file = IO.of(getDataFolder().resolve(player.getUniqueId() + ".dat"));
-        var backup = IO.of(getDataFolder().resolve(player.getUniqueId() + ".dat_old"));
+        var file = getDataFolder().resolve(player.getUniqueId() + ".dat");
+        var backup = getDataFolder().resolve(player.getUniqueId() + ".dat_old");
         try {
-            if (file.exists()) Files.move(file.getPath(), backup.getPath(), REPLACE_EXISTING);
-            else file.createParents();
+            if (Files.isRegularFile(file)) Files.move(file, backup, REPLACE_EXISTING);
+            else Files.createDirectories(file.toAbsolutePath().getParent());
             try (var outputStream = new NBTOutputStream(
-                    file.outputStream(WRITE, CREATE, TRUNCATE_EXISTING),
+                    Files.newOutputStream(file, WRITE, CREATE, TRUNCATE_EXISTING),
                     StandardCharsets.UTF_8
             )) {
                 outputStream.writeTag(null, provider.nbt().serialize(data, PaperPlayerData.class));
                 return true;
             }
         } catch (Throwable t) {
-            if (backup.exists()) try {
-                Files.copy(backup.getPath(), file.getPath(), REPLACE_EXISTING);
+            if (Files.isRegularFile(backup)) try {
+                Files.copy(backup, file, REPLACE_EXISTING);
                 provider.getLogger().warn("Recovered {} from potential data loss", player.getUniqueId());
             } catch (IOException e) {
                 provider.getLogger().error("Failed to recover player data {}", player.getUniqueId(), e);
@@ -481,19 +480,19 @@ public class PaperWorldGroup implements WorldGroup {
 
     private <T> Optional<T> readFile(Path file, Path backup, Class<T> type) throws IOException {
         if (!Files.exists(file)) return Optional.empty();
-        try (var inputStream = stream(IO.of(file))) {
+        try (var inputStream = stream(file)) {
             return Optional.of(inputStream.readTag()).map(tag -> provider.nbt().deserialize(tag, type));
         } catch (Exception e) {
             if (!Files.exists(backup)) throw e;
             provider.getLogger().warn("Failed to load data from {}", file, e);
             provider.getLogger().warn("Falling back to {}", backup);
-            try (var inputStream = stream(IO.of(backup))) {
+            try (var inputStream = stream(backup)) {
                 return Optional.of(inputStream.readTag()).map(tag -> provider.nbt().deserialize(tag, type));
             }
         }
     }
 
-    private NBTInputStream stream(IO file) throws IOException {
-        return new NBTInputStream(file.inputStream(READ), StandardCharsets.UTF_8);
+    private NBTInputStream stream(Path file) throws IOException {
+        return new NBTInputStream(Files.newInputStream(file, READ), StandardCharsets.UTF_8);
     }
 }
