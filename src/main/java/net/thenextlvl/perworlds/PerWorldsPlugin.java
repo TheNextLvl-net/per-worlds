@@ -10,6 +10,8 @@ import net.kyori.adventure.key.Key;
 import net.thenextlvl.i18n.ComponentBundle;
 import net.thenextlvl.perworlds.command.WorldCommand;
 import net.thenextlvl.perworlds.group.PaperGroupProvider;
+import net.thenextlvl.perworlds.importer.Importer;
+import net.thenextlvl.perworlds.importer.multiverse.MVInventoriesImporter;
 import net.thenextlvl.perworlds.listener.ChatListener;
 import net.thenextlvl.perworlds.listener.ConnectionListener;
 import net.thenextlvl.perworlds.listener.MessageListener;
@@ -83,6 +85,10 @@ public final class PerWorldsPlugin extends JavaPlugin {
             getDataPath().resolve("config.json"), new PluginConfig()
     ).validate().save();
 
+    private final Set<Importer> importers = Set.of(
+            new MVInventoriesImporter(this)
+    );
+
     public PerWorldsPlugin() throws IOException {
     }
 
@@ -116,8 +122,10 @@ public final class PerWorldsPlugin extends JavaPlugin {
         var pluginsFolder = getServer().getPluginsFolder().toPath();
         if (!groupsExist || config().migrateToGroup == null)
             getServer().getGlobalRegionScheduler().execute(this, this::setupNotice);
-        if (Files.isDirectory(pluginsFolder.resolve("Multiverse-Inventories")))
-            getServer().getGlobalRegionScheduler().execute(this, () -> importNotice("Multiverse-Inventories"));
+        var importers = this.importers.stream().filter(Importer::isAvailable).map(Importer::getName).toList();
+        for (var importer : importers) {
+            getServer().getGlobalRegionScheduler().execute(this, () -> importNotice(importer));
+        }
     }
 
     private void importNotice(String pluginName) {
@@ -242,5 +250,25 @@ public final class PerWorldsPlugin extends JavaPlugin {
                     .toArray(String[]::new);
             return this.worldManagementPlugins = worldManagers;
         });
+    }
+    
+    public Set<Importer> importers() {
+        return importers;
+    }
+
+    public GsonFile<PluginConfig> configFile() {
+        return config;
+    }
+
+    public PluginConfig config() {
+        return config.getRoot();
+    }
+
+    public PaperGroupProvider groupProvider() {
+        return provider;
+    }
+
+    public ComponentBundle bundle() {
+        return bundle;
     }
 }
