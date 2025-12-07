@@ -1,11 +1,16 @@
 package net.thenextlvl.perworlds.importer;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.tag.resolver.Formatter;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.WorldGroup;
 import net.thenextlvl.perworlds.data.PlayerData;
+import org.bukkit.command.CommandSender;
 import org.jspecify.annotations.NullMarked;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.Map;
@@ -21,9 +26,13 @@ public abstract class Importer {
     private final String name;
 
     protected Importer(PerWorldsPlugin plugin, String name) {
-        this.dataPath = Path.of("plugins", name);
+        this.dataPath = plugin.getServer().getPluginsFolder().toPath().resolve(name);
         this.name = name;
         this.plugin = plugin;
+    }
+
+    public boolean isAvailable() {
+        return Files.isDirectory(dataPath);
     }
 
     public Path getDataPath() {
@@ -34,16 +43,19 @@ public abstract class Importer {
         return name;
     }
 
-    public void load() {
+    public boolean load(CommandSender sender) {
         try {
-            var groups = loadGroups();
-            loadPlayers(groups);
+            plugin.bundle().sendMessage(sender, "group.data.import.start", Placeholder.parsed("provider", name));
+            var groups = loadGroups(sender);
+            loadPlayers(groups, sender);
+            return true;
         } catch (IOException e) {
             plugin.getComponentLogger().error("Failed to import {}", name, e);
+            return false;
         }
     }
 
-    public Set<WorldGroup> loadGroups() throws IOException {
+    public Set<WorldGroup> loadGroups(CommandSender sender) throws IOException {
         var read = readGroups();
         var groups = new HashSet<WorldGroup>(read.size());
         read.forEach((group, worlds) -> {
@@ -53,17 +65,28 @@ public abstract class Importer {
                     .filter(Objects::nonNull)
                     .forEach(worldGroup::addWorld);
             groups.add(worldGroup);
+            plugin.bundle().sendMessage(sender, "group.data.import.group.success",
+                    Placeholder.parsed("group", group),
+                    Formatter.joining("worlds", worlds.stream()
+                            .map(Component::text)
+                            .toList()));
         });
         return groups;
     }
 
-    public void loadPlayers(Set<WorldGroup> groups) throws IOException {
+    public void loadPlayers(Set<WorldGroup> groups, CommandSender sender) throws IOException {
         readPlayers().forEach((uuid, name) -> groups.forEach(group -> {
             var offlinePlayer = plugin.getServer().getOfflinePlayer(uuid);
             group.persistPlayerData(offlinePlayer, playerData -> {
                 try {
                     readPlayer(uuid, name, group, playerData);
+                    plugin.bundle().sendMessage(sender, "group.data.import.player.success",
+                            Placeholder.parsed("group", group.getName()),
+                            Placeholder.parsed("player", name));
                 } catch (IOException e) {
+                    plugin.bundle().sendMessage(sender, "group.data.import.player.failed",
+                            Placeholder.parsed("group", group.getName()),
+                            Placeholder.parsed("player", name));
                     plugin.getComponentLogger().error("Failed to import player data for {} ({}) in group {}",
                             name, uuid, group.getName(), e);
                 }

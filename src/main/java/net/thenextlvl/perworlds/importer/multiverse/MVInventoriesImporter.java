@@ -187,8 +187,9 @@ public class MVInventoriesImporter extends Importer {
     }
 
     @SuppressWarnings("deprecation")
-    private Optional<ItemStack> readItem(JsonElement node) {
+    private Optional<ItemStack> readItem(@Nullable JsonElement node) {
         try {
+            if (node == null) return Optional.empty();
             var string = asString(node);
             if (string != null) {
                 var bytes = Base64.getDecoder().decode(string);
