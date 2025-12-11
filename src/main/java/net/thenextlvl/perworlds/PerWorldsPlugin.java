@@ -1,5 +1,7 @@
 package net.thenextlvl.perworlds;
 
+import dev.faststats.bukkit.BukkitMetrics;
+import dev.faststats.core.chart.Chart;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.key.Key;
 import net.thenextlvl.i18n.ComponentBundle;
@@ -21,6 +23,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -36,6 +39,10 @@ public final class PerWorldsPlugin extends JavaPlugin {
 
     private final PluginVersionChecker versionChecker = new PluginVersionChecker(this);
     private final Metrics metrics = new Metrics(this, 25295);
+    private final dev.faststats.core.Metrics fastStats = BukkitMetrics.factory()
+            .token("aadc507be90ffc99bfab023066c651ae")
+            .addChart(worldManagementPlugins())
+            .create(this);
 
     private final Key key = Key.key("perworlds", "translations");
     private final Path translations = getDataPath().resolve("translations");
@@ -51,6 +58,9 @@ public final class PerWorldsPlugin extends JavaPlugin {
     private final GsonFile<PluginConfig> config = new GsonFile<>(
             getDataPath().resolve("config.json"), new PluginConfig()
     ).saveIfAbsent();
+
+    public PerWorldsPlugin() throws IOException {
+    }
 
     @Override
     public void onLoad() {
@@ -182,6 +192,18 @@ public final class PerWorldsPlugin extends JavaPlugin {
                 .filter(name -> getServer().getPluginManager().getPlugin(name) != null)
                 .findAny().orElse("None");
         metrics.addCustomChart(new SimplePie("world_management_plugin", () -> worldManager));
+    }
+
+    private String @Nullable [] worldManagementPlugins = null;
+
+    private Chart<String[]> worldManagementPlugins() {
+        return Chart.stringArray("world_management_plugins", () -> {
+            if (worldManagementPlugins != null) return worldManagementPlugins;
+            var worldManagers = knownWorldManagers.stream()
+                    .filter(name -> getServer().getPluginManager().getPlugin(name) != null)
+                    .toArray(String[]::new);
+            return this.worldManagementPlugins = worldManagers;
+        });
     }
 
     public GsonFile<PluginConfig> configFile() {
