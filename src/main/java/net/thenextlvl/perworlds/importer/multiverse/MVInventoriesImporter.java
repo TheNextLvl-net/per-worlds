@@ -44,7 +44,6 @@ import static java.nio.file.StandardOpenOption.READ;
 
 @NullMarked
 public class MVInventoriesImporter extends Importer {
-
     public MVInventoriesImporter(PerWorldsPlugin plugin) {
         super(plugin, "Multiverse-Inventories");
     }
