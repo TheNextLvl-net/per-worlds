@@ -12,6 +12,7 @@ import net.thenextlvl.perworlds.command.WorldCommand;
 import net.thenextlvl.perworlds.group.PaperGroupProvider;
 import net.thenextlvl.perworlds.importer.Importer;
 import net.thenextlvl.perworlds.importer.multiverse.MVInventoriesImporter;
+import net.thenextlvl.perworlds.importer.myworlds.MWImporter;
 import net.thenextlvl.perworlds.listener.ChatListener;
 import net.thenextlvl.perworlds.listener.ConnectionListener;
 import net.thenextlvl.perworlds.listener.MessageListener;
@@ -86,7 +87,8 @@ public final class PerWorldsPlugin extends JavaPlugin {
     ).validate().save();
 
     private final Set<Importer> importers = Set.of(
-            new MVInventoriesImporter(this)
+            new MVInventoriesImporter(this),
+            new MWImporter(this)
     );
 
     public PerWorldsPlugin() throws IOException {
