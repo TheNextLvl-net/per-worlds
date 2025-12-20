@@ -61,13 +61,13 @@ public class GroupSettingsAdapterGenerator extends Generator {
                 .returns(CompoundTag.class)
                 .addParameter(GroupSettings.class, "settings")
                 .addParameter(TagSerializationContext.class, "context")
-                .addStatement("var tag = $T.empty()", CompoundTag.class);
+                .addStatement("var tag = $T.builder()", CompoundTag.class);
         Arrays.stream(GroupSettings.class.getDeclaredMethods())
                 .map(Method::getName)
                 .distinct()
-                .forEach(s -> builder.addStatement("tag.add($S, settings.$L())", s, s));
+                .forEach(s -> builder.addStatement("tag.put($S, settings.$L())", s, s));
         return builder
-                .addStatement("return tag")
+                .addStatement("return tag.build()")
                 .build();
     }
 }

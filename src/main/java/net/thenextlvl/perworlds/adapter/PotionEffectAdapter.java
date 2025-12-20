@@ -26,13 +26,13 @@ public final class PotionEffectAdapter implements TagAdapter<PotionEffect> {
 
     @Override
     public Tag serialize(PotionEffect effect, TagSerializationContext context) throws ParserException {
-        var tag = CompoundTag.empty();
-        tag.add("type", context.serialize(effect.getType()));
-        tag.add("duration", effect.getDuration());
-        tag.add("amplifier", effect.getAmplifier());
-        tag.add("ambient", effect.isAmbient());
-        tag.add("particles", effect.hasParticles());
-        tag.add("icon", effect.hasIcon());
-        return tag;
+        return CompoundTag.builder()
+                .put("type", context.serialize(effect.getType()))
+                .put("duration", effect.getDuration())
+                .put("amplifier", effect.getAmplifier())
+                .put("ambient", effect.isAmbient())
+                .put("particles", effect.hasParticles())
+                .put("icon", effect.hasIcon())
+                .build();
     }
 }

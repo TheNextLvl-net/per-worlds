@@ -22,10 +22,10 @@ public final class WardenSpawnTrackerAdapter implements TagAdapter<WardenSpawnTr
 
     @Override
     public Tag serialize(WardenSpawnTracker tracker, TagSerializationContext context) throws ParserException {
-        var tag = CompoundTag.empty();
-        tag.add("cooldownTicks", tracker.cooldownTicks());
-        tag.add("ticksSinceLastWarning", tracker.ticksSinceLastWarning());
-        tag.add("warningLevel", tracker.warningLevel());
-        return tag;
+        var tag = CompoundTag.builder();
+        tag.put("cooldownTicks", tracker.cooldownTicks());
+        tag.put("ticksSinceLastWarning", tracker.ticksSinceLastWarning());
+        tag.put("warningLevel", tracker.warningLevel());
+        return tag.build();
     }
 }

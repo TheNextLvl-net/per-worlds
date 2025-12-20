@@ -22,10 +22,10 @@ public final class VectorAdapter implements TagAdapter<Vector> {
 
     @Override
     public Tag serialize(Vector vector, TagSerializationContext context) throws ParserException {
-        var tag = CompoundTag.empty();
-        tag.add("x", vector.getX());
-        tag.add("y", vector.getY());
-        tag.add("z", vector.getZ());
-        return tag;
+        return CompoundTag.builder()
+                .put("x", vector.getX())
+                .put("y", vector.getY())
+                .put("z", vector.getZ())
+                .build();
     }
 }

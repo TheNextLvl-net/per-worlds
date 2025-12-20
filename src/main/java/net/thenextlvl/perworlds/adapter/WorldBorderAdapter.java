@@ -34,15 +34,15 @@ public final class WorldBorderAdapter implements TagAdapter<WorldBorderData> {
 
     @Override
     public Tag serialize(WorldBorderData data, TagSerializationContext context) throws ParserException {
-        var tag = CompoundTag.empty();
-        tag.add("x", data.centerX());
-        tag.add("z", data.centerZ());
-        tag.add("size", data.size());
-        tag.add("duration", data.duration());
-        tag.add("damageAmount", data.damageAmount());
-        tag.add("damageBuffer", data.damageBuffer());
-        tag.add("warningDistance", data.warningDistance());
-        tag.add("warningTime", data.warningTime());
-        return tag;
+        return CompoundTag.builder()
+                .put("x", data.centerX())
+                .put("z", data.centerZ())
+                .put("size", data.size())
+                .put("duration", data.duration())
+                .put("damageAmount", data.damageAmount())
+                .put("damageBuffer", data.damageBuffer())
+                .put("warningDistance", data.warningDistance())
+                .put("warningTime", data.warningTime())
+                .build();
     }
 }

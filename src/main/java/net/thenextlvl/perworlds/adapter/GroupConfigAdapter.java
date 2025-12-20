@@ -38,12 +38,12 @@ public final class GroupConfigAdapter implements TagAdapter<GroupConfig> {
 
     @Override
     public Tag serialize(GroupConfig config, TagSerializationContext context) throws ParserException {
-        var tag = CompoundTag.empty();
-        tag.add("data", context.serialize(config.data()));
-        tag.add("settings", context.serialize(config.settings()));
-        if (!config.worlds().isEmpty()) tag.add("worlds", ListTag.of(
+        var tag = CompoundTag.builder();
+        tag.put("data", context.serialize(config.data()));
+        tag.put("settings", context.serialize(config.settings()));
+        if (!config.worlds().isEmpty()) tag.put("worlds", ListTag.of(
                 config.worlds().stream().map(context::serialize).toList()
         ));
-        return tag;
+        return tag.build();
     }
 }

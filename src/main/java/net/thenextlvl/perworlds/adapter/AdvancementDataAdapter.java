@@ -39,14 +39,14 @@ public final class AdvancementDataAdapter implements TagAdapter<AdvancementData>
 
     @Override
     public Tag serialize(AdvancementData data, TagSerializationContext context) throws ParserException {
-        var tag = CompoundTag.empty();
-        var awarded = CompoundTag.empty();
+        var tag = CompoundTag.builder();
+        var awarded = CompoundTag.builder();
         data.forEachAwardedCriteria((criteria, date) -> {
-            awarded.add(criteria, context.serialize(date));
+            awarded.put(criteria, context.serialize(date));
         });
-        tag.add("advancement", context.serialize(data.getAdvancement().key()));
-        tag.add("awarded", awarded);
-        tag.add("remaining", ListTag.of(StringTag.ID, data.getRemainingCriteria().stream().map(StringTag::of).toList()));
-        return tag;
+        tag.put("advancement", context.serialize(data.getAdvancement().key()));
+        tag.put("awarded", awarded.build());
+        tag.put("remaining", ListTag.of(StringTag.ID, data.getRemainingCriteria().stream().map(StringTag::of).toList()));
+        return tag.build();
     }
 }

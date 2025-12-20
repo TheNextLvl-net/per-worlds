@@ -22,9 +22,9 @@ public final class AttributeDataAdapter implements TagAdapter<AttributeData> {
 
     @Override
     public Tag serialize(AttributeData data, TagSerializationContext context) throws ParserException {
-        var tag = CompoundTag.empty();
-        tag.add("id", context.serialize(data.attribute()));
-        tag.add("base", data.baseValue());
-        return tag;
+        return CompoundTag.builder()
+                .put("id", context.serialize(data.attribute()))
+                .put("base", data.baseValue())
+                .build();
     }
 }

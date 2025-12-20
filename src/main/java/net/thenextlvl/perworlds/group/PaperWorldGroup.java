@@ -25,7 +25,6 @@ import org.jspecify.annotations.Nullable;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -41,10 +40,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.READ;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
-import static java.nio.file.StandardOpenOption.WRITE;
 import static net.thenextlvl.perworlds.PerWorldsPlugin.ISSUES;
 
 @NullMarked
@@ -221,10 +216,7 @@ public class PaperWorldGroup implements WorldGroup {
             var file = configFile;
             if (Files.exists(file)) Files.move(file, configFileBackup, REPLACE_EXISTING);
             else Files.createDirectories(file.toAbsolutePath().getParent());
-            try (var outputStream = new NBTOutputStream(
-                    Files.newOutputStream(file, WRITE, CREATE, TRUNCATE_EXISTING),
-                    StandardCharsets.UTF_8
-            )) {
+            try (var outputStream = NBTOutputStream.create(file)) {
                 outputStream.writeTag(null, provider.nbt().serialize(config));
                 return true;
             }
@@ -303,10 +295,7 @@ public class PaperWorldGroup implements WorldGroup {
         try {
             if (Files.isRegularFile(file)) Files.move(file, backup, REPLACE_EXISTING);
             else Files.createDirectories(file.toAbsolutePath().getParent());
-            try (var outputStream = new NBTOutputStream(
-                    Files.newOutputStream(file, WRITE, CREATE, TRUNCATE_EXISTING),
-                    StandardCharsets.UTF_8
-            )) {
+            try (var outputStream = NBTOutputStream.create(file)) {
                 outputStream.writeTag(null, provider.nbt().serialize(data, PaperPlayerData.class));
                 return true;
             }
@@ -480,19 +469,15 @@ public class PaperWorldGroup implements WorldGroup {
 
     private <T> Optional<T> readFile(Path file, Path backup, Class<T> type) throws IOException {
         if (!Files.exists(file)) return Optional.empty();
-        try (var inputStream = stream(file)) {
+        try (var inputStream = NBTInputStream.create(file)) {
             return Optional.of(inputStream.readTag()).map(tag -> provider.nbt().deserialize(tag, type));
         } catch (Exception e) {
             if (!Files.exists(backup)) throw e;
             provider.getLogger().warn("Failed to load data from {}", file, e);
             provider.getLogger().warn("Falling back to {}", backup);
-            try (var inputStream = stream(backup)) {
+            try (var inputStream = NBTInputStream.create(backup)) {
                 return Optional.of(inputStream.readTag()).map(tag -> provider.nbt().deserialize(tag, type));
             }
         }
-    }
-
-    private NBTInputStream stream(Path file) throws IOException {
-        return new NBTInputStream(Files.newInputStream(file, READ), StandardCharsets.UTF_8);
     }
 }
