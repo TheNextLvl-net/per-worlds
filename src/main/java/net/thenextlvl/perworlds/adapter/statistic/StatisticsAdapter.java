@@ -43,11 +43,11 @@ public final class StatisticsAdapter implements TagAdapter<Statistics> {
 
     @Override
     public Tag serialize(Statistics statistics, TagSerializationContext context) throws ParserException {
-        var tag = CompoundTag.empty();
+        var tag = CompoundTag.builder();
         statistics.forEachStatistic((statistic, value) -> {
-            if (value.hasData()) tag.add(statistic.key().asString(), context.serialize(value));
+            if (value.hasData()) tag.put(statistic.key().asString(), context.serialize(value));
         });
-        return tag;
+        return tag.build();
     }
 
     private static Class<? extends Stat> getType(Statistic statistic) {

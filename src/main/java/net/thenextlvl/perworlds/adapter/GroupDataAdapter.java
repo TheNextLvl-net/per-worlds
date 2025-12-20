@@ -55,21 +55,21 @@ public final class GroupDataAdapter implements TagAdapter<GroupData> {
 
     @Override
     public Tag serialize(GroupData data, TagSerializationContext context) throws ParserException {
-        var tag = CompoundTag.empty();
-        var rules = CompoundTag.empty();
-        data.forEachGameRule((rule, value) -> rules.add(rule.getName(), context.serialize(value)));
-        data.getSpawnLocation().ifPresent(location -> tag.add("spawnLocation", context.serialize(location)));
-        data.getDefaultGameMode().ifPresent(mode -> tag.add("defaultGameMode", context.serialize(mode)));
-        tag.add("difficulty", context.serialize(data.getDifficulty()));
-        tag.add("worldBorder", context.serialize(data.getWorldBorder()));
-        tag.add("gameRules", rules);
-        tag.add("hardcore", context.serialize(data.getHardcore()));
-        tag.add("raining", data.isRaining());
-        tag.add("thundering", data.isThundering());
-        tag.add("thunderDuration", data.getThunderDuration());
-        tag.add("clearWeatherDuration", data.clearWeatherDuration());
-        tag.add("rainDuration", data.getRainDuration());
-        tag.add("time", data.getTime());
-        return tag;
+        var tag = CompoundTag.builder();
+        var rules = CompoundTag.builder();
+        data.forEachGameRule((rule, value) -> rules.put(rule.getName(), context.serialize(value)));
+        data.getSpawnLocation().ifPresent(location -> tag.put("spawnLocation", context.serialize(location)));
+        data.getDefaultGameMode().ifPresent(mode -> tag.put("defaultGameMode", context.serialize(mode)));
+        tag.put("difficulty", context.serialize(data.getDifficulty()));
+        tag.put("worldBorder", context.serialize(data.getWorldBorder()));
+        tag.put("gameRules", rules.build());
+        tag.put("hardcore", context.serialize(data.getHardcore()));
+        tag.put("raining", data.isRaining());
+        tag.put("thundering", data.isThundering());
+        tag.put("thunderDuration", data.getThunderDuration());
+        tag.put("clearWeatherDuration", data.clearWeatherDuration());
+        tag.put("rainDuration", data.getRainDuration());
+        tag.put("time", data.getTime());
+        return tag.build();
     }
 }

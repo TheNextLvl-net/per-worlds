@@ -6,7 +6,7 @@ import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.kyori.adventure.util.TriState;
 import net.thenextlvl.i18n.ComponentBundle;
 import net.thenextlvl.nbt.serialization.NBT;
-import net.thenextlvl.nbt.serialization.adapter.EnumAdapter;
+import net.thenextlvl.nbt.serialization.adapters.EnumAdapter;
 import net.thenextlvl.perworlds.GroupData;
 import net.thenextlvl.perworlds.GroupProvider;
 import net.thenextlvl.perworlds.GroupSettings;
