@@ -6,6 +6,7 @@ import net.kyori.adventure.text.logger.slf4j.ComponentLogger;
 import net.kyori.adventure.util.TriState;
 import net.thenextlvl.i18n.ComponentBundle;
 import net.thenextlvl.nbt.serialization.NBT;
+import net.thenextlvl.nbt.serialization.adapters.DurationAdapter;
 import net.thenextlvl.nbt.serialization.adapters.EnumAdapter;
 import net.thenextlvl.perworlds.GroupData;
 import net.thenextlvl.perworlds.GroupProvider;
@@ -63,6 +64,7 @@ import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
 import java.nio.file.Path;
+import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
@@ -93,6 +95,7 @@ public final class PaperGroupProvider implements GroupProvider {
                 .registerTypeHierarchyAdapter(BlockTypeStat.class, new BlockTypeStatAdapter(plugin))
                 .registerTypeHierarchyAdapter(CustomStat.class, new CustomStatAdapter())
                 .registerTypeHierarchyAdapter(Difficulty.class, new EnumAdapter<>(Difficulty.class))
+                .registerTypeHierarchyAdapter(Duration.class, DurationAdapter.INSTANCE)
                 .registerTypeHierarchyAdapter(EntityTypeStat.class, new EntityTypeStatAdapter(plugin))
                 .registerTypeHierarchyAdapter(GameMode.class, new EnumAdapter<>(GameMode.class))
                 .registerTypeHierarchyAdapter(GroupConfig.class, new GroupConfigAdapter())

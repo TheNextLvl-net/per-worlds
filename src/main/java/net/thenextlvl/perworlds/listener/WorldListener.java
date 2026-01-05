@@ -5,6 +5,7 @@ import io.papermc.paper.event.world.WorldGameRuleChangeEvent;
 import io.papermc.paper.event.world.border.WorldBorderBoundsChangeEvent;
 import io.papermc.paper.event.world.border.WorldBorderCenterChangeEvent;
 import net.kyori.adventure.key.Key;
+import net.kyori.adventure.util.Ticks;
 import net.thenextlvl.perworlds.GroupData;
 import net.thenextlvl.perworlds.GroupData.Type;
 import net.thenextlvl.perworlds.WorldGroup;
@@ -94,7 +95,9 @@ public final class WorldListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onWorldBorderChange(WorldBorderBoundsChangeEvent event) {
         processWorldDataUpdate(event.getWorld(), Type.WORLD_BORDER, data -> {
-            data.setWorldBorder(data.getWorldBorder().size(event.getNewSize()).duration(event.getDuration()));
+            data.setWorldBorder(data.getWorldBorder()
+                    .setTransitionDuration(Ticks.duration(event.getDurationTicks()))
+                    .size(event.getNewSize()));
         });
     }
 

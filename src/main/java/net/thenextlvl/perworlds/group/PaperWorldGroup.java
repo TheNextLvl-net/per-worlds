@@ -1,6 +1,7 @@
 package net.thenextlvl.perworlds.group;
 
 import com.google.common.base.Preconditions;
+import io.papermc.paper.util.Tick;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.TriState;
 import net.thenextlvl.nbt.NBTInputStream;
@@ -16,6 +17,7 @@ import org.bukkit.GameRule;
 import org.bukkit.Keyed;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Registry;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
@@ -27,14 +29,12 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -388,7 +388,7 @@ public class PaperWorldGroup implements WorldGroup {
         getGroupData().setDifficulty(world.getDifficulty());
         getGroupData().setTime(world.getFullTime());
 
-        Arrays.stream(GameRule.values())
+        Registry.GAME_RULE.stream()
                 .filter(gameRule -> world.getFeatureFlags().containsAll(gameRule.requiredFeatures()))
                 .map(gameRule -> (GameRule<Object>) gameRule)
                 .forEach(rule -> getGroupData().setGameRule(rule, world.getGameRuleValue(rule)));
@@ -427,8 +427,9 @@ public class PaperWorldGroup implements WorldGroup {
 
     @SuppressWarnings("unchecked")
     private void applyGameRules(World world) {
-        Arrays.stream(world.getGameRules()).map(GameRule::getByName)
-                .map(gameRule -> ((GameRule<Object>) gameRule)).filter(Objects::nonNull)
+        Registry.GAME_RULE.stream()
+                .map(gameRule -> (GameRule<Object>) gameRule)
+                .filter(gameRule -> world.getFeatureFlags().containsAll(gameRule.requiredFeatures()))
                 .forEach(rule -> getGroupData().getGameRule(rule)
                         .or(() -> Optional.ofNullable(world.getGameRuleDefault(rule)))
                         .ifPresent(value -> world.setGameRule(rule, value)));
@@ -437,12 +438,12 @@ public class PaperWorldGroup implements WorldGroup {
     private void applyWorldBorder(World world) {
         var border = getGroupData().getWorldBorder();
         var worldBorder = world.getWorldBorder();
-        worldBorder.setSize(border.size(), TimeUnit.MILLISECONDS, border.duration());
+        worldBorder.changeSize(border.size(), Tick.tick().fromDuration(border.getTransitionDuration()));
         worldBorder.setCenter(border.centerX(), border.centerZ());
         worldBorder.setDamageAmount(border.damageAmount());
         worldBorder.setDamageBuffer(border.damageBuffer());
         worldBorder.setWarningDistance(border.warningDistance());
-        worldBorder.setWarningTime(border.warningTime());
+        worldBorder.setWarningTimeTicks(Tick.tick().fromDuration(border.getWarningTime()));
     }
 
     @Override
