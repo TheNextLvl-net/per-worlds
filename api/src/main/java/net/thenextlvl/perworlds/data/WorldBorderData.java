@@ -6,6 +6,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -125,9 +126,23 @@ public interface WorldBorderData {
      *
      * @return the duration in milliseconds
      * @see WorldBorder#setSize(double, TimeUnit, long)
+     * @deprecated use {@link #getTransitionDuration()}
      */
     @Contract(pure = true)
-    long duration();
+    @Deprecated(forRemoval = true, since = "1.3.0")
+    default long duration() {
+        return getTransitionDuration().toMillis();
+    }
+
+    /**
+     * Retrieves the current transition duration of the world's border.
+     *
+     * @return the duration
+     * @see WorldBorder#changeSize(double, long)
+     * @since 1.3.0
+     */
+    @Contract(pure = true)
+    Duration getTransitionDuration();
 
     /**
      * Sets the transition duration in milliseconds.
@@ -137,9 +152,25 @@ public interface WorldBorderData {
      * @throws IllegalArgumentException if the duration is less than 0
      * @see WorldBorder#setSize(double, TimeUnit, long)
      * @since 0.2.2
+     * @deprecated use {@link #setTransitionDuration(Duration)}
      */
     @Contract(value = "_ -> new", pure = true)
-    WorldBorderData duration(long duration) throws IllegalArgumentException;
+    @Deprecated(forRemoval = true, since = "1.3.0")
+    default WorldBorderData duration(long duration) throws IllegalArgumentException {
+        return setTransitionDuration(Duration.ofMillis(duration));
+    }
+
+    /**
+     * Sets the transition duration.
+     *
+     * @param duration the duration to be set
+     * @return the current WorldBorderData instance for chaining
+     * @throws IllegalArgumentException if the duration is negative
+     * @see WorldBorder#changeSize(double, long)
+     * @since 1.3.0
+     */
+    @Contract(value = "_ -> new", pure = true)
+    WorldBorderData setTransitionDuration(Duration duration) throws IllegalArgumentException;
 
     /**
      * Gets the current border damage amount.
@@ -205,21 +236,48 @@ public interface WorldBorderData {
      * Gets the current border warning time in seconds.
      *
      * @return The current border warning time in seconds.
-     * @see WorldBorder#getWarningTime()
+     * @see WorldBorder#getWarningTimeTicks()
      */
     @Contract(pure = true)
-    int warningTime();
+    @Deprecated(forRemoval = true, since = "1.3.0")
+    default int warningTime() {
+        return (int) getWarningTime().toSeconds();
+    }
+
+    /**
+     * Gets the current border warning time.
+     *
+     * @return The current border warning time.
+     * @see WorldBorder#getWarningTimeTicks()
+     */
+    @Contract(pure = true)
+    Duration getWarningTime();
 
     /**
      * Sets the warning time that causes the screen to be tinted red when a contracting border will reach the player within the specified time.
      *
      * @param seconds The amount of time in seconds.
      * @return the current WorldBorderData instance for chaining
+     * @throws IllegalArgumentException if the seconds are negative
      * @see WorldBorder#setWarningTime(int)
      * @since 0.2.2
      */
     @Contract(value = "_ -> new", pure = true)
-    WorldBorderData warningTime(int seconds);
+    default WorldBorderData warningTime(int seconds) throws IllegalArgumentException {
+        return setWarningTime(Duration.ofSeconds(seconds));
+    }
+
+    /**
+     * Sets the warning time that causes the screen to be tinted red when a contracting border will reach the player within the specified time.
+     *
+     * @param duration The amount of time.
+     * @return the current WorldBorderData instance for chaining
+     * @throws IllegalArgumentException if the duration is negative
+     * @see WorldBorder#setWarningTimeTicks(int)
+     * @since 1.3.0
+     */
+    @Contract(value = "_ -> new", pure = true)
+    WorldBorderData setWarningTime(Duration duration) throws IllegalArgumentException;
 
     /**
      * Retrieves the maximum allowed size of the border.
@@ -269,10 +327,31 @@ public interface WorldBorderData {
      * @param warningTime     the amount of time in seconds for the warning display
      * @return a new instance of {@code WorldBorderData} with the specified configuration
      * @since 1.0.0
+     * @deprecated use {@link #create(double, double, double, double, double, Duration, int, Duration)}
      */
+    @Deprecated(forRemoval = true, since = "1.3.0")
     @Contract(value = "_, _, _, _, _, _, _, _ -> new", pure = true)
     static WorldBorderData create(double centerX, double centerZ, double size, double damageAmount, double damageBuffer, long duration, int warningDistance, int warningTime) {
-        return new WorldBorderDataImpl(centerX, centerZ, size, damageAmount, damageBuffer, duration, warningDistance, warningTime);
+        return create(centerX, centerZ, size, damageAmount, damageBuffer, Duration.ofMillis(duration), warningDistance, Duration.ofSeconds(warningTime));
+    }
+
+    /**
+     * Creates a new instance of {@code WorldBorderData} with the specified parameters.
+     *
+     * @param centerX            the X-coordinate of the border's center
+     * @param centerZ            the Z-coordinate of the border's center
+     * @param size               the size of the border
+     * @param damageAmount       the amount of damage applied outside the border beyond the buffer
+     * @param damageBuffer       the distance from the border within which no damage is applied
+     * @param transitionDuration the transition duration of the border
+     * @param warningDistance    the number of blocks from the border where a warning is displayed
+     * @param warningTime        the amount of time for the warning display
+     * @return a new instance of {@code WorldBorderData} with the specified configuration
+     * @since 1.3.0
+     */
+    @Contract(value = "_, _, _, _, _, _, _, _ -> new", pure = true)
+    static WorldBorderData create(double centerX, double centerZ, double size, double damageAmount, double damageBuffer, Duration transitionDuration, int warningDistance, Duration warningTime) {
+        return new WorldBorderDataImpl(centerX, centerZ, size, damageAmount, damageBuffer, transitionDuration, warningDistance, warningTime);
     }
 
     /**

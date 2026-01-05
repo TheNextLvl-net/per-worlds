@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import static org.bukkit.GameRule.ANNOUNCE_ADVANCEMENTS;
-import static org.bukkit.GameRule.SHOW_DEATH_MESSAGES;
+import static org.bukkit.GameRules.SHOW_ADVANCEMENT_MESSAGES;
+import static org.bukkit.GameRules.SHOW_DEATH_MESSAGES;
 
 @NullMarked
 public final class MessageListener implements Listener {
@@ -35,7 +35,7 @@ public final class MessageListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerAdvancementDone(PlayerAdvancementDoneEvent event) {
-        handle(event.getPlayer().getWorld(), ANNOUNCE_ADVANCEMENTS, GroupSettings::advancementMessages, event::message, event.message());
+        handle(event.getPlayer().getWorld(), SHOW_ADVANCEMENT_MESSAGES, GroupSettings::advancementMessages, event::message, event.message());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

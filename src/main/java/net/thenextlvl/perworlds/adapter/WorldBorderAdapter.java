@@ -9,6 +9,8 @@ import net.thenextlvl.nbt.tag.Tag;
 import net.thenextlvl.perworlds.data.WorldBorderData;
 import org.jspecify.annotations.NullMarked;
 
+import java.time.Duration;
+
 @NullMarked
 public final class WorldBorderAdapter implements TagAdapter<WorldBorderData> {
     @Override
@@ -24,11 +26,11 @@ public final class WorldBorderAdapter implements TagAdapter<WorldBorderData> {
         var size = root.optional("size").map(Tag::getAsDouble)
                 .map(value -> Math.clamp(value, WorldBorderData.getMinSize(), WorldBorderData.getMaxSize()))
                 .orElse(border.size());
-        var duration = root.optional("duration").map(Tag::getAsLong).orElse(border.duration());
+        var duration = root.optional("duration").map(tag1 -> context.deserialize(tag1, Duration.class)).orElse(border.getTransitionDuration());
         var damageAmount = root.optional("damageAmount").map(Tag::getAsDouble).orElse(border.damageAmount());
         var damageBuffer = root.optional("damageBuffer").map(Tag::getAsDouble).orElse(border.damageBuffer());
         var warningDistance = root.optional("warningDistance").map(Tag::getAsInt).orElse(border.warningDistance());
-        var warningTime = root.optional("warningTime").map(Tag::getAsInt).orElse(border.warningTime());
+        var warningTime = root.optional("warningTime").map(tag1 -> context.deserialize(tag1, Duration.class)).orElse(border.getWarningTime());
         return WorldBorderData.create(x, z, size, damageAmount, damageBuffer, duration, warningDistance, warningTime);
     }
 
@@ -38,11 +40,11 @@ public final class WorldBorderAdapter implements TagAdapter<WorldBorderData> {
                 .put("x", data.centerX())
                 .put("z", data.centerZ())
                 .put("size", data.size())
-                .put("duration", data.duration())
+                .put("duration", context.serialize(data.getTransitionDuration()))
                 .put("damageAmount", data.damageAmount())
                 .put("damageBuffer", data.damageBuffer())
                 .put("warningDistance", data.warningDistance())
-                .put("warningTime", data.warningTime())
+                .put("warningTime", context.serialize(data.getWarningTime()))
                 .build();
     }
 }

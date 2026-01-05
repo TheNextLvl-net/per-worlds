@@ -13,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    implementation("io.papermc.paper:paper-api:1.21.10-R0.1-SNAPSHOT")
+    implementation("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
     implementation("com.palantir.javapoet:javapoet:0.9.0")
     implementation("net.thenextlvl:nbt:4.2.0")
     implementation(project(":api"))
