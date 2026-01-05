@@ -25,7 +25,7 @@ public class GroupSettingsAdapterGenerator extends Generator {
     @Override
     protected TypeSpec generate() {
         return TypeSpec.classBuilder(className)
-                .addModifiers(Modifier.PUBLIC)
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
                 .addSuperinterface(ParameterizedTypeName.get(
                         TagAdapter.class,
                         GroupSettings.class
