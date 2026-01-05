@@ -21,7 +21,7 @@ tasks.compileJava {
 }
 
 group = "net.thenextlvl.perworlds"
-version = "1.2.1"
+version = "1.2.2-mc1.21.10"
 
 repositories {
     mavenCentral()
