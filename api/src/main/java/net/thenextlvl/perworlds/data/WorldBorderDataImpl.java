@@ -110,7 +110,7 @@ final class WorldBorderDataImpl implements WorldBorderData {
 
     @Override
     public double size() {
-        return 0;
+        return size;
     }
 
     @Override
