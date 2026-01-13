@@ -23,11 +23,11 @@ import java.util.function.BiConsumer;
 @NullMarked
 public final class PaperStatistics implements Statistics {
     private final Map<Statistic, Stat> statistics;
-    
+
     public PaperStatistics(HashMap<Statistic, Stat> values) {
         this.statistics = values;
     }
-    
+
     public PaperStatistics() {
         this(new HashMap<>());
     }
@@ -96,18 +96,24 @@ public final class PaperStatistics implements Statistics {
         statistics.forEach(action);
     }
 
-    @SuppressWarnings({"DataFlowIssue", "deprecation"})
     public static PaperStatistics of(Player player) {
         var stats = new PaperStatistics();
         Registry.STATISTIC.forEach(statistic -> {
             switch (statistic.getType()) {
                 case UNTYPED -> stats.setStatistic(statistic, player.getStatistic(statistic));
-                case ITEM -> Registry.ITEM.forEach(type -> stats.setStatistic(statistic, type,
-                        player.getStatistic(statistic, type.asMaterial())));
-                case BLOCK -> Registry.BLOCK.forEach(type -> stats.setStatistic(statistic, type,
-                        player.getStatistic(statistic, type.asMaterial())));
-                case ENTITY -> Registry.ENTITY_TYPE.forEach(type -> stats.setStatistic(statistic, type,
-                        player.getStatistic(statistic, type)));
+                case ITEM -> Registry.ITEM.forEach(type -> {
+                    var material = Registry.MATERIAL.get(type.key());
+                    if (material == null) return;
+                    stats.setStatistic(statistic, type, player.getStatistic(statistic, material));
+                });
+                case BLOCK -> Registry.BLOCK.forEach(type -> {
+                    var material = Registry.MATERIAL.get(type.key());
+                    if (material == null) return;
+                    stats.setStatistic(statistic, type, player.getStatistic(statistic, material));
+                });
+                case ENTITY -> Registry.ENTITY_TYPE.forEach(type -> {
+                    stats.setStatistic(statistic, type, player.getStatistic(statistic, type));
+                });
             }
         });
         return stats;
