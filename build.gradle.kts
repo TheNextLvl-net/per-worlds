@@ -5,7 +5,7 @@ import net.minecrell.pluginyml.paper.PaperPluginDescription
 plugins {
     id("idea")
     id("java")
-    id("com.gradleup.shadow") version "9.3.0"
+    id("com.gradleup.shadow") version "9.3.1"
     id("com.modrinth.minotaur") version "2.+"
     id("de.eldoria.plugin-yml.paper") version "0.8.0"
     id("io.papermc.hangar-publish-plugin") version "0.1.4"
@@ -33,7 +33,7 @@ repositories {
 dependencies {
     paperweight.paperDevBundle("1.21.10-R0.1-SNAPSHOT")
 
-    compileOnly("net.thenextlvl:worlds:3.11.0") { isTransitive = false }
+    compileOnly("net.thenextlvl:worlds:3.12.1") { isTransitive = false }
 
     implementation("dev.faststats.metrics:bukkit:0.8.1")
     implementation("net.thenextlvl.version-checker:modrinth-paper:1.0.1")
