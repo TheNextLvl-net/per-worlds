@@ -3,6 +3,7 @@ package net.thenextlvl.perworlds.model.config;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
+import net.thenextlvl.perworlds.PerWorldsPlugin;
 import org.jspecify.annotations.NullMarked;
 
 import java.io.BufferedWriter;
@@ -12,12 +13,12 @@ import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.attribute.FileAttribute;
 
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.READ;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static java.nio.file.StandardOpenOption.WRITE;
+import static net.thenextlvl.perworlds.PerWorldsPlugin.ISSUES;
 
 @NullMarked
 public final class GsonFile<R> {
@@ -45,8 +46,8 @@ public final class GsonFile<R> {
         return root = load();
     }
 
-    public GsonFile<R> saveIfAbsent(FileAttribute<?>... attributes) {
-        return Files.isRegularFile(file) ? this : save(attributes);
+    public GsonFile<R> saveIfAbsent(PerWorldsPlugin plugin) {
+        return Files.isRegularFile(file) ? this : save(plugin);
     }
 
     private R load() {
@@ -62,10 +63,10 @@ public final class GsonFile<R> {
         }
     }
 
-    public GsonFile<R> save(FileAttribute<?>... attributes) {
+    public GsonFile<R> save(PerWorldsPlugin plugin) {
         try {
             var root = getRoot();
-            Files.createDirectories(file.getParent(), attributes);
+            Files.createDirectories(file.getParent());
             try (var writer = new BufferedWriter(new OutputStreamWriter(
                     Files.newOutputStream(file, WRITE, CREATE, TRUNCATE_EXISTING),
                     StandardCharsets.UTF_8
@@ -74,7 +75,10 @@ public final class GsonFile<R> {
                 return this;
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            plugin.getComponentLogger().error("Failed to save config", e);
+            plugin.getComponentLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
+            PerWorldsPlugin.ERROR_TRACKER.trackError(e);
+            return this;
         }
     }
 }
