@@ -26,7 +26,7 @@ public final class PluginConfig {
             if (current.equals(group) || current.hasPlayerData(player)) return;
             current.loadPlayerData(player, false);
         });
-        plugin.configFile().save();
+        plugin.configFile().save(plugin);
         return true;
     }
 
