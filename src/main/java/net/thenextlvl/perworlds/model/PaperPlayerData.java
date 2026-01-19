@@ -14,6 +14,7 @@ import net.minecraft.stats.ServerRecipeBook;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.thenextlvl.perworlds.GroupSettings;
+import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.WorldGroup;
 import net.thenextlvl.perworlds.data.AdvancementData;
 import net.thenextlvl.perworlds.data.AttributeData;
@@ -243,6 +244,7 @@ public final class PaperPlayerData implements PlayerData {
         } catch (Exception e) {
             group().getGroupProvider().getLogger().error("Failed to get last selected advancement tab from player {}", player.getName(), e);
             group().getGroupProvider().getLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
+            PerWorldsPlugin.ERROR_TRACKER.trackError(e);
             return null;
         }
     }
@@ -458,6 +460,7 @@ public final class PaperPlayerData implements PlayerData {
         } catch (Exception e) {
             group().getGroupProvider().getLogger().error("Failed to add recipe highlight for player {}", player.getName(), e);
             group().getGroupProvider().getLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
+            PerWorldsPlugin.ERROR_TRACKER.trackError(e);
         }
     }
 
@@ -510,6 +513,7 @@ public final class PaperPlayerData implements PlayerData {
         } catch (Exception e) {
             group().getGroupProvider().getLogger().error("Failed to update advancements for player {}", player.getName(), e);
             group().getGroupProvider().getLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
+            PerWorldsPlugin.ERROR_TRACKER.trackError(e);
         }
     }
 
@@ -535,6 +539,7 @@ public final class PaperPlayerData implements PlayerData {
         } catch (Exception e) {
             group().getGroupProvider().getLogger().error("Failed to get advancement progress for player {}", player.getName(), e);
             group().getGroupProvider().getLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
+            PerWorldsPlugin.ERROR_TRACKER.trackError(e);
             return new LinkedHashMap<>();
         }
     }
@@ -551,6 +556,7 @@ public final class PaperPlayerData implements PlayerData {
         } catch (Exception e) {
             group().getGroupProvider().getLogger().error("Failed to update advancement progress {}", criteria, e);
             group().getGroupProvider().getLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
+            PerWorldsPlugin.ERROR_TRACKER.trackError(e);
         }
     }
 

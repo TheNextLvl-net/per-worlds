@@ -7,6 +7,7 @@ import net.thenextlvl.nbt.NBTInputStream;
 import net.thenextlvl.nbt.NBTOutputStream;
 import net.thenextlvl.perworlds.GroupData;
 import net.thenextlvl.perworlds.GroupSettings;
+import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.WorldGroup;
 import net.thenextlvl.perworlds.data.PlayerData;
 import net.thenextlvl.perworlds.data.WorldBorderData;
@@ -73,6 +74,7 @@ public class PaperWorldGroup implements WorldGroup {
         } catch (Exception e) {
             provider.getLogger().error("Failed to load world group data from {}", configFile, e);
             provider.getLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
+            PerWorldsPlugin.ERROR_TRACKER.trackError(e);
             return Optional.empty();
         }
     }
@@ -205,7 +207,9 @@ public class PaperWorldGroup implements WorldGroup {
                 return Files.deleteIfExists(path);
             }
         } catch (IOException e) {
-            getGroupProvider().getLogger().warn("Failed to delete {}", path, e);
+            provider.getLogger().warn("Failed to delete {}", path, e);
+            provider.getLogger().warn("Please look for similar issues or report this on GitHub: {}", ISSUES);
+            PerWorldsPlugin.ERROR_TRACKER.trackError(e);
             return false;
         }
     }
@@ -229,6 +233,7 @@ public class PaperWorldGroup implements WorldGroup {
             }
             provider.getLogger().error("Failed to save world group config {}", configFile, t);
             provider.getLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
+            PerWorldsPlugin.ERROR_TRACKER.trackError(t);
             return false;
         }
     }
@@ -262,6 +267,7 @@ public class PaperWorldGroup implements WorldGroup {
         } catch (Exception e) {
             provider.getLogger().error("Failed to load player data from {}", file, e);
             provider.getLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
+            PerWorldsPlugin.ERROR_TRACKER.trackError(e);
             return Optional.empty();
         }
     }
@@ -308,6 +314,7 @@ public class PaperWorldGroup implements WorldGroup {
             }
             provider.getLogger().error("Failed to save player data {}", player.getUniqueId(), t);
             provider.getLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
+            PerWorldsPlugin.ERROR_TRACKER.trackError(t);
             return false;
         }
     }

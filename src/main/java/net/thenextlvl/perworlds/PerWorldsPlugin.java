@@ -1,6 +1,7 @@
 package net.thenextlvl.perworlds;
 
 import dev.faststats.bukkit.BukkitMetrics;
+import dev.faststats.core.ErrorTracker;
 import dev.faststats.core.chart.Chart;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.key.Key;
@@ -36,12 +37,14 @@ import java.util.Set;
 public final class PerWorldsPlugin extends JavaPlugin {
     public static final String ISSUES = "https://github.com/TheNextLvl-net/per-worlds/issues/new?template=bug_report.yml";
     public static final String DOCS_URL = "https://thenextlvl.net/docs/perworlds";
+    public static final ErrorTracker ERROR_TRACKER = ErrorTracker.contextAware();
 
     private final PluginVersionChecker versionChecker = new PluginVersionChecker(this);
     private final Metrics metrics = new Metrics(this, 25295);
     private final dev.faststats.core.Metrics fastStats = BukkitMetrics.factory()
             .token("aadc507be90ffc99bfab023066c651ae")
             .addChart(worldManagementPlugins())
+            .errorTracker(ERROR_TRACKER)
             .create(this);
 
     private final Key key = Key.key("perworlds", "translations");
@@ -57,7 +60,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
 
     private final GsonFile<PluginConfig> config = new GsonFile<>(
             getDataPath().resolve("config.json"), new PluginConfig()
-    ).saveIfAbsent();
+    ).saveIfAbsent(this);
 
     public PerWorldsPlugin() throws IOException {
     }
@@ -145,6 +148,8 @@ public final class PerWorldsPlugin extends JavaPlugin {
                     });
         } catch (IOException e) {
             getComponentLogger().error("Failed to load groups", e);
+            getComponentLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
+            PerWorldsPlugin.ERROR_TRACKER.trackError(e);
         }
     }
 
