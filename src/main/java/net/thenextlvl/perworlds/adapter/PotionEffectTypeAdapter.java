@@ -14,7 +14,7 @@ import org.jspecify.annotations.NullMarked;
 public final class PotionEffectTypeAdapter implements TagAdapter<PotionEffectType> {
     @Override
     public PotionEffectType deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
-        return Registry.POTION_EFFECT_TYPE.getOrThrow(context.deserialize(tag, Key.class));
+        return Registry.MOB_EFFECT.getOrThrow(context.deserialize(tag, Key.class));
     }
 
     @Override
