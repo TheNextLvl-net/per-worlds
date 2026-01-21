@@ -39,6 +39,25 @@ public final class PerWorldsPlugin extends JavaPlugin {
     public static final String DOCS_URL = "https://thenextlvl.net/docs/perworlds";
     public static final ErrorTracker ERROR_TRACKER = ErrorTracker.contextAware();
 
+    private final Set<String> knownWorldManagers = Set.of( // list ordered by likelihood of a plugin being used
+            "Worlds", // https://github.com/TheNextLvl-net/worlds
+            "Multiverse-Core", // https://github.com/Multiverse/Multiverse-Core/
+            "My_Worlds", // https://github.com/bergerhealer/MyWorlds
+            "MultiWorld", // https://dev.bukkit.org/projects/multiworld-v-2-0 // https://modrinth.com/plugin/multiworld-bukkit
+            "PhantomWorlds", // https://github.com/TheNewEconomy/PhantomWorlds
+            "Hyperverse", // https://github.com/Incendo/Hyperverse
+            "LightWorlds", // https://github.com/justin0-0/LightWorlds
+            "SolarSystem", // https://github.com/OneLiteFeatherNET/SolarSystemPlugin
+            "MoreFoWorld", // https://github.com/Folia-Inquisitors/MoreFoWorld
+            "WorldManager", // https://www.spigotmc.org/resources/worldmanager-1-8-1-18-free-download-api.101875/
+            "LilWorlds", // https://github.com/QQuantumBits/LilWorlds
+            "WorldMaster", // https://www.spigotmc.org/resources/worldmaster.101171/
+            "TheGalaxyLimits", // https://hangar.papermc.io/TheGlitchedVirus/thegalaxylimits
+            "WorldMagic", // https://github.com/hotwopik/WorldMagic
+            "BulMultiverse", // https://github.com/BulPlugins/BulMultiverse
+            "worldmgr" // https://dev.bukkit.org/projects/worldmgr
+    );
+
     private final PluginVersionChecker versionChecker = new PluginVersionChecker(this);
     private final Metrics metrics = new Metrics(this, 25295);
     private final dev.faststats.core.Metrics fastStats = BukkitMetrics.factory()
@@ -173,44 +192,6 @@ public final class PerWorldsPlugin extends JavaPlugin {
         });
     }
 
-    private final Set<String> knownWorldManagers = Set.of( // list ordered by likelihood of a plugin being used
-            "Worlds", // https://github.com/TheNextLvl-net/worlds
-            "Multiverse-Core", // https://github.com/Multiverse/Multiverse-Core/
-            "My_Worlds", // https://github.com/bergerhealer/MyWorlds
-            "MultiWorld", // https://dev.bukkit.org/projects/multiworld-v-2-0 // https://modrinth.com/plugin/multiworld-bukkit
-            "PhantomWorlds", // https://github.com/TheNewEconomy/PhantomWorlds
-            "Hyperverse", // https://github.com/Incendo/Hyperverse
-            "LightWorlds", // https://github.com/justin0-0/LightWorlds
-            "SolarSystem", // https://github.com/OneLiteFeatherNET/SolarSystemPlugin
-            "MoreFoWorld", // https://github.com/Folia-Inquisitors/MoreFoWorld
-            "WorldManager", // https://www.spigotmc.org/resources/worldmanager-1-8-1-18-free-download-api.101875/
-            "LilWorlds", // https://github.com/QQuantumBits/LilWorlds
-            "WorldMaster", // https://www.spigotmc.org/resources/worldmaster.101171/
-            "TheGalaxyLimits", // https://hangar.papermc.io/TheGlitchedVirus/thegalaxylimits
-            "WorldMagic", // https://github.com/hotwopik/WorldMagic
-            "BulMultiverse", // https://github.com/BulPlugins/BulMultiverse
-            "worldmgr" // https://dev.bukkit.org/projects/worldmgr
-    );
-
-    private void addCustomCharts() {
-        var worldManager = knownWorldManagers.stream()
-                .filter(name -> getServer().getPluginManager().getPlugin(name) != null)
-                .findAny().orElse("None");
-        metrics.addCustomChart(new SimplePie("world_management_plugin", () -> worldManager));
-    }
-
-    private String @Nullable [] worldManagementPlugins = null;
-
-    private Chart<String[]> worldManagementPlugins() {
-        return Chart.stringArray("world_management_plugins", () -> {
-            if (worldManagementPlugins != null) return worldManagementPlugins;
-            var worldManagers = knownWorldManagers.stream()
-                    .filter(name -> getServer().getPluginManager().getPlugin(name) != null)
-                    .toArray(String[]::new);
-            return this.worldManagementPlugins = worldManagers;
-        });
-    }
-
     public GsonFile<PluginConfig> configFile() {
         return config;
     }
@@ -225,5 +206,28 @@ public final class PerWorldsPlugin extends JavaPlugin {
 
     public ComponentBundle bundle() {
         return bundle;
+    }
+
+    private String @Nullable [] worldManagementPlugins = null;
+    private @Nullable String worldManagementPlugin = null;
+
+    private void addCustomCharts() {
+        metrics.addCustomChart(new SimplePie("world_management_plugin", () -> {
+            if (worldManagementPlugin != null) return worldManagementPlugin;
+            var worldManager = knownWorldManagers.stream()
+                    .filter(name -> getServer().getPluginManager().getPlugin(name) != null)
+                    .findAny().orElse("None");
+            return worldManagementPlugin = worldManager;
+        }));
+    }
+
+    private Chart<String[]> worldManagementPlugins() {
+        return Chart.stringArray("world_management_plugins", () -> {
+            if (worldManagementPlugins != null) return worldManagementPlugins;
+            var worldManagers = knownWorldManagers.stream()
+                    .filter(name -> getServer().getPluginManager().getPlugin(name) != null)
+                    .toArray(String[]::new);
+            return this.worldManagementPlugins = worldManagers;
+        });
     }
 }
