@@ -8,6 +8,9 @@ import net.kyori.adventure.key.Key;
 import net.thenextlvl.i18n.ComponentBundle;
 import net.thenextlvl.perworlds.command.WorldCommand;
 import net.thenextlvl.perworlds.group.PaperGroupProvider;
+import net.thenextlvl.perworlds.importer.Importer;
+import net.thenextlvl.perworlds.importer.multiverse.MVInventoriesImporter;
+import net.thenextlvl.perworlds.importer.myworlds.MWImporter;
 import net.thenextlvl.perworlds.listener.ChatListener;
 import net.thenextlvl.perworlds.listener.ConnectionListener;
 import net.thenextlvl.perworlds.listener.MessageListener;
@@ -62,6 +65,11 @@ public final class PerWorldsPlugin extends JavaPlugin {
             getDataPath().resolve("config.json"), new PluginConfig()
     ).saveIfAbsent(this);
 
+    private final Set<Importer> importers = Set.of(
+            new MVInventoriesImporter(this),
+            new MWImporter(this)
+    );
+
     public PerWorldsPlugin() throws IOException {
     }
 
@@ -92,8 +100,21 @@ public final class PerWorldsPlugin extends JavaPlugin {
     }
 
     private void scheduleDelayedInitTask() {
-        if (groupsExist && config().migrateToGroup != null) return;
-        getServer().getGlobalRegionScheduler().execute(this, this::setupNotice);
+        var pluginsFolder = getServer().getPluginsFolder().toPath();
+        if (!groupsExist || config().migrateToGroup == null)
+            getServer().getGlobalRegionScheduler().execute(this, this::setupNotice);
+        var importers = this.importers.stream().filter(Importer::isAvailable).map(Importer::getName).toList();
+        for (var importer : importers) {
+            getServer().getGlobalRegionScheduler().execute(this, () -> importNotice(importer));
+        }
+    }
+
+    private void importNotice(String pluginName) {
+        var separator = "-".repeat(86);
+        getComponentLogger().info(separator);
+        getComponentLogger().info("It appears you have been using {} before!", pluginName);
+        getComponentLogger().info("To migrate your data to PerWorlds, run '/world group import {}'", pluginName);
+        getComponentLogger().info(separator);
     }
 
     private void setupNotice() {
@@ -209,6 +230,10 @@ public final class PerWorldsPlugin extends JavaPlugin {
                     .toArray(String[]::new);
             return this.worldManagementPlugins = worldManagers;
         });
+    }
+    
+    public Set<Importer> importers() {
+        return importers;
     }
 
     public GsonFile<PluginConfig> configFile() {
