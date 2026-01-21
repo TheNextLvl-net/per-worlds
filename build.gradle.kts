@@ -34,7 +34,7 @@ dependencies {
 
     compileOnly("net.thenextlvl:worlds:3.12.2") { isTransitive = false }
 
-    implementation("dev.faststats.metrics:bukkit:0.11.0")
+    implementation("dev.faststats.metrics:bukkit:0.11.1")
     implementation("net.thenextlvl.version-checker:modrinth-paper:1.0.1")
     implementation("net.thenextlvl:i18n:1.1.0")
     implementation("net.thenextlvl:nbt:4.3.3")
