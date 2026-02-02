@@ -214,6 +214,10 @@ public final class PerWorldsPlugin extends JavaPlugin {
             event.registrar().register(command, "The main command to interact with this plugin");
         });
     }
+    
+    public Set<Importer> importers() {
+        return importers;
+    }
 
     public FileIO<PluginConfig> configFile() {
         return config;
@@ -252,25 +256,5 @@ public final class PerWorldsPlugin extends JavaPlugin {
                     .toArray(String[]::new);
             return this.worldManagementPlugins = worldManagers;
         });
-    }
-    
-    public Set<Importer> importers() {
-        return importers;
-    }
-
-    public GsonFile<PluginConfig> configFile() {
-        return config;
-    }
-
-    public PluginConfig config() {
-        return config.getRoot();
-    }
-
-    public PaperGroupProvider groupProvider() {
-        return provider;
-    }
-
-    public ComponentBundle bundle() {
-        return bundle;
     }
 }
