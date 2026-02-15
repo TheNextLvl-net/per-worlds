@@ -116,7 +116,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
     }
 
     private void setupNotice() {
-        var separator = "-".repeat(86);
+        final var separator = "-".repeat(86);
         getComponentLogger().warn(separator);
         if (groupsExist) getComponentLogger().warn("PerWorlds is not properly configured yet!");
         else getComponentLogger().warn("This is your first startup using PerWorlds");
@@ -134,7 +134,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
     private void registerListeners() {
         getServer().getPluginManager().registerEvents(new ChatListener(provider), this);
         getServer().getPluginManager().registerEvents(new ConnectionListener(provider), this);
-        getServer().getPluginManager().registerEvents(new MessageListener(provider), this);
+        getServer().getPluginManager().registerEvents(new MessageListener(this), this);
         getServer().getPluginManager().registerEvents(new PluginListener(provider), this);
         getServer().getPluginManager().registerEvents(new RespawnListener(provider), this);
         getServer().getPluginManager().registerEvents(new TeleportListener(provider), this);
@@ -142,7 +142,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
     }
 
     private void warnWorldManager() {
-        var plugin = knownWorldManagers.stream()
+        final var plugin = knownWorldManagers.stream()
                 .filter(name -> !name.equals("Worlds"))
                 .map(getServer().getPluginManager()::getPlugin)
                 .filter(Objects::nonNull)
@@ -157,15 +157,15 @@ public final class PerWorldsPlugin extends JavaPlugin {
 
     private void loadGroups() {
         if (!groupsExist) return;
-        var suffix = ".dat";
-        try (var files = Files.list(provider.getDataFolder())) {
+        final var suffix = ".dat";
+        try (final var files = Files.list(provider.getDataFolder())) {
             files.map(path -> path.getFileName().toString())
                     .filter(name -> name.endsWith(suffix))
                     .forEach(name -> {
-                        var trimmed = name.substring(0, name.length() - suffix.length());
+                        final var trimmed = name.substring(0, name.length() - suffix.length());
                         if (!provider.hasGroup(trimmed)) provider.createGroup(trimmed);
                     });
-        } catch (IOException e) {
+        } catch (final IOException e) {
             getComponentLogger().error("Failed to load groups", e);
             getComponentLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
             PerWorldsPlugin.ERROR_TRACKER.trackError(e);
@@ -181,11 +181,11 @@ public final class PerWorldsPlugin extends JavaPlugin {
 
     private void registerCommands() {
         getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event -> {
-            var command = WorldCommand.create(this);
-            var world = event.registrar().getDispatcher().getRoot().getChild("world");
+            final var command = WorldCommand.create(this);
+            final var world = event.registrar().getDispatcher().getRoot().getChild("world");
             if (world != null) {
                 world.getChildren().forEach(command::addChild);
-                var requirement = command.getRequirement();
+                final var requirement = command.getRequirement();
                 command.requirement = source -> requirement.test(source) || world.canUse(source);
             }
             event.registrar().register(command, "The main command to interact with this plugin");
@@ -214,7 +214,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
     private void addCustomCharts() {
         metrics.addCustomChart(new SimplePie("world_management_plugin", () -> {
             if (worldManagementPlugin != null) return worldManagementPlugin;
-            var worldManager = knownWorldManagers.stream()
+            final var worldManager = knownWorldManagers.stream()
                     .filter(name -> getServer().getPluginManager().getPlugin(name) != null)
                     .findAny().orElse("None");
             return worldManagementPlugin = worldManager;
@@ -224,7 +224,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
     private Chart<String[]> worldManagementPlugins() {
         return Chart.stringArray("world_management_plugins", () -> {
             if (worldManagementPlugins != null) return worldManagementPlugins;
-            var worldManagers = knownWorldManagers.stream()
+            final var worldManagers = knownWorldManagers.stream()
                     .filter(name -> getServer().getPluginManager().getPlugin(name) != null)
                     .toArray(String[]::new);
             return this.worldManagementPlugins = worldManagers;
