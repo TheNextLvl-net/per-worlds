@@ -1,8 +1,8 @@
 package net.thenextlvl.perworlds.listener;
 
 import net.kyori.adventure.text.Component;
-import net.thenextlvl.perworlds.GroupProvider;
 import net.thenextlvl.perworlds.GroupSettings;
+import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.WorldGroup;
 import org.bukkit.GameRule;
 import org.bukkit.World;
@@ -27,44 +27,49 @@ import static org.bukkit.GameRule.SHOW_DEATH_MESSAGES;
 
 @NullMarked
 public final class MessageListener implements Listener {
-    private final GroupProvider provider;
+    private final PerWorldsPlugin plugin;
 
-    public MessageListener(GroupProvider provider) {
-        this.provider = provider;
+    public MessageListener(final PerWorldsPlugin plugin) {
+        this.plugin = plugin;
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerAdvancementDone(PlayerAdvancementDoneEvent event) {
+    public void onPlayerAdvancementDone(final PlayerAdvancementDoneEvent event) {
+        if (!plugin.config().handleAdvancementMessages) return;
         handle(event.getPlayer().getWorld(), ANNOUNCE_ADVANCEMENTS, GroupSettings::advancementMessages, event::message, event.message());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onPlayerDeath(PlayerDeathEvent event) {
+    public void onPlayerDeath(final PlayerDeathEvent event) {
+        if (!plugin.config().handleDeathMessages) return;
         handle(event.getPlayer().getWorld(), SHOW_DEATH_MESSAGES, GroupSettings::deathMessages, event::deathMessage, event.deathMessage());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerJoin(PlayerJoinEvent event) {
+    public void onPlayerJoin(final PlayerJoinEvent event) {
+        if (!plugin.config().handleJoinMessages) return;
         handle(event.getPlayer().getWorld(), null, GroupSettings::joinMessages, event::joinMessage, event.joinMessage());
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerQuit(PlayerQuitEvent event) {
+    public void onPlayerQuit(final PlayerQuitEvent event) {
+        if (!plugin.config().handleQuitMessages) return;
         handle(event.getPlayer().getWorld(), null, GroupSettings::quitMessages, event::quitMessage, event.quitMessage());
     }
 
-    private void handle(World world, @Nullable GameRule<Boolean> gameRule, Predicate<GroupSettings> enabled,
-                        Consumer<@Nullable Component> disable, @Nullable Component message) {
+    private void handle(final World world, @Nullable final GameRule<Boolean> gameRule, final Predicate<GroupSettings> enabled,
+                        final Consumer<@Nullable Component> disable, @Nullable final Component message) {
         if (message == null) return;
-        var receivers = receivers(world, gameRule, enabled);
+        final var receivers = receivers(world, gameRule, enabled);
         if (receivers == null) return;
         receivers.forEach(player -> player.sendMessage(message));
         disable.accept(null);
     }
 
-    private @Nullable List<Player> receivers(World world, @Nullable GameRule<Boolean> gameRule, Predicate<GroupSettings> enabled) {
+    private @Nullable List<Player> receivers(final World world, @Nullable final GameRule<Boolean> gameRule, final Predicate<GroupSettings> enabled) {
         if (!canReceive(gameRule, world)) return null;
-        var group = provider.getGroup(world).orElse(provider.getUnownedWorldGroup());
+        final var provider = plugin.groupProvider();
+        final var group = provider.getGroup(world).orElse(provider.getUnownedWorldGroup());
         return group.getSettings().enabled() && enabled.test(group.getSettings())
                 ? group.getPlayers() : provider.getAllGroups().stream()
                 .filter(target -> !enabled.test(target.getSettings()))
@@ -74,13 +79,13 @@ public final class MessageListener implements Listener {
                 .toList();
     }
 
-    private boolean canReceive(@Nullable GameRule<Boolean> gameRule, WorldGroup group) {
+    private boolean canReceive(@Nullable final GameRule<Boolean> gameRule, final WorldGroup group) {
         return gameRule == null || group.getGroupData().getGameRule(gameRule)
                 .or(() -> group.getWorlds().findAny().map(world -> canReceive(gameRule, world)))
                 .orElse(true);
     }
 
-    private boolean canReceive(@Nullable GameRule<Boolean> gameRule, World world) {
+    private boolean canReceive(@Nullable final GameRule<Boolean> gameRule, final World world) {
         return gameRule == null || Boolean.TRUE.equals(world.getGameRuleValue(gameRule));
     }
 }

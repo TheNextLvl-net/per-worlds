@@ -11,14 +11,18 @@ import java.util.Optional;
 @NullMarked
 public final class PluginConfig {
     public @Nullable String migrateToGroup = null;
+    public boolean handleAdvancementMessages = true;
+    public boolean handleDeathMessages = true;
+    public boolean handleJoinMessages = true;
+    public boolean handleQuitMessages = true;
 
-    public boolean migrateToGroup(PerWorldsPlugin plugin, WorldGroup group) {
+    public boolean migrateToGroup(final PerWorldsPlugin plugin, final WorldGroup group) {
         if (group.getName().equals(migrateToGroup)) return false;
         migrateToGroup = group.getName();
-        var provider = plugin.groupProvider();
+        final var provider = plugin.groupProvider();
         plugin.getServer().getOnlinePlayers().forEach(player -> {
             if (group.hasPlayerData(player)) return;
-            var current = provider.getGroup(player.getWorld()).orElse(provider.getUnownedWorldGroup());
+            final var current = provider.getGroup(player.getWorld()).orElse(provider.getUnownedWorldGroup());
             if (current.equals(group) || current.hasPlayerData(player)) return;
             current.loadPlayerData(player, false);
         });
@@ -26,7 +30,7 @@ public final class PluginConfig {
         return true;
     }
 
-    public Optional<WorldGroup> getMigrateToGroup(GroupProvider provider) {
+    public Optional<WorldGroup> getMigrateToGroup(final GroupProvider provider) {
         return Optional.ofNullable(migrateToGroup).flatMap(provider::getGroup);
     }
 }
