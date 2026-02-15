@@ -1,5 +1,7 @@
 package net.thenextlvl.perworlds;
 
+import core.file.FileIO;
+import core.file.formats.GsonFile;
 import dev.faststats.bukkit.BukkitMetrics;
 import dev.faststats.core.ErrorTracker;
 import dev.faststats.core.chart.Chart;
@@ -15,7 +17,6 @@ import net.thenextlvl.perworlds.listener.PluginListener;
 import net.thenextlvl.perworlds.listener.RespawnListener;
 import net.thenextlvl.perworlds.listener.TeleportListener;
 import net.thenextlvl.perworlds.listener.WorldListener;
-import net.thenextlvl.perworlds.model.config.GsonFile;
 import net.thenextlvl.perworlds.model.config.PluginConfig;
 import net.thenextlvl.perworlds.version.PluginVersionChecker;
 import org.bstats.bukkit.Metrics;
@@ -77,9 +78,9 @@ public final class PerWorldsPlugin extends JavaPlugin {
     private final PaperGroupProvider provider = new PaperGroupProvider(this);
     private final boolean groupsExist = Files.exists(provider.getDataFolder());
 
-    private final GsonFile<PluginConfig> config = new GsonFile<>(
+    private final FileIO<PluginConfig> config = new GsonFile<>(
             getDataPath().resolve("config.json"), new PluginConfig()
-    ).saveIfAbsent(this);
+    ).validate().save();
 
     public PerWorldsPlugin() throws IOException {
     }
@@ -192,7 +193,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
         });
     }
 
-    public GsonFile<PluginConfig> configFile() {
+    public FileIO<PluginConfig> configFile() {
         return config;
     }
 
