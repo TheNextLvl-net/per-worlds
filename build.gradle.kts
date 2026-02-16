@@ -32,7 +32,7 @@ repositories {
 dependencies {
     paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
 
-    compileOnly("net.thenextlvl:worlds:3.12.2") { isTransitive = false }
+    compileOnly("net.thenextlvl:worlds:3.12.3-mc1.21.4") { isTransitive = false }
 
     implementation("net.thenextlvl.core:files:4.0.0-pre1")
     implementation("net.thenextlvl.version-checker:modrinth-paper:1.0.1")
