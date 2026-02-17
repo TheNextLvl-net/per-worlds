@@ -44,7 +44,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
             "Worlds", // https://github.com/TheNextLvl-net/worlds
             "Multiverse-Core", // https://github.com/Multiverse/Multiverse-Core/
             "My_Worlds", // https://github.com/bergerhealer/MyWorlds
-            "MultiWorld", // https://dev.bukkit.org/projects/multiworld-v-2-0 // https://modrinth.com/plugin/multiworld-bukkit
+            "MultiWorld", // https://dev.bukkit.org/projects/multiworld-v-2-0 // https://modrinth.com/project/KhDvVEoP
             "PhantomWorlds", // https://github.com/TheNewEconomy/PhantomWorlds
             "Hyperverse", // https://github.com/Incendo/Hyperverse
             "LightWorlds", // https://github.com/justin0-0/LightWorlds
@@ -56,6 +56,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
             "TheGalaxyLimits", // https://hangar.papermc.io/TheGlitchedVirus/thegalaxylimits
             "WorldMagic", // https://github.com/hotwopik/WorldMagic
             "BulMultiverse", // https://github.com/BulPlugins/BulMultiverse
+            "MultiWorlds999", // https://modrinth.com/project/BHWwXJ13
             "worldmgr" // https://dev.bukkit.org/projects/worldmgr
     );
 
