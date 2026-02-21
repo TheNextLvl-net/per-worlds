@@ -25,7 +25,7 @@ public abstract class Importer {
     private final Path dataPath;
     private final String name;
 
-    protected Importer(PerWorldsPlugin plugin, String name) {
+    protected Importer(final PerWorldsPlugin plugin, final String name) {
         this.dataPath = plugin.getServer().getPluginsFolder().toPath().resolve(name);
         this.name = name;
         this.plugin = plugin;
@@ -43,23 +43,23 @@ public abstract class Importer {
         return name;
     }
 
-    public boolean load(CommandSender sender) {
+    public boolean load(final CommandSender sender) {
         try {
             plugin.bundle().sendMessage(sender, "group.data.import.start", Placeholder.parsed("provider", name));
-            var groups = loadGroups(sender);
+            final var groups = loadGroups(sender);
             loadPlayers(groups, sender);
             return true;
-        } catch (IOException e) {
+        } catch (final IOException e) {
             plugin.getComponentLogger().error("Failed to import {}", name, e);
             return false;
         }
     }
 
-    public Set<WorldGroup> loadGroups(CommandSender sender) throws IOException {
-        var read = readGroups();
-        var groups = new HashSet<WorldGroup>(read.size());
+    public Set<WorldGroup> loadGroups(final CommandSender sender) throws IOException {
+        final var read = readGroups();
+        final var groups = new HashSet<WorldGroup>(read.size());
         read.forEach((group, worlds) -> {
-            var worldGroup = plugin.groupProvider().getGroup(group).orElseGet(() ->
+            final var worldGroup = plugin.groupProvider().getGroup(group).orElseGet(() ->
                     plugin.groupProvider().createGroup(group));
             worlds.stream().map(plugin.getServer()::getWorld)
                     .filter(Objects::nonNull)
@@ -74,16 +74,16 @@ public abstract class Importer {
         return groups;
     }
 
-    public void loadPlayers(Set<WorldGroup> groups, CommandSender sender) throws IOException {
+    public void loadPlayers(final Set<WorldGroup> groups, final CommandSender sender) throws IOException {
         readPlayers().forEach((uuid, name) -> groups.forEach(group -> {
-            var offlinePlayer = plugin.getServer().getOfflinePlayer(uuid);
+            final var offlinePlayer = plugin.getServer().getOfflinePlayer(uuid);
             group.persistPlayerData(offlinePlayer, playerData -> {
                 try {
                     readPlayer(uuid, name, group, playerData);
                     plugin.bundle().sendMessage(sender, "group.data.import.player.success",
                             Placeholder.parsed("group", group.getName()),
                             Placeholder.parsed("player", name));
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     plugin.bundle().sendMessage(sender, "group.data.import.player.failed",
                             Placeholder.parsed("group", group.getName()),
                             Placeholder.parsed("player", name));

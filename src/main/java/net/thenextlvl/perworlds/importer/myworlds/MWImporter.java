@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @NullMarked
 public class MWImporter extends Importer {
-    public MWImporter(PerWorldsPlugin plugin) {
+    public MWImporter(final PerWorldsPlugin plugin) {
         super(plugin, "My_Worlds");
     }
 
@@ -28,7 +28,7 @@ public class MWImporter extends Importer {
     }
 
     @Override
-    public void readPlayer(UUID uuid, String name, WorldGroup group, PlayerData data) throws IOException {
+    public void readPlayer(final UUID uuid, final String name, final WorldGroup group, final PlayerData data) throws IOException {
         // todo
     }
 }

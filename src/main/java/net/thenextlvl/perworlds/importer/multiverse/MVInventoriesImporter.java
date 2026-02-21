@@ -44,27 +44,27 @@ import static java.nio.file.StandardOpenOption.READ;
 
 @NullMarked
 public class MVInventoriesImporter extends Importer {
-    public MVInventoriesImporter(PerWorldsPlugin plugin) {
+    public MVInventoriesImporter(final PerWorldsPlugin plugin) {
         super(plugin, "Multiverse-Inventories");
     }
 
     @Override
     public Map<String, Set<String>> readGroups() throws IOException {
-        var path = getDataPath().resolve("groups.yml");
+        final var path = getDataPath().resolve("groups.yml");
         if (!Files.exists(path)) return new HashMap<>();
 
-        try (var reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-            var config = YamlConfiguration.loadConfiguration(reader);
+        try (final var reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+            final var config = YamlConfiguration.loadConfiguration(reader);
 
-            var groups = config.getConfigurationSection("groups");
+            final var groups = config.getConfigurationSection("groups");
             if (groups == null) return new HashMap<>();
 
-            var result = new HashMap<String, Set<String>>();
+            final var result = new HashMap<String, Set<String>>();
             groups.getKeys(false).forEach(group -> {
-                var groupSection = groups.getConfigurationSection(group);
+                final var groupSection = groups.getConfigurationSection(group);
                 if (groupSection == null) return;
 
-                var worlds = groupSection.getStringList("worlds");
+                final var worlds = groupSection.getStringList("worlds");
                 result.put(group, new HashSet<>(worlds));
             });
             return result;
@@ -73,78 +73,78 @@ public class MVInventoriesImporter extends Importer {
 
     @Override
     public Map<UUID, String> readPlayers() throws IOException {
-        var path = getDataPath().resolve("playernames.json");
+        final var path = getDataPath().resolve("playernames.json");
         if (!Files.exists(path)) return new HashMap<>();
-        try (var reader = new JsonReader(new InputStreamReader(
+        try (final var reader = new JsonReader(new InputStreamReader(
                 Files.newInputStream(path, READ),
                 StandardCharsets.UTF_8
         ))) {
-            var object = JsonParser.parseReader(reader).getAsJsonObject();
-            var result = new HashMap<UUID, String>(object.size());
-            for (var entry : object.entrySet()) {
+            final var object = JsonParser.parseReader(reader).getAsJsonObject();
+            final var result = new HashMap<UUID, String>(object.size());
+            for (final var entry : object.entrySet()) {
                 try {
-                    var uuid = UUID.fromString(entry.getKey());
+                    final var uuid = UUID.fromString(entry.getKey());
                     result.put(uuid, entry.getValue().getAsString());
-                } catch (IllegalArgumentException ignored) {
+                } catch (final IllegalArgumentException ignored) {
                 }
             }
             return result;
-        } catch (JsonParseException e) {
+        } catch (final JsonParseException e) {
             plugin.getComponentLogger().warn("Failed to parse {}", path, e);
             return new HashMap<>();
         }
     }
 
     @Override
-    public void readPlayer(UUID uuid, String name, WorldGroup group, PlayerData data) throws IOException {
-        var path = group.getWorlds().map(WorldInfo::getName)
+    public void readPlayer(final UUID uuid, final String name, final WorldGroup group, final PlayerData data) throws IOException {
+        final var path = group.getWorlds().map(WorldInfo::getName)
                 .map(getDataPath().resolve("worlds")::resolve)
                 .map(worlds -> worlds.resolve(name + ".json"))
                 .filter(Files::isRegularFile)
                 .findAny().orElse(null);
         if (path == null) return;
-        try (var reader = new JsonReader(new InputStreamReader(
+        try (final var reader = new JsonReader(new InputStreamReader(
                 Files.newInputStream(path, READ),
                 StandardCharsets.UTF_8
         ))) {
             Optional.ofNullable(JsonParser.parseReader(reader))
                     .map(this::asObject).flatMap(this::selectBestSnapshot)
                     .ifPresent(snapshot -> applySnapshot(snapshot, group, data));
-        } catch (RuntimeException e) {
+        } catch (final RuntimeException e) {
             plugin.getComponentLogger().warn("Failed to import player data for {} in group {} from {}", name, group, path, e);
         }
     }
 
-    private void applySnapshot(Map.Entry<String, JsonObject> node, WorldGroup group, PlayerData data) {
-        var stats = asObject(node.getValue().get("stats"));
+    private void applySnapshot(final Map.Entry<String, JsonObject> node, final WorldGroup group, final PlayerData data) {
+        final var stats = asObject(node.getValue().get("stats"));
         if (stats != null) applyStats(data, stats);
 
         data.gameMode(GameMode.valueOf(node.getKey().toUpperCase(Locale.ROOT)));
         data.respawnLocation(readLocation(node.getValue().get("bedSpawnLocation"), group)); // DataStrings#PLAYER_BED_SPAWN_LOCATION
 
-        var potions = asArray(node.getValue().get("potions"));
-        var effects = potions != null ? readPotions(potions) : null;
+        final var potions = asArray(node.getValue().get("potions"));
+        final var effects = potions != null ? readPotions(potions) : null;
         if (effects != null) data.potionEffects(effects);
 
-        var inventory = asObject(node.getValue().get("inventoryContents")); // DataStrings#PLAYER_INVENTORY_CONTENTS
+        final var inventory = asObject(node.getValue().get("inventoryContents")); // DataStrings#PLAYER_INVENTORY_CONTENTS
         if (inventory != null) data.inventory(readStorageContents(data.inventory(), inventory));
 
-        var armor = asObject(node.getValue().get("armorContents")); // DataStrings#PLAYER_ARMOR_CONTENTS
+        final var armor = asObject(node.getValue().get("armorContents")); // DataStrings#PLAYER_ARMOR_CONTENTS
         if (armor != null) readArmorContents(data, armor);
 
-        var offHandItem = asObject(node.getValue().get("offHandItem")); // DataStrings#PLAYER_OFF_HAND_ITEM
+        final var offHandItem = asObject(node.getValue().get("offHandItem")); // DataStrings#PLAYER_OFF_HAND_ITEM
         if (offHandItem != null) readItem(offHandItem).ifPresent(itemStack -> {
-            var clone = data.inventory().clone();
+            final var clone = data.inventory().clone();
             clone[40] = itemStack; // offhand
             data.inventory(clone);
         });
 
-        var enderChest = asObject(node.getValue().get("enderChestContents")); // DataStrings#ENDER_CHEST_CONTENTS
+        final var enderChest = asObject(node.getValue().get("enderChestContents")); // DataStrings#ENDER_CHEST_CONTENTS
         if (enderChest != null) data.enderChest(readStorageContents(data.enderChest(), enderChest));
     }
 
-    private void readArmorContents(PlayerData data, JsonObject contents) {
-        var inventory = data.inventory();
+    private void readArmorContents(final PlayerData data, final JsonObject contents) {
+        final var inventory = data.inventory();
         readItem(contents.get("0")).ifPresent(itemStack -> inventory[36] = itemStack); // boots
         readItem(contents.get("1")).ifPresent(itemStack -> inventory[37] = itemStack); // leggings
         readItem(contents.get("2")).ifPresent(itemStack -> inventory[38] = itemStack); // chestplate
@@ -152,7 +152,7 @@ public class MVInventoriesImporter extends Importer {
         data.inventory(inventory);
     }
 
-    private void applyStats(PlayerData data, JsonObject stats) {
+    private void applyStats(final PlayerData data, final JsonObject stats) {
         data.health(asDouble(stats.get("hp"), data.health())); // DataStrings#PLAYER_HEALTH
         data.level(asInt(stats.get("el"), data.level())); // DataStrings#PLAYER_LEVEL
         data.experience(asFloat(stats.get("xp"), data.experience())); // DataStrings#PLAYER_EXPERIENCE
@@ -164,138 +164,138 @@ public class MVInventoriesImporter extends Importer {
         data.remainingAir(asInt(stats.get("ra"), data.remainingAir())); // DataStrings#PLAYER_REMAINING_AIR
     }
 
-    private Optional<Map.Entry<String, JsonObject>> selectBestSnapshot(JsonObject root) {
-        var gameModes = Arrays.stream(GameMode.values()).map(Enum::name).toList();
+    private Optional<Map.Entry<String, JsonObject>> selectBestSnapshot(final JsonObject root) {
+        final var gameModes = Arrays.stream(GameMode.values()).map(Enum::name).toList();
         return root.entrySet().stream()
                 .map(entry -> {
-                    var object = asObject(entry.getValue());
+                    final var object = asObject(entry.getValue());
                     return object != null ? Map.entry(entry.getKey(), object) : null;
                 })
                 .filter(Objects::nonNull)
                 .sorted((entry1, entry2) -> {
-                    var mode1 = gameModes.contains(entry1.getKey().toUpperCase(Locale.ROOT));
-                    var mode2 = gameModes.contains(entry2.getKey().toUpperCase(Locale.ROOT));
+                    final var mode1 = gameModes.contains(entry1.getKey().toUpperCase(Locale.ROOT));
+                    final var mode2 = gameModes.contains(entry2.getKey().toUpperCase(Locale.ROOT));
                     return Boolean.compare(mode1, mode2);
                 })
                 .max(Comparator.comparingInt(entry -> entry.getValue().size()));
     }
 
-    private @Nullable ItemStack[] readStorageContents(@Nullable ItemStack[] items, JsonObject contents) {
+    private @Nullable ItemStack[] readStorageContents(@Nullable final ItemStack[] items, final JsonObject contents) {
         for (var i = 0; i < items.length; i++) items[i] = readItem(contents.get(String.valueOf(i))).orElse(null);
         return items;
     }
 
     @SuppressWarnings("deprecation")
-    private Optional<ItemStack> readItem(@Nullable JsonElement node) {
+    private Optional<ItemStack> readItem(@Nullable final JsonElement node) {
         try {
             if (node == null) return Optional.empty();
-            var string = asString(node);
+            final var string = asString(node);
             if (string != null) {
-                var bytes = Base64.getDecoder().decode(string);
+                final var bytes = Base64.getDecoder().decode(string);
                 return Optional.of(ItemStack.deserializeBytes(bytes));
             }
 
-            var object = asObject(node);
+            final var object = asObject(node);
             if (object != null) {
-                var unsafe = plugin.getServer().getUnsafe();
+                final var unsafe = plugin.getServer().getUnsafe();
                 return Optional.of(unsafe.deserializeItemFromJson(object));
             }
 
             plugin.getComponentLogger().warn("Don't know how to turn '{}' into an item", node);
             return Optional.empty();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             plugin.getComponentLogger().warn("Failed to deserialize item '{}'", node, e);
             return Optional.empty();
         }
     }
 
-    private @Nullable Location readLocation(@Nullable JsonElement element, WorldGroup group) {
-        var location = asObject(element);
+    private @Nullable Location readLocation(@Nullable final JsonElement element, final WorldGroup group) {
+        final var location = asObject(element);
         if (location == null) return null;
 
-        var worldName = asString(location.get("world"), asString(location.get("wo"))); // DataStrings#LOCATION_WORLD
-        var world = worldName != null ? plugin.getServer().getWorld(worldName) : null;
+        final var worldName = asString(location.get("world"), asString(location.get("wo"))); // DataStrings#LOCATION_WORLD
+        final var world = worldName != null ? plugin.getServer().getWorld(worldName) : null;
         if (world == null || !group.containsWorld(world)) return null;
 
-        var x = asDouble(location.get("x"), 0); // DataStrings#LOCATION_X
-        var y = asDouble(location.get("y"), 0); // DataStrings#LOCATION_Y
-        var z = asDouble(location.get("z"), 0); // DataStrings#LOCATION_Z
-        var pitch = asFloat(location.get("pitch"), asFloat(location.get("pi"), 0)); // DataStrings#LOCATION_PITCH
-        var yaw = asFloat(location.get("yaw"), asFloat(location.get("ya"), 0)); // DataStrings#LOCATION_YAW
+        final var x = asDouble(location.get("x"), 0); // DataStrings#LOCATION_X
+        final var y = asDouble(location.get("y"), 0); // DataStrings#LOCATION_Y
+        final var z = asDouble(location.get("z"), 0); // DataStrings#LOCATION_Z
+        final var pitch = asFloat(location.get("pitch"), asFloat(location.get("pi"), 0)); // DataStrings#LOCATION_PITCH
+        final var yaw = asFloat(location.get("yaw"), asFloat(location.get("ya"), 0)); // DataStrings#LOCATION_YAW
 
         return new Location(world, x, y, z, yaw, pitch);
     }
 
-    private List<PotionEffect> readPotions(JsonArray array) {
-        var list = new ArrayList<PotionEffect>(array.size());
+    private List<PotionEffect> readPotions(final JsonArray array) {
+        final var list = new ArrayList<PotionEffect>(array.size());
         array.forEach(element -> {
-            var object = asObject(element);
+            final var object = asObject(element);
             if (object == null) return;
 
-            var effect = asString(object.get("effect"), asString(object.get("pt"))); // DataStrings#POTION_TYPE
-            var key = effect != null ? NamespacedKey.fromString(effect.toLowerCase(Locale.ROOT)) : null;
-            var type = key != null ? Registry.EFFECT.get(key) : null;
+            final var effect = asString(object.get("effect"), asString(object.get("pt"))); // DataStrings#POTION_TYPE
+            final var key = effect != null ? NamespacedKey.fromString(effect.toLowerCase(Locale.ROOT)) : null;
+            final var type = key != null ? Registry.EFFECT.get(key) : null;
             if (type == null) return;
 
-            var duration = asInt(object.get("duration"), asInt(object.get("pd"), 0)); // DataStrings#POTION_DURATION
-            var amplifier = asInt(object.get("amplifier"), asInt(object.get("pa"), 0)); // DataStrings#POTION_AMPLIFIER
-            var ambient = asBoolean(object.get("ambient"), false);
-            var particles = asBoolean(object.get("particles"), true);
-            var icon = asBoolean(object.get("icon"), true);
+            final var duration = asInt(object.get("duration"), asInt(object.get("pd"), 0)); // DataStrings#POTION_DURATION
+            final var amplifier = asInt(object.get("amplifier"), asInt(object.get("pa"), 0)); // DataStrings#POTION_AMPLIFIER
+            final var ambient = asBoolean(object.get("ambient"), false);
+            final var particles = asBoolean(object.get("particles"), true);
+            final var icon = asBoolean(object.get("icon"), true);
 
             list.add(new PotionEffect(type, duration, amplifier, ambient, particles, icon));
         });
         return list;
     }
 
-    private @Nullable JsonObject asObject(@Nullable JsonElement element) {
-        return element instanceof JsonObject primitive ? primitive.getAsJsonObject() : null;
+    private @Nullable JsonObject asObject(@Nullable final JsonElement element) {
+        return element instanceof final JsonObject primitive ? primitive.getAsJsonObject() : null;
     }
 
-    private @Nullable JsonArray asArray(@Nullable JsonElement element) {
-        return element instanceof JsonArray primitive ? primitive.getAsJsonArray() : null;
+    private @Nullable JsonArray asArray(@Nullable final JsonElement element) {
+        return element instanceof final JsonArray primitive ? primitive.getAsJsonArray() : null;
     }
 
-    private @Nullable String asString(@Nullable JsonElement element) {
-        return element instanceof JsonPrimitive primitive ? primitive.getAsString() : null;
+    private @Nullable String asString(@Nullable final JsonElement element) {
+        return element instanceof final JsonPrimitive primitive ? primitive.getAsString() : null;
     }
 
-    private @Nullable String asString(@Nullable JsonElement element, @Nullable String defaultValue) {
-        return element instanceof JsonPrimitive primitive ? primitive.getAsString() : defaultValue;
+    private @Nullable String asString(@Nullable final JsonElement element, @Nullable final String defaultValue) {
+        return element instanceof final JsonPrimitive primitive ? primitive.getAsString() : defaultValue;
     }
 
-    private double asDouble(@Nullable JsonElement element, double defaultValue) {
-        if (element instanceof JsonPrimitive primitive) try {
+    private double asDouble(@Nullable final JsonElement element, final double defaultValue) {
+        if (element instanceof final JsonPrimitive primitive) try {
             if (primitive.isNumber()) return primitive.getAsDouble();
             if (primitive.isString()) return Double.parseDouble(primitive.getAsString());
-        } catch (NumberFormatException ignored) {
+        } catch (final NumberFormatException ignored) {
         }
         return defaultValue;
     }
 
-    private float asFloat(@Nullable JsonElement element, float defaultValue) {
-        if (element instanceof JsonPrimitive primitive) try {
+    private float asFloat(@Nullable final JsonElement element, final float defaultValue) {
+        if (element instanceof final JsonPrimitive primitive) try {
             if (primitive.isNumber()) return primitive.getAsFloat();
             if (primitive.isString()) return Float.parseFloat(primitive.getAsString());
-        } catch (NumberFormatException ignored) {
+        } catch (final NumberFormatException ignored) {
         }
         return defaultValue;
     }
 
-    private int asInt(@Nullable JsonElement element, int defaultValue) {
-        if (element instanceof JsonPrimitive primitive) try {
+    private int asInt(@Nullable final JsonElement element, final int defaultValue) {
+        if (element instanceof final JsonPrimitive primitive) try {
             if (primitive.isNumber()) return primitive.getAsInt();
             if (primitive.isString()) return Integer.parseInt(primitive.getAsString());
-        } catch (NumberFormatException ignored) {
+        } catch (final NumberFormatException ignored) {
         }
         return defaultValue;
     }
 
-    private boolean asBoolean(@Nullable JsonElement element, boolean defaultValue) {
-        if (element instanceof JsonPrimitive primitive) try {
+    private boolean asBoolean(@Nullable final JsonElement element, final boolean defaultValue) {
+        if (element instanceof final JsonPrimitive primitive) try {
             if (primitive.isBoolean()) return primitive.getAsBoolean();
             if (primitive.isString()) return Boolean.parseBoolean(primitive.getAsString());
-        } catch (NumberFormatException ignored) {
+        } catch (final NumberFormatException ignored) {
         }
         return defaultValue;
     }
