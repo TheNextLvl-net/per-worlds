@@ -1,0 +1,356 @@
+package net.thenextlvl.perworlds.importer.multiverse;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.stream.JsonReader;
+import net.kyori.adventure.key.Key;
+import net.thenextlvl.perworlds.PerWorldsPlugin;
+import net.thenextlvl.perworlds.WorldGroup;
+import net.thenextlvl.perworlds.data.PlayerData;
+import net.thenextlvl.perworlds.importer.Importer;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.generator.WorldInfo;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
+import org.bukkit.potion.PotionEffect;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+
+import static java.nio.file.StandardOpenOption.READ;
+
+@NullMarked
+public class MVInventoriesImporter extends Importer {
+    public MVInventoriesImporter(final PerWorldsPlugin plugin) {
+        super(plugin, "Multiverse-Inventories");
+    }
+
+    @Override
+    public Map<String, Set<String>> readGroups() throws IOException {
+        final var path = getDataPath().resolve("groups.yml");
+        if (!Files.exists(path)) return new HashMap<>();
+
+        try (final var reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+            final var config = YamlConfiguration.loadConfiguration(reader);
+
+            final var groups = config.getConfigurationSection("groups");
+            if (groups == null) return new HashMap<>();
+
+            final var result = new HashMap<String, Set<String>>();
+            groups.getKeys(false).forEach(group -> {
+                final var groupSection = groups.getConfigurationSection(group);
+                if (groupSection == null) return;
+
+                final var worlds = groupSection.getStringList("worlds");
+                result.put(group, new HashSet<>(worlds));
+            });
+            return result;
+        }
+    }
+
+    @Override
+    public Map<UUID, String> readPlayers() throws IOException {
+        final var path = getDataPath().resolve("playernames.json");
+        if (!Files.exists(path)) return new HashMap<>();
+        try (final var reader = new JsonReader(new InputStreamReader(
+                Files.newInputStream(path, READ),
+                StandardCharsets.UTF_8
+        ))) {
+            final var object = JsonParser.parseReader(reader).getAsJsonObject();
+            final var result = new HashMap<UUID, String>(object.size());
+            for (final var entry : object.entrySet()) {
+                try {
+                    final var uuid = UUID.fromString(entry.getKey());
+                    result.put(uuid, entry.getValue().getAsString());
+                } catch (final IllegalArgumentException ignored) {
+                }
+            }
+            return result;
+        } catch (final JsonParseException e) {
+            plugin.getComponentLogger().warn("Failed to parse {}", path, e);
+            return new HashMap<>();
+        }
+    }
+
+    @Override
+    public void readPlayer(final UUID uuid, final String name, final WorldGroup group, final PlayerData data) throws IOException {
+        final var path = group.getWorlds().map(WorldInfo::getName)
+                .map(getDataPath().resolve("worlds")::resolve)
+                .map(worlds -> worlds.resolve(name + ".json"))
+                .filter(Files::isRegularFile)
+                .findAny().orElse(null);
+        if (path == null) return;
+        try (final var reader = new JsonReader(new InputStreamReader(
+                Files.newInputStream(path, READ),
+                StandardCharsets.UTF_8
+        ))) {
+            Optional.ofNullable(JsonParser.parseReader(reader))
+                    .map(this::asObject).flatMap(this::selectBestSnapshot)
+                    .ifPresent(snapshot -> applySnapshot(snapshot, group, data));
+        } catch (final RuntimeException e) {
+            plugin.getComponentLogger().warn("Failed to import player data for {} in group {} from {}", name, group, path, e);
+        }
+    }
+
+    private void applySnapshot(final Map.Entry<String, JsonObject> node, final WorldGroup group, final PlayerData data) {
+        final var stats = asObject(node.getValue().get("stats"));
+        if (stats != null) applyStats(data, stats);
+
+        data.gameMode(matchGameMode(node.getKey()));
+        data.respawnLocation(readLocation(node.getValue().get("bedSpawnLocation"), group)); // DataStrings#PLAYER_BED_SPAWN_LOCATION
+
+        final var potions = asArray(node.getValue().get("potions"));
+        final var effects = potions != null ? readPotions(potions) : null;
+        if (effects != null) data.potionEffects(effects);
+
+        final var inventory = asObject(node.getValue().get("inventoryContents")); // DataStrings#PLAYER_INVENTORY_CONTENTS
+        if (inventory != null) data.inventory(readStorageContents(data.inventory(), inventory));
+
+        final var armor = asObject(node.getValue().get("armorContents")); // DataStrings#PLAYER_ARMOR_CONTENTS
+        if (armor != null) readArmorContents(data, armor);
+
+        final var offHandItem = asObject(node.getValue().get("offHandItem")); // DataStrings#PLAYER_OFF_HAND_ITEM
+        if (offHandItem != null) readItem(offHandItem).ifPresent(itemStack -> {
+            final var clone = data.inventory().clone();
+            clone[40] = itemStack; // offhand
+            data.inventory(clone);
+        });
+
+        final var enderChest = asObject(node.getValue().get("enderChestContents")); // DataStrings#ENDER_CHEST_CONTENTS
+        if (enderChest != null) data.enderChest(readStorageContents(data.enderChest(), enderChest));
+    }
+
+    private @Nullable GameMode matchGameMode(final String name) {
+        for (final var value : GameMode.values()) {
+            if (value.name().equalsIgnoreCase(name)) return value;
+        }
+        return null;
+    }
+
+    private void readArmorContents(final PlayerData data, final JsonObject contents) {
+        final var inventory = data.inventory();
+        readItem(contents.get("0")).ifPresent(itemStack -> inventory[36] = itemStack); // boots
+        readItem(contents.get("1")).ifPresent(itemStack -> inventory[37] = itemStack); // leggings
+        readItem(contents.get("2")).ifPresent(itemStack -> inventory[38] = itemStack); // chestplate
+        readItem(contents.get("3")).ifPresent(itemStack -> inventory[39] = itemStack); // helmet
+        data.inventory(inventory);
+    }
+
+    private void applyStats(final PlayerData data, final JsonObject stats) {
+        data.health(asDouble(stats.get("hp"), data.health())); // DataStrings#PLAYER_HEALTH
+        data.level(asInt(stats.get("el"), data.level())); // DataStrings#PLAYER_LEVEL
+        data.experience(asFloat(stats.get("xp"), data.experience())); // DataStrings#PLAYER_EXPERIENCE
+        data.foodLevel(asInt(stats.get("fl"), data.foodLevel())); // DataStrings#PLAYER_FOOD_LEVEL
+        data.exhaustion(asFloat(stats.get("ex"), data.exhaustion())); // DataStrings#PLAYER_EXHAUSTION
+        data.saturation(asFloat(stats.get("sa"), data.saturation())); // DataStrings#PLAYER_SATURATION
+        data.fallDistance(asFloat(stats.get("fd"), data.fallDistance())); // DataStrings#PLAYER_FALL_DISTANCE
+        data.fireTicks(asInt(stats.get("ft"), data.fireTicks())); // DataStrings#PLAYER_FIRE_TICKS
+        data.remainingAir(asInt(stats.get("ra"), data.remainingAir())); // DataStrings#PLAYER_REMAINING_AIR
+    }
+
+    private Optional<Map.Entry<String, JsonObject>> selectBestSnapshot(final JsonObject root) {
+        final var gameModes = Arrays.stream(GameMode.values()).map(Enum::name).toList();
+        return root.entrySet().stream()
+                .map(entry -> {
+                    final var object = asObject(entry.getValue());
+                    return object != null ? Map.entry(entry.getKey(), object) : null;
+                })
+                .filter(Objects::nonNull)
+                .sorted((entry1, entry2) -> {
+                    final var mode1 = gameModes.contains(entry1.getKey().toUpperCase(Locale.ROOT));
+                    final var mode2 = gameModes.contains(entry2.getKey().toUpperCase(Locale.ROOT));
+                    return Boolean.compare(mode1, mode2);
+                })
+                .max(Comparator.comparingInt(entry -> entry.getValue().size()));
+    }
+
+    private @Nullable ItemStack[] readStorageContents(@Nullable final ItemStack[] items, final JsonObject contents) {
+        for (var i = 0; i < items.length; i++) items[i] = readItem(contents.get(String.valueOf(i))).orElse(null);
+        return items;
+    }
+
+    @SuppressWarnings("deprecation")
+    private Optional<ItemStack> readItem(@Nullable final JsonElement node) {
+        if (node == null) return Optional.empty();
+        final var string = asString(node);
+        if (string != null) try {
+            return Optional.ofNullable(decodeBytes(string))
+                    .map(ItemStack::deserializeBytes);
+        } catch (final Exception e) {
+            plugin.getComponentLogger().warn("Failed to deserialize item from bytes '{}': {}", node, e.getMessage());
+            return Optional.empty();
+        }
+
+        final var object = sanitize(asObject(node));
+        if (object != null) try {
+            final var id = object.get("id");
+            if (id != null && id.isJsonPrimitive() && id.getAsString().equals("minecraft:air"))
+                return Optional.empty();
+            final var unsafe = plugin.getServer().getUnsafe();
+            return Optional.of(unsafe.deserializeItemFromJson(object));
+        } catch (final Exception e) {
+            plugin.getComponentLogger().warn("Failed to deserialize item from json '{}': {}", node, e.getMessage());
+            return Optional.empty();
+        }
+
+        plugin.getComponentLogger().warn("Don't know how to turn '{}' into an item", node);
+        return Optional.empty();
+    }
+
+    private @Nullable JsonObject sanitize(@Nullable final JsonObject object) {
+        if (object == null) return null;
+        if (object.has("v") && !object.has("DataVersion")) {
+            object.add("DataVersion", object.get("v"));
+        }
+        final var type = asString(object.get("type"));
+        if (type != null && !object.has("id")) {
+            findItem(type).map(Key::asString).ifPresent(id -> object.addProperty("id", id));
+        }
+        final var components = asObject(object.get("components"));
+        if (components != null) sanitizeComponents(components);
+        return object;
+    }
+
+    private void sanitizeComponents(final JsonObject object) {
+        object.entrySet().forEach(entry -> {
+            if (!(entry.getValue() instanceof final JsonPrimitive primitive) || !primitive.isString()) return;
+            try {
+                entry.setValue(JsonParser.parseString(primitive.getAsString()));
+            } catch (final JsonParseException ignored) {
+            }
+        });
+    }
+
+    private Optional<Key> findItem(final String name) {
+        return Registry.ITEM.stream().filter(itemType -> {
+            //noinspection deprecation
+            final var material = itemType.asMaterial();
+            return material != null && material.name().equalsIgnoreCase(name);
+        }).map(ItemType::key).findAny();
+    }
+
+    private byte @Nullable [] decodeBytes(final String string) {
+        try {
+            return Base64.getDecoder().decode(string);
+        } catch (final Exception e) {
+            plugin.getComponentLogger().warn("Failed to deserialize item from base64 '{}': {}", string, e.getMessage());
+            return null;
+        }
+    }
+
+    private @Nullable Location readLocation(@Nullable final JsonElement element, final WorldGroup group) {
+        final var location = asObject(element);
+        if (location == null) return null;
+
+        final var worldName = asString(location.get("world"), asString(location.get("wo"))); // DataStrings#LOCATION_WORLD
+        final var world = worldName != null ? plugin.getServer().getWorld(worldName) : null;
+        if (world == null || !group.containsWorld(world)) return null;
+
+        final var x = asDouble(location.get("x"), 0); // DataStrings#LOCATION_X
+        final var y = asDouble(location.get("y"), 0); // DataStrings#LOCATION_Y
+        final var z = asDouble(location.get("z"), 0); // DataStrings#LOCATION_Z
+        final var pitch = asFloat(location.get("pitch"), asFloat(location.get("pi"), 0)); // DataStrings#LOCATION_PITCH
+        final var yaw = asFloat(location.get("yaw"), asFloat(location.get("ya"), 0)); // DataStrings#LOCATION_YAW
+
+        return new Location(world, x, y, z, yaw, pitch);
+    }
+
+    private List<PotionEffect> readPotions(final JsonArray array) {
+        final var list = new ArrayList<PotionEffect>(array.size());
+        array.forEach(element -> {
+            final var object = asObject(element);
+            if (object == null) return;
+
+            final var effect = asString(object.get("effect"), asString(object.get("pt"))); // DataStrings#POTION_TYPE
+            final var key = effect != null ? NamespacedKey.fromString(effect.toLowerCase(Locale.ROOT)) : null;
+            final var type = key != null ? Registry.EFFECT.get(key) : null;
+            if (type == null) return;
+
+            final var duration = asInt(object.get("duration"), asInt(object.get("pd"), 0)); // DataStrings#POTION_DURATION
+            final var amplifier = asInt(object.get("amplifier"), asInt(object.get("pa"), 0)); // DataStrings#POTION_AMPLIFIER
+            final var ambient = asBoolean(object.get("ambient"), false);
+            final var particles = asBoolean(object.get("particles"), true);
+            final var icon = asBoolean(object.get("icon"), true);
+
+            list.add(new PotionEffect(type, duration, amplifier, ambient, particles, icon));
+        });
+        return list;
+    }
+
+    private @Nullable JsonObject asObject(@Nullable final JsonElement element) {
+        return element instanceof final JsonObject primitive ? primitive.getAsJsonObject() : null;
+    }
+
+    private @Nullable JsonArray asArray(@Nullable final JsonElement element) {
+        return element instanceof final JsonArray primitive ? primitive.getAsJsonArray() : null;
+    }
+
+    private @Nullable String asString(@Nullable final JsonElement element) {
+        return element instanceof final JsonPrimitive primitive ? primitive.getAsString() : null;
+    }
+
+    private @Nullable String asString(@Nullable final JsonElement element, @Nullable final String defaultValue) {
+        return element instanceof final JsonPrimitive primitive ? primitive.getAsString() : defaultValue;
+    }
+
+    private double asDouble(@Nullable final JsonElement element, final double defaultValue) {
+        if (element instanceof final JsonPrimitive primitive) try {
+            if (primitive.isNumber()) return primitive.getAsDouble();
+            if (primitive.isString()) return Double.parseDouble(primitive.getAsString());
+        } catch (final NumberFormatException ignored) {
+        }
+        return defaultValue;
+    }
+
+    private float asFloat(@Nullable final JsonElement element, final float defaultValue) {
+        if (element instanceof final JsonPrimitive primitive) try {
+            if (primitive.isNumber()) return primitive.getAsFloat();
+            if (primitive.isString()) return Float.parseFloat(primitive.getAsString());
+        } catch (final NumberFormatException ignored) {
+        }
+        return defaultValue;
+    }
+
+    private int asInt(@Nullable final JsonElement element, final int defaultValue) {
+        if (element instanceof final JsonPrimitive primitive) try {
+            if (primitive.isNumber()) return primitive.getAsInt();
+            if (primitive.isString()) return Integer.parseInt(primitive.getAsString());
+        } catch (final NumberFormatException ignored) {
+        }
+        return defaultValue;
+    }
+
+    private boolean asBoolean(@Nullable final JsonElement element, final boolean defaultValue) {
+        if (element instanceof final JsonPrimitive primitive) try {
+            if (primitive.isBoolean()) return primitive.getAsBoolean();
+            if (primitive.isString()) return Boolean.parseBoolean(primitive.getAsString());
+        } catch (final NumberFormatException ignored) {
+        }
+        return defaultValue;
+    }
+}

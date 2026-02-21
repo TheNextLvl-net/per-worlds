@@ -470,6 +470,13 @@ public class PaperWorldGroup implements WorldGroup {
         writePlayerData(player, playerData);
     }
 
+    @Override
+    public void persistPlayerData(OfflinePlayer player, Consumer<PlayerData> data) {
+        var playerData = new PaperPlayerData(player.getUniqueId(), this);
+        data.accept(playerData);
+        writePlayerData(player, playerData);
+    }
+
     private Optional<PlayerData> readPlayerData(final OfflinePlayer player, final Path file) throws IOException {
         return readFile(file, file.resolveSibling(file.getFileName() + "_old"), PaperPlayerData.class)
                 .map(paperPlayerData -> paperPlayerData.finalize(player, this));

@@ -22,6 +22,7 @@ final class GroupCommand extends BrigadierCommand {
                 .then(GroupCreateCommand.create(plugin))
                 .then(GroupDeleteCommand.create(plugin))
                 .then(GroupHelpCommand.create(plugin))
+                .then(GroupImportCommand.create(plugin))
                 .then(GroupInfoCommand.create(plugin))
                 .then(GroupListCommand.create(plugin))
                 .then(GroupMigrateCommand.create(plugin))
