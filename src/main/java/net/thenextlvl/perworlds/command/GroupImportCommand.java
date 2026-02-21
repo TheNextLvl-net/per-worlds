@@ -11,7 +11,11 @@ import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.command.brigadier.SimpleCommand;
 import net.thenextlvl.perworlds.command.suggestion.DataImportSuggestionProvider;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 final class GroupImportCommand extends SimpleCommand {
+    private final AtomicBoolean importing = new AtomicBoolean();
+
     private GroupImportCommand(final PerWorldsPlugin plugin) {
         super(plugin, "import", "perworlds.command.group.import");
     }
@@ -25,18 +29,26 @@ final class GroupImportCommand extends SimpleCommand {
 
     @Override
     public int run(final CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        final var provider = context.getArgument("provider", String.class);
         final var sender = context.getSource().getSender();
+        if (!importing.compareAndSet(false, true)) {
+            plugin.bundle().sendMessage(sender, "group.data.import.active");
+            return 0;
+        }
+        final var provider = context.getArgument("provider", String.class);
         final var optional = plugin.importers().stream()
                 .filter(i -> i.getName().equalsIgnoreCase(provider))
                 .findAny();
         optional.ifPresentOrElse(importer -> {
-            importer.load(sender).thenAccept(success -> {
+            importer.load(sender).handle((success, error) -> {
+                return error == null && success;
+            }).thenAccept(success -> {
                 final var message = success ? "group.data.import.success" : "group.data.import.failed";
                 plugin.bundle().sendMessage(sender, message, Placeholder.parsed("provider", importer.getName()));
+                importing.set(false);
             });
         }, () -> {
             plugin.bundle().sendMessage(sender, "group.data.import.failed", Placeholder.parsed("provider", provider));
+            importing.set(false);
         });
         return SINGLE_SUCCESS;
     }
