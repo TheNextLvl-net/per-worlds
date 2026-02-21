@@ -1,6 +1,7 @@
 package net.thenextlvl.perworlds;
 
 import net.thenextlvl.perworlds.group.PaperGroupSettings;
+import org.jspecify.annotations.NullMarked;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -23,11 +24,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class GroupSettingsTest {
+@NullMarked
+public final class GroupSettingsTest {
     @Test
     @DisplayName("settings providers count")
     public void testSettingsProvidersCount() {
-        var count = Arrays.stream(GroupSettings.class.getMethods())
+        final var count = Arrays.stream(GroupSettings.class.getMethods())
                 .filter(method -> method.getReturnType() != Void.class)
                 .filter(method -> method.getParameterCount() == 1)
                 .filter(method -> method.getParameterTypes()[0] == boolean.class)
@@ -35,11 +37,24 @@ public class GroupSettingsTest {
         assertEquals(settings.size(), count, "Found more settings than expected");
     }
 
+    @Test
+    @DisplayName("Copy from")
+    public void testCopyFrom() {
+        final var source = new PaperGroupSettings();
+        final var target = new PaperGroupSettings();
+        settings.forEach((s, setting) -> {
+            setting.setter().accept(source, false);
+            setting.setter().accept(target, true);
+            target.copyFrom(source);
+            assertFalse(setting.getter().apply(target), "Copy did not properly update its value: " + s);
+        });
+    }
+
     @ParameterizedTest
     @MethodSource("settingsProvider")
     @DisplayName("Getters and Setters")
-    public void testSettings(BiConsumer<GroupSettings, Boolean> setter, Function<GroupSettings, Boolean> getter) {
-        var settings = new PaperGroupSettings();
+    public void testSettings(final BiConsumer<GroupSettings, Boolean> setter, final Function<GroupSettings, Boolean> getter) {
+        final var settings = new PaperGroupSettings();
         setter.accept(settings, true);
         assertTrue(getter.apply(settings), "Setter did not properly update its value");
         setter.accept(settings, false);
@@ -49,18 +64,18 @@ public class GroupSettingsTest {
     @Test
     @DisplayName("group option command")
     public void testAllOptionsRegistered() throws Exception {
-        var path = Path.of("src/main/java/net/thenextlvl/perworlds/command/GroupOptionCommand.java");
-        var content = Files.readAllLines(path, StandardCharsets.UTF_8).stream()
+        final var path = Path.of("src/main/java/net/thenextlvl/perworlds/command/GroupOptionCommand.java");
+        final var content = Files.readAllLines(path, StandardCharsets.UTF_8).stream()
                 .map(String::strip)
                 .filter(s -> !s.isEmpty() && !s.startsWith("//"))
                 .collect(Collectors.joining("\n"));
 
-        var pattern = Pattern.compile("option\\(\"([^\"]+)\"");
-        var matcher = pattern.matcher(content);
-        var options = new HashSet<>(settings.keySet());
+        final var pattern = Pattern.compile("option\\(\"([^\"]+)\"");
+        final var matcher = pattern.matcher(content);
+        final var options = new HashSet<>(settings.keySet());
 
         while (matcher.find()) {
-            var option = matcher.group(1);
+            final var option = matcher.group(1);
             assertTrue(options.remove(option), "Unknown option '" + option + "'");
         }
 
@@ -71,19 +86,19 @@ public class GroupSettingsTest {
     @Test
     @DisplayName("option name matches method references")
     public void testOptionNameMatchesMethodReferences() throws Exception {
-        var path = Path.of("src/main/java/net/thenextlvl/perworlds/command/GroupOptionCommand.java");
-        var content = Files.readAllLines(path, StandardCharsets.UTF_8).stream()
+        final var path = Path.of("src/main/java/net/thenextlvl/perworlds/command/GroupOptionCommand.java");
+        final var content = Files.readAllLines(path, StandardCharsets.UTF_8).stream()
                 .map(String::strip)
                 .filter(s -> !s.isEmpty() && !s.startsWith("//"))
                 .collect(Collectors.joining("\n"));
 
-        var pattern = Pattern.compile("option\\(\"([^\"]+)\"\\s*,\\s*GroupSettings::([a-zA-Z0-9_]+)\\s*,\\s*GroupSettings::([a-zA-Z0-9_]+)");
-        var matcher = pattern.matcher(content);
+        final var pattern = Pattern.compile("option\\(\"([^\"]+)\"\\s*,\\s*GroupSettings::([a-zA-Z0-9_]+)\\s*,\\s*GroupSettings::([a-zA-Z0-9_]+)");
+        final var matcher = pattern.matcher(content);
 
         while (matcher.find()) {
-            var optionName = matcher.group(1);
-            var getter = matcher.group(2);
-            var setter = matcher.group(3);
+            final var optionName = matcher.group(1);
+            final var getter = matcher.group(2);
+            final var setter = matcher.group(3);
             assertEquals(optionName, getter, "Option name and getter should match: \"" + optionName + "\" != \"" + getter + "\"");
             assertEquals(optionName, setter, "Option name and setter should match: \"" + optionName + "\" != \"" + setter + "\"");
         }
@@ -151,7 +166,7 @@ public class GroupSettingsTest {
         ));
     }
 
-    private static Arguments arguments(String name, BiConsumer<GroupSettings, Boolean> setter, Function<GroupSettings, Boolean> getter) {
+    private static Arguments arguments(final String name, final BiConsumer<GroupSettings, Boolean> setter, final Function<GroupSettings, Boolean> getter) {
         return Arguments.argumentSet(name, setter, getter);
     }
 }
