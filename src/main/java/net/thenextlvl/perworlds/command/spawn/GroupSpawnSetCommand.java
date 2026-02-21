@@ -21,12 +21,12 @@ import org.bukkit.World;
 import static net.thenextlvl.perworlds.command.WorldCommand.groupArgument;
 
 final class GroupSpawnSetCommand extends SimpleCommand {
-    private GroupSpawnSetCommand(PerWorldsPlugin plugin) {
+    private GroupSpawnSetCommand(final PerWorldsPlugin plugin) {
         super(plugin, "set", "perworlds.command.group.spawn.set");
     }
 
-    public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
-        var command = new GroupSpawnSetCommand(plugin);
+    public static ArgumentBuilder<CommandSourceStack, ?> create(final PerWorldsPlugin plugin) {
+        final var command = new GroupSpawnSetCommand(plugin);
         return command.create()
                 .then(command.targetArgument())
                 .executes(command);
@@ -52,19 +52,19 @@ final class GroupSpawnSetCommand extends SimpleCommand {
     }
 
     @Override
-    public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        var positionResolver = tryGetArgument(context, "position", FinePositionResolver.class).orElse(null);
-        var rotationResolver = tryGetArgument(context, "rotation", RotationResolver.class).orElse(null);
+    public int run(final CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        final var positionResolver = tryGetArgument(context, "position", FinePositionResolver.class).orElse(null);
+        final var rotationResolver = tryGetArgument(context, "rotation", RotationResolver.class).orElse(null);
 
-        var world = tryGetArgument(context, "world", World.class).orElseGet(() -> context.getSource().getLocation().getWorld());
-        var group = tryGetArgument(context, "group", WorldGroup.class).orElseGet(() -> {
+        final var world = tryGetArgument(context, "world", World.class).orElseGet(() -> context.getSource().getLocation().getWorld());
+        final var group = tryGetArgument(context, "group", WorldGroup.class).orElseGet(() -> {
             return plugin.groupProvider().getGroup(world).orElse(plugin.groupProvider().getUnownedWorldGroup());
         });
 
-        var position = positionResolver != null ? positionResolver.resolve(context.getSource()) : context.getSource().getLocation();
-        var rotation = rotationResolver != null ? rotationResolver.resolve(context.getSource()) : Rotation.rotation(0, 0);
+        final var position = positionResolver != null ? positionResolver.resolve(context.getSource()) : context.getSource().getLocation();
+        final var rotation = rotationResolver != null ? rotationResolver.resolve(context.getSource()) : Rotation.rotation(0, 0);
 
-        var location = position.toLocation(world).setRotation(rotation);
+        final var location = position.toLocation(world).setRotation(rotation);
 
         group.getGroupData().setSpawnLocation(location);
         plugin.bundle().sendMessage(context.getSource().getSender(), "group.spawn.set",

@@ -13,20 +13,20 @@ import static net.thenextlvl.perworlds.command.WorldCommand.groupArgument;
 
 final class GroupSpawnUnsetCommand extends SimpleCommand {
 
-    private GroupSpawnUnsetCommand(PerWorldsPlugin plugin) {
+    private GroupSpawnUnsetCommand(final PerWorldsPlugin plugin) {
         super(plugin, "unset", "perworlds.command.group.spawn.unset");
     }
 
-    public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
-        var command = new GroupSpawnUnsetCommand(plugin);
+    public static ArgumentBuilder<CommandSourceStack, ?> create(final PerWorldsPlugin plugin) {
+        final var command = new GroupSpawnUnsetCommand(plugin);
         return command.create()
                 .then(groupArgument(plugin, true).executes(command))
                 .executes(command);
     }
 
     @Override
-    public int run(CommandContext<CommandSourceStack> context) {
-        var group = tryGetArgument(context, "group", WorldGroup.class).orElseGet(() -> {
+    public int run(final CommandContext<CommandSourceStack> context) {
+        final var group = tryGetArgument(context, "group", WorldGroup.class).orElseGet(() -> {
             return plugin.groupProvider().getGroup(context.getSource().getLocation().getWorld())
                     .orElse(plugin.groupProvider().getUnownedWorldGroup());
         });

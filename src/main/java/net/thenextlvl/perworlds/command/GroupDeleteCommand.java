@@ -14,21 +14,21 @@ import static net.thenextlvl.perworlds.command.WorldCommand.groupArgument;
 
 @NullMarked
 final class GroupDeleteCommand extends SimpleCommand {
-    private GroupDeleteCommand(PerWorldsPlugin plugin) {
+    private GroupDeleteCommand(final PerWorldsPlugin plugin) {
         super(plugin, "delete", "perworlds.command.group.delete");
     }
 
-    public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
-        var command = new GroupDeleteCommand(plugin);
+    public static ArgumentBuilder<CommandSourceStack, ?> create(final PerWorldsPlugin plugin) {
+        final var command = new GroupDeleteCommand(plugin);
         return command.create().then(groupArgument(plugin, true).executes(command));
     }
 
     @Override
-    public int run(CommandContext<CommandSourceStack> context) {
-        var sender = context.getSource().getSender();
-        var group = context.getArgument("group", WorldGroup.class);
-        var success = group.delete();
-        var message = success ? "group.deleted" : "group.delete.failed";
+    public int run(final CommandContext<CommandSourceStack> context) {
+        final var sender = context.getSource().getSender();
+        final var group = context.getArgument("group", WorldGroup.class);
+        final var success = group.delete();
+        final var message = success ? "group.deleted" : "group.delete.failed";
         plugin.bundle().sendMessage(sender, message, Placeholder.unparsed("group", group.getName()));
         return success ? Command.SINGLE_SUCCESS : 0;
     }

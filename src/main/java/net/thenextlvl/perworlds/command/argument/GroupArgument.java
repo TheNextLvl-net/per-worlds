@@ -17,20 +17,20 @@ public final class GroupArgument implements CustomArgumentType.Converted<WorldGr
     private final PerWorldsPlugin plugin;
     private final boolean listAll;
 
-    public GroupArgument(PerWorldsPlugin plugin, boolean listAll) {
+    public GroupArgument(final PerWorldsPlugin plugin, final boolean listAll) {
         this.plugin = plugin;
         this.listAll = listAll;
     }
 
     @Override
-    public WorldGroup convert(String nativeType) {
+    public WorldGroup convert(final String nativeType) {
         return plugin.groupProvider().getGroup(nativeType)
                 .orElseThrow(() -> new RuntimeException("Group not found"));
     }
 
     @Override
-    public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        var groups = listAll ? plugin.groupProvider().getAllGroups() : plugin.groupProvider().getGroups();
+    public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
+        final var groups = listAll ? plugin.groupProvider().getAllGroups() : plugin.groupProvider().getGroups();
         groups.stream().map(WorldGroup::getName)
                 .filter(name -> name.contains(builder.getRemaining()))
                 .map(StringArgumentType::escapeIfRequired)

@@ -10,7 +10,7 @@ import java.util.function.BiConsumer;
 
 @NullMarked
 public final class PaperBlockTypeStat extends PaperSubstatistic<BlockType> implements BlockTypeStat {
-    public PaperBlockTypeStat(Map<BlockType, Integer> values) {
+    public PaperBlockTypeStat(final Map<BlockType, Integer> values) {
         super(values);
     }
 
@@ -18,7 +18,7 @@ public final class PaperBlockTypeStat extends PaperSubstatistic<BlockType> imple
     }
 
     @Override
-    public void forEachValue(BiConsumer<BlockType, Integer> action) {
+    public void forEachValue(final BiConsumer<BlockType, Integer> action) {
         values.forEach(action);
     }
 

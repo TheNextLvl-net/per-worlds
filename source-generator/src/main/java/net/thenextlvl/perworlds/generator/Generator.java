@@ -13,18 +13,18 @@ public abstract class Generator {
     protected final String className;
     protected final String packageName;
 
-    protected Generator(String packageName, String className) {
+    protected Generator(final String packageName, final String className) {
         this.className = className;
         this.packageName = packageName;
     }
 
     protected abstract TypeSpec generate();
 
-    protected JavaFile.Builder file(JavaFile.Builder builder) {
+    protected JavaFile.Builder file(final JavaFile.Builder builder) {
         return builder;
     }
 
-    public void writeToFile(Path parent) throws IOException {
+    public void writeToFile(final Path parent) throws IOException {
         file(JavaFile.builder(this.packageName, this.generate()))
                 .indent("    ")
                 .skipJavaLangImports(true)

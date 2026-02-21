@@ -143,13 +143,13 @@ public final class PaperPlayerData implements PlayerData {
     private @Nullable UUID uuid;
     private @Nullable PaperWorldGroup group;
 
-    public PaperPlayerData(@Nullable UUID uuid, @Nullable PaperWorldGroup group) {
+    public PaperPlayerData(@Nullable final UUID uuid, @Nullable final PaperWorldGroup group) {
         this.group = group;
         this.uuid = uuid;
     }
 
-    public static PaperPlayerData of(Player player, PaperWorldGroup group) {
-        var data = new PaperPlayerData(player.getUniqueId(), group);
+    public static PaperPlayerData of(final Player player, final PaperWorldGroup group) {
+        final var data = new PaperPlayerData(player.getUniqueId(), group);
         return data.attributes(collectAttributes(player))
                 .advancements(data.collectAdvancements(player))
                 .lastAdvancementTab(data.getLastAdvancementTab(player))
@@ -193,7 +193,7 @@ public final class PaperPlayerData implements PlayerData {
                 .score(player.getDeathScreenScore());
     }
 
-    private static Set<AttributeData> collectAttributes(Player player) {
+    private static Set<AttributeData> collectAttributes(final Player player) {
         return Registry.ATTRIBUTE.stream()
                 .map(player::getAttribute)
                 .filter(Objects::nonNull)
@@ -201,20 +201,20 @@ public final class PaperPlayerData implements PlayerData {
                 .collect(Collectors.toSet());
     }
 
-    private Set<AdvancementData> collectAdvancements(Player player) {
+    private Set<AdvancementData> collectAdvancements(final Player player) {
         if (SpigotConfig.disableAdvancementSaving) return Set.of();
-        var handle = ((CraftPlayer) player).getHandle();
-        var progress = getProgress(handle, handle.getAdvancements());
-        var data = new HashSet<AdvancementData>();
+        final var handle = ((CraftPlayer) player).getHandle();
+        final var progress = getProgress(handle, handle.getAdvancements());
+        final var data = new HashSet<AdvancementData>();
         progress.forEach((key, value) -> {
             if (!value.hasProgress() || !isEnabled(key.id())) return;
 
-            var awardedCriteria = new HashMap<String, Instant>();
-            var remainingCriteria = new HashSet<String>();
+            final var awardedCriteria = new HashMap<String, Instant>();
+            final var remainingCriteria = new HashSet<String>();
 
             value.getCompletedCriteria().forEach(criteria -> {
-                var criterion = value.getCriterion(criteria);
-                var obtained = criterion != null ? criterion.getObtained() : null;
+                final var criterion = value.getCriterion(criteria);
+                final var obtained = criterion != null ? criterion.getObtained() : null;
                 if (obtained != null) awardedCriteria.put(criteria, obtained);
             });
             value.getRemainingCriteria().forEach(remainingCriteria::add);
@@ -223,8 +223,8 @@ public final class PaperPlayerData implements PlayerData {
         return data;
     }
 
-    private boolean isEnabled(Identifier location) {
-        var disabled = SpigotConfig.disabledAdvancements;
+    private boolean isEnabled(final Identifier location) {
+        final var disabled = SpigotConfig.disabledAdvancements;
         if (disabled == null || disabled.isEmpty()) return true;
         if (disabled.contains("*")) return false;
         if (disabled.contains(location.toString())) return false;
@@ -232,16 +232,16 @@ public final class PaperPlayerData implements PlayerData {
     }
 
     @SuppressWarnings("PatternValidation")
-    private @Nullable Key getLastAdvancementTab(Player player) {
+    private @Nullable Key getLastAdvancementTab(final Player player) {
         try {
-            var handle = ((CraftPlayer) player).getHandle();
-            var progress = handle.getAdvancements().getClass().getDeclaredField("lastSelectedTab");
-            var access = progress.canAccess(handle.getAdvancements());
+            final var handle = ((CraftPlayer) player).getHandle();
+            final var progress = handle.getAdvancements().getClass().getDeclaredField("lastSelectedTab");
+            final var access = progress.canAccess(handle.getAdvancements());
             if (!access) progress.setAccessible(true);
-            var tab = (AdvancementHolder) progress.get(handle.getAdvancements());
+            final var tab = (AdvancementHolder) progress.get(handle.getAdvancements());
             progress.setAccessible(access);
             return tab != null ? Key.key(tab.id().getNamespace(), tab.id().getPath()) : null;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             group().getGroupProvider().getLogger().error("Failed to get last selected advancement tab from player {}", player.getName(), e);
             group().getGroupProvider().getLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
             PerWorldsPlugin.ERROR_TRACKER.trackError(e);
@@ -250,7 +250,7 @@ public final class PaperPlayerData implements PlayerData {
     }
 
     @Override
-    public CompletableFuture<Boolean> load(Player player, boolean position) {
+    public CompletableFuture<Boolean> load(final Player player, final boolean position) {
         if (group == null || uuid == null) return CompletableFuture.failedFuture(new IllegalStateException(
                 "Player data has not been finalized yet"
         ));
@@ -258,7 +258,7 @@ public final class PaperPlayerData implements PlayerData {
                 "Player UUID mismatch: Expected '" + uuid + "' but got '" + player.getUniqueId() + "'"
         ));
 
-        var settings = group.getSettings();
+        final var settings = group.getSettings();
         if (!settings.enabled()) return CompletableFuture.completedFuture(false);
         if (!position && group.containsWorld(player.getWorld())) {
             load(player, group);
@@ -267,12 +267,12 @@ public final class PaperPlayerData implements PlayerData {
                 "Failed to load player data: World mismatch between group '%s' and player '%s'. Expected any of %s but got %s"
                         .formatted(group.getName(), player.getName(), group.getPersistedWorlds(), player.getWorld().key())
         ));
-        var location = group.getSpawnLocation(this).orElse(null);
+        final var location = group.getSpawnLocation(this).orElse(null);
         if (location == null) return CompletableFuture.completedFuture(false);
         if (player.isDead()) {
             // this partly prevents a dupe exploit :)
             // Players can't be teleported while dead, so we have to revive them to be able to load the data
-            var handle = ((CraftPlayer) player).getHandle();
+            final var handle = ((CraftPlayer) player).getHandle();
             handle.setPose(Pose.STANDING);
             handle.reset();
             handle.unsetRemoved();
@@ -286,10 +286,10 @@ public final class PaperPlayerData implements PlayerData {
         });
     }
 
-    private void load(Player player, WorldGroup group) {
-        var settings = group.getSettings();
+    private void load(final Player player, final WorldGroup group) {
+        final var settings = group.getSettings();
 
-        var defaultGameMode = group.getGroupData().getDefaultGameMode().orElseGet(() -> player.getServer().getDefaultGameMode());
+        final var defaultGameMode = group.getGroupData().getDefaultGameMode().orElseGet(() -> player.getServer().getDefaultGameMode());
         player.setGameMode(settings.gameMode() && previousGameMode != null ? previousGameMode : defaultGameMode);
         player.setGameMode(settings.gameMode() && gameMode != null ? gameMode : defaultGameMode);
 
@@ -314,10 +314,10 @@ public final class PaperPlayerData implements PlayerData {
 
         player.setInvulnerable(settings.invulnerable() ? invulnerable : DEFAULT_INVULNERABLE);
 
-        var attribute = player.getAttribute(Attribute.MAX_HEALTH);
-        var maxHealth = attribute != null ? attribute.getValue() : 20;
+        final var attribute = player.getAttribute(Attribute.MAX_HEALTH);
+        final var maxHealth = attribute != null ? attribute.getValue() : 20;
 
-        var handle = ((CraftPlayer) player).getHandle();
+        final var handle = ((CraftPlayer) player).getHandle();
         handle.setHealth((float) Math.clamp(settings.health() ? health : DEFAULT_HEALTH, 0, maxHealth));
 
         player.setAbsorptionAmount(settings.absorption() ? absorption : DEFAULT_ABSORPTION);
@@ -346,7 +346,7 @@ public final class PaperPlayerData implements PlayerData {
         player.clearActivePotionEffects();
         if (settings.potionEffects()) player.addPotionEffects(potionEffects);
 
-        var tracker = settings.wardenSpawnTracker() ? wardenSpawnTracker : DEFAULT_WARDEN_SPAWN_TRACKER;
+        final var tracker = settings.wardenSpawnTracker() ? wardenSpawnTracker : DEFAULT_WARDEN_SPAWN_TRACKER;
         player.setWardenTimeSinceLastWarning(tracker.ticksSinceLastWarning());
         player.setWardenWarningCooldown(tracker.cooldownTicks());
         player.setWardenWarningLevel(tracker.warningLevel());
@@ -360,16 +360,16 @@ public final class PaperPlayerData implements PlayerData {
     }
 
     @SuppressWarnings({"DataFlowIssue", "deprecation"})
-    private void applyStatistics(Player player, GroupSettings settings) {
+    private void applyStatistics(final Player player, final GroupSettings settings) {
         clearStatistics(player, settings.statistics());
         if (settings.statistics()) statistics.forEachStatistic((statistic, stat) -> {
             switch (stat) {
-                case CustomStat customStat -> player.setStatistic(statistic, customStat.getValue());
-                case ItemTypeStat itemStat ->
+                case final CustomStat customStat -> player.setStatistic(statistic, customStat.getValue());
+                case final ItemTypeStat itemStat ->
                         itemStat.forEachValue((type, value) -> player.setStatistic(statistic, type.asMaterial(), value));
-                case BlockTypeStat blockStat ->
+                case final BlockTypeStat blockStat ->
                         blockStat.forEachValue((type, value) -> player.setStatistic(statistic, type.asMaterial(), value));
-                case EntityTypeStat entityStat ->
+                case final EntityTypeStat entityStat ->
                         entityStat.forEachValue((type, value) -> player.setStatistic(statistic, type, value));
                 default -> throw new IllegalStateException("Unexpected stat type: " + stat.getClass().getName());
             }
@@ -377,7 +377,7 @@ public final class PaperPlayerData implements PlayerData {
     }
 
     @SuppressWarnings({"DataFlowIssue", "deprecation"})
-    private void clearStatistics(Player player, boolean filter) {
+    private void clearStatistics(final Player player, final boolean filter) {
         Registry.STATISTIC.forEach(statistic -> {
             if (filter && statistics.hasData(statistic)) return;
             switch (statistic.getType()) {
@@ -389,20 +389,20 @@ public final class PaperPlayerData implements PlayerData {
         });
     }
 
-    private void applyAttributes(Player player, GroupSettings settings) {
+    private void applyAttributes(final Player player, final GroupSettings settings) {
         if (settings.attributes()) attributes.forEach(data -> applyAttribute(player, data));
         else DEFAULT_ATTRIBUTES.forEach(data -> applyAttribute(player, data));
     }
 
-    private void applyAttribute(Player player, AttributeData data) {
-        var instance = player.getAttribute(data.attribute());
+    private void applyAttribute(final Player player, final AttributeData data) {
+        final var instance = player.getAttribute(data.attribute());
         if (instance != null) instance.setBaseValue(data.baseValue());
     }
 
-    private void updateTablistVisibility(Player player, WorldGroup group) {
+    private void updateTablistVisibility(final Player player, final WorldGroup group) {
         player.getServer().getOnlinePlayers().forEach(other -> {
             if (player.equals(other)) return;
-            var otherGroup = player.getWorld().equals(other.getWorld()) ? group
+            final var otherGroup = player.getWorld().equals(other.getWorld()) ? group
                     : group.getGroupProvider().getGroup(other.getWorld())
                     .orElse(group.getGroupProvider().getUnownedWorldGroup());
             if (otherGroup.equals(group)) {
@@ -415,25 +415,25 @@ public final class PaperPlayerData implements PlayerData {
         });
     }
 
-    private void applyRecipes(Player player, GroupSettings settings) {
+    private void applyRecipes(final Player player, final GroupSettings settings) {
         if (settings.recipes()) {
-            var toAdd = new HashSet<>(recipes);
+            final var toAdd = new HashSet<>(recipes);
             toAdd.removeAll(player.getDiscoveredRecipes());
             discoverRecipes(player, toAdd);
 
-            var toRemove = new HashSet<>(player.getDiscoveredRecipes());
+            final var toRemove = new HashSet<>(player.getDiscoveredRecipes());
             toRemove.removeAll(recipes);
             player.undiscoverRecipes(toRemove);
         } else player.undiscoverRecipes(player.getDiscoveredRecipes());
     }
 
-    private void discoverRecipes(Player player, Set<NamespacedKey> recipes) {
-        var handle = ((CraftPlayer) player).getHandle();
-        var list = new ArrayList<ClientboundRecipeBookAddPacket.Entry>();
-        var manager = ((CraftServer) player.getServer()).getServer().getRecipeManager();
-        var recipeBook = handle.getRecipeBook();
+    private void discoverRecipes(final Player player, final Set<NamespacedKey> recipes) {
+        final var handle = ((CraftPlayer) player).getHandle();
+        final var list = new ArrayList<ClientboundRecipeBookAddPacket.Entry>();
+        final var manager = ((CraftServer) player.getServer()).getServer().getRecipeManager();
+        final var recipeBook = handle.getRecipeBook();
 
-        var recipeHolders = recipes.stream().map(CraftRecipe::toMinecraft)
+        final var recipeHolders = recipes.stream().map(CraftRecipe::toMinecraft)
                 .map(manager::byKey)
                 .map(recipeHolder -> recipeHolder.orElse(null))
                 .filter(Objects::nonNull);
@@ -450,29 +450,29 @@ public final class PaperPlayerData implements PlayerData {
         if (!list.isEmpty()) handle.connection.send(new ClientboundRecipeBookAddPacket(list, false));
     }
 
-    private void addHighlight(Player player, RecipeHolder<?> recipeHolder, ServerRecipeBook recipeBook) {
+    private void addHighlight(final Player player, final RecipeHolder<?> recipeHolder, final ServerRecipeBook recipeBook) {
         try {
-            var addHighlight = recipeBook.getClass().getDeclaredMethod("addHighlight", ResourceKey.class);
-            var access = addHighlight.canAccess(recipeBook);
+            final var addHighlight = recipeBook.getClass().getDeclaredMethod("addHighlight", ResourceKey.class);
+            final var access = addHighlight.canAccess(recipeBook);
             if (!access) addHighlight.setAccessible(true);
             addHighlight.invoke(recipeBook, recipeHolder.id());
             addHighlight.setAccessible(access);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             group().getGroupProvider().getLogger().error("Failed to add recipe highlight for player {}", player.getName(), e);
             group().getGroupProvider().getLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
             PerWorldsPlugin.ERROR_TRACKER.trackError(e);
         }
     }
 
-    private void applyAdvancements(Player player, GroupSettings settings) {
+    private void applyAdvancements(final Player player, final GroupSettings settings) {
         try {
-            var handle = ((CraftPlayer) player).getHandle();
-            var server = ((CraftServer) player.getServer()).getServer();
+            final var handle = ((CraftPlayer) player).getHandle();
+            final var server = ((CraftServer) player.getServer()).getServer();
 
-            var advancements = handle.getAdvancements();
-            var toRemove = new HashSet<>(server.getAdvancements().getAllAdvancements());
+            final var advancements = handle.getAdvancements();
+            final var toRemove = new HashSet<>(server.getAdvancements().getAllAdvancements());
 
-            var progressChanged = getProgressChanged(advancements);
+            final var progressChanged = getProgressChanged(advancements);
 
             if (settings.advancements()) this.advancements.stream()
                     .map(AdvancementData::getAdvancement)
@@ -480,20 +480,20 @@ public final class PaperPlayerData implements PlayerData {
                     .map(CraftAdvancement::getHandle)
                     .forEach(toRemove::remove);
 
-            var progressUpdate = advancements.getClass().getDeclaredMethod("markForVisibilityUpdate", AdvancementHolder.class);
-            var access = progressUpdate.canAccess(advancements);
+            final var progressUpdate = advancements.getClass().getDeclaredMethod("markForVisibilityUpdate", AdvancementHolder.class);
+            final var access = progressUpdate.canAccess(advancements);
             if (!access) progressUpdate.setAccessible(true);
 
-            for (var holder : toRemove) {
-                var progress = advancements.getOrStartProgress(holder);
+            for (final var holder : toRemove) {
+                final var progress = advancements.getOrStartProgress(holder);
                 progress.getCompletedCriteria().forEach(progress::revokeProgress);
                 progressUpdate.invoke(advancements, holder);
                 progressChanged.add(holder);
             }
 
-            if (settings.advancements()) for (var data : this.advancements) {
-                var holder = ((CraftAdvancement) data.getAdvancement()).getHandle();
-                var progress = advancements.getOrStartProgress(holder);
+            if (settings.advancements()) for (final var data : this.advancements) {
+                final var holder = ((CraftAdvancement) data.getAdvancement()).getHandle();
+                final var progress = advancements.getOrStartProgress(holder);
                 data.getAwardedCriteria().forEach(name -> updateProgress(progress, name, data));
                 data.getRemainingCriteria().forEach(progress::revokeProgress);
                 progressUpdate.invoke(advancements, holder);
@@ -504,13 +504,13 @@ public final class PaperPlayerData implements PlayerData {
             advancements.flushDirty(handle, false);
 
             if (settings.advancements()) {
-                var tab = lastAdvancementTab != null ? Identifier.fromNamespaceAndPath(
+                final var tab = lastAdvancementTab != null ? Identifier.fromNamespaceAndPath(
                         lastAdvancementTab.namespace(),
                         lastAdvancementTab.value()
                 ) : null;
                 advancements.setSelectedTab(tab != null ? server.getAdvancements().get(tab) : null);
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             group().getGroupProvider().getLogger().error("Failed to update advancements for player {}", player.getName(), e);
             group().getGroupProvider().getLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
             PerWorldsPlugin.ERROR_TRACKER.trackError(e);
@@ -518,25 +518,25 @@ public final class PaperPlayerData implements PlayerData {
     }
 
     @SuppressWarnings("unchecked")
-    private Set<AdvancementHolder> getProgressChanged(PlayerAdvancements advancements) throws NoSuchFieldException, IllegalAccessException {
-        var progress = advancements.getClass().getDeclaredField("progressChanged");
-        var access = progress.canAccess(advancements);
+    private Set<AdvancementHolder> getProgressChanged(final PlayerAdvancements advancements) throws NoSuchFieldException, IllegalAccessException {
+        final var progress = advancements.getClass().getDeclaredField("progressChanged");
+        final var access = progress.canAccess(advancements);
         if (!access) progress.setAccessible(true);
-        var progressChanged = (Set<AdvancementHolder>) progress.get(advancements);
+        final var progressChanged = (Set<AdvancementHolder>) progress.get(advancements);
         progress.setAccessible(access);
         return progressChanged;
     }
 
     @SuppressWarnings("unchecked")
-    private Map<AdvancementHolder, AdvancementProgress> getProgress(ServerPlayer player, PlayerAdvancements advancements) {
+    private Map<AdvancementHolder, AdvancementProgress> getProgress(final ServerPlayer player, final PlayerAdvancements advancements) {
         try {
-            var progress = advancements.getClass().getDeclaredField("progress");
-            var access = progress.canAccess(advancements);
+            final var progress = advancements.getClass().getDeclaredField("progress");
+            final var access = progress.canAccess(advancements);
             if (!access) progress.setAccessible(true);
-            var progressChanged = (Map<AdvancementHolder, AdvancementProgress>) progress.get(advancements);
+            final var progressChanged = (Map<AdvancementHolder, AdvancementProgress>) progress.get(advancements);
             progress.setAccessible(access);
             return progressChanged;
-        } catch (Exception e) {
+        } catch (final Exception e) {
             group().getGroupProvider().getLogger().error("Failed to get advancement progress for player {}", player.getName(), e);
             group().getGroupProvider().getLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
             PerWorldsPlugin.ERROR_TRACKER.trackError(e);
@@ -544,23 +544,23 @@ public final class PaperPlayerData implements PlayerData {
         }
     }
 
-    private void updateProgress(AdvancementProgress progress, String criteria, AdvancementData data) {
+    private void updateProgress(final AdvancementProgress progress, final String criteria, final AdvancementData data) {
         try {
-            var criterion = progress.getCriterion(criteria);
+            final var criterion = progress.getCriterion(criteria);
             if (criterion == null) return;
-            var obtained = criterion.getClass().getDeclaredField("obtained");
-            var access = obtained.canAccess(criterion);
+            final var obtained = criterion.getClass().getDeclaredField("obtained");
+            final var access = obtained.canAccess(criterion);
             if (!access) obtained.setAccessible(true);
             obtained.set(criterion, data.getTimeAwarded(criteria));
             obtained.setAccessible(access);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             group().getGroupProvider().getLogger().error("Failed to update advancement progress {}", criteria, e);
             group().getGroupProvider().getLogger().error("Please look for similar issues or report this on GitHub: {}", ISSUES);
             PerWorldsPlugin.ERROR_TRACKER.trackError(e);
         }
     }
 
-    public PaperPlayerData finalize(OfflinePlayer player, PaperWorldGroup group) {
+    public PaperPlayerData finalize(final OfflinePlayer player, final PaperWorldGroup group) {
         Preconditions.checkState(this.group == null || this.uuid == null, "Player data has already been finalized");
         if (respawnLocation != null && !group.containsWorld(respawnLocation.getWorld())) respawnLocation = null;
         if (lastDeathLocation != null && !group.containsWorld(lastDeathLocation.getWorld())) lastDeathLocation = null;
@@ -628,184 +628,184 @@ public final class PaperPlayerData implements PlayerData {
     }
 
     @Override
-    public PaperPlayerData lastAdvancementTab(@Nullable Key key) {
+    public PaperPlayerData lastAdvancementTab(@Nullable final Key key) {
         this.lastAdvancementTab = key;
         return this;
     }
 
     @Override
-    public PaperPlayerData absorption(double absorption) {
+    public PaperPlayerData absorption(final double absorption) {
         this.absorption = absorption;
         return this;
     }
 
     @Override
-    public PaperPlayerData advancements(Collection<AdvancementData> advancements) {
+    public PaperPlayerData advancements(final Collection<AdvancementData> advancements) {
         this.advancements = Set.copyOf(advancements);
         return this;
     }
 
     @Override
-    public PaperPlayerData arrowsInBody(int arrowsInBody) {
+    public PaperPlayerData arrowsInBody(final int arrowsInBody) {
         this.arrowsInBody = arrowsInBody;
         return this;
     }
 
     @Override
-    public PaperPlayerData attributes(Collection<AttributeData> attributes) {
+    public PaperPlayerData attributes(final Collection<AttributeData> attributes) {
         this.attributes = Set.copyOf(attributes);
         return this;
     }
 
     @Override
-    public PaperPlayerData beeStingersInBody(int beeStingersInBody) {
+    public PaperPlayerData beeStingersInBody(final int beeStingersInBody) {
         this.beeStingersInBody = beeStingersInBody;
         return this;
     }
 
     @Override
-    public PaperPlayerData discoveredRecipes(Collection<NamespacedKey> recipes) {
+    public PaperPlayerData discoveredRecipes(final Collection<NamespacedKey> recipes) {
         this.recipes = Set.copyOf(recipes);
         return this;
     }
 
     @Override
-    public PaperPlayerData enderChest(@Nullable ItemStack[] contents) {
+    public PaperPlayerData enderChest(@Nullable final ItemStack[] contents) {
         this.enderChest = contents;
         return this;
     }
 
     @Override
-    public PaperPlayerData exhaustion(float exhaustion) {
+    public PaperPlayerData exhaustion(final float exhaustion) {
         this.exhaustion = exhaustion;
         return this;
     }
 
     @Override
-    public PaperPlayerData experience(float experience) {
+    public PaperPlayerData experience(final float experience) {
         this.experience = experience;
         return this;
     }
 
     @Override
-    public PaperPlayerData fallDistance(float fallDistance) {
+    public PaperPlayerData fallDistance(final float fallDistance) {
         this.fallDistance = fallDistance;
         return this;
     }
 
     @Override
-    public PaperPlayerData fireTicks(int fireTicks) {
+    public PaperPlayerData fireTicks(final int fireTicks) {
         this.fireTicks = fireTicks;
         return this;
     }
 
     @Override
-    public PaperPlayerData flySpeed(@Range(from = -1, to = 1) float speed) {
+    public PaperPlayerData flySpeed(@Range(from = -1, to = 1) final float speed) {
         Preconditions.checkArgument(speed >= -1 && speed <= 1, "Speed must be between -1 and 1");
         this.flySpeed = speed;
         return this;
     }
 
     @Override
-    public PaperPlayerData flying(TriState flying) {
+    public PaperPlayerData flying(final TriState flying) {
         this.flying = flying;
         return this;
     }
 
     @Override
-    public PaperPlayerData foodLevel(int foodLevel) {
+    public PaperPlayerData foodLevel(final int foodLevel) {
         this.foodLevel = foodLevel;
         return this;
     }
 
     @Override
-    public PaperPlayerData freezeTicks(int freezeTicks) {
+    public PaperPlayerData freezeTicks(final int freezeTicks) {
         this.freezeTicks = freezeTicks;
         return this;
     }
 
     @Override
-    public PaperPlayerData gameMode(@Nullable GameMode gameMode) {
+    public PaperPlayerData gameMode(@Nullable final GameMode gameMode) {
         this.gameMode = gameMode;
         return this;
     }
 
     @Override
-    public PaperPlayerData gliding(boolean gliding) {
+    public PaperPlayerData gliding(final boolean gliding) {
         this.gliding = gliding;
         return this;
     }
 
     @Override
-    public PaperPlayerData health(double health) {
+    public PaperPlayerData health(final double health) {
         Preconditions.checkArgument(health >= 0, "Health must be greater than or equal to 0");
         this.health = health;
         return this;
     }
 
     @Override
-    public PaperPlayerData heldItemSlot(int heldItemSlot) {
+    public PaperPlayerData heldItemSlot(final int heldItemSlot) {
         this.heldItemSlot = heldItemSlot;
         return this;
     }
 
     @Override
-    public PaperPlayerData inventory(@Nullable ItemStack[] contents) {
+    public PaperPlayerData inventory(@Nullable final ItemStack[] contents) {
         this.inventory = contents;
         return this;
     }
 
     @Override
-    public PaperPlayerData invulnerable(boolean invulnerable) {
+    public PaperPlayerData invulnerable(final boolean invulnerable) {
         this.invulnerable = invulnerable;
         return this;
     }
 
     @Override
-    public PaperPlayerData lastDeathLocation(@Nullable Location location) {
+    public PaperPlayerData lastDeathLocation(@Nullable final Location location) {
         this.lastDeathLocation = location != null && (group == null || group.containsWorld(location.getWorld())) ? location.clone() : null;
         return this;
     }
 
     @Override
-    public PaperPlayerData lastLocation(@Nullable Location location) {
+    public PaperPlayerData lastLocation(@Nullable final Location location) {
         this.lastLocation = location != null && (group == null || group.containsWorld(location.getWorld())) ? location.clone() : null;
         return this;
     }
 
     @Override
-    public PaperPlayerData seenCredits(boolean seenCredits) {
+    public PaperPlayerData seenCredits(final boolean seenCredits) {
         this.seenCredits = seenCredits;
         return this;
     }
 
     @Override
-    public PaperPlayerData stats(Statistics statistics) {
+    public PaperPlayerData stats(final Statistics statistics) {
         this.statistics = statistics;
         return this;
     }
 
     @Override
-    public PaperPlayerData velocity(Vector velocity) {
+    public PaperPlayerData velocity(final Vector velocity) {
         this.velocity = velocity.clone();
         return this;
     }
 
     @Override
-    public PaperPlayerData visualFire(TriState visualFire) {
+    public PaperPlayerData visualFire(final TriState visualFire) {
         this.visualFire = visualFire;
         return this;
     }
 
     @Override
-    public PaperPlayerData walkSpeed(@Range(from = -1, to = 1) float speed) {
+    public PaperPlayerData walkSpeed(@Range(from = -1, to = 1) final float speed) {
         Preconditions.checkArgument(speed >= -1 && speed <= 1, "Speed must be between -1 and 1");
         this.walkSpeed = speed;
         return this;
     }
 
     @Override
-    public PaperPlayerData wardenSpawnTracker(WardenSpawnTracker tracker) {
+    public PaperPlayerData wardenSpawnTracker(final WardenSpawnTracker tracker) {
         this.wardenSpawnTracker = tracker;
         return this;
     }
@@ -816,61 +816,61 @@ public final class PaperPlayerData implements PlayerData {
     }
 
     @Override
-    public PaperPlayerData level(int level) {
+    public PaperPlayerData level(final int level) {
         this.level = level;
         return this;
     }
 
     @Override
-    public PaperPlayerData lockFreezeTicks(boolean lockFreezeTicks) {
+    public PaperPlayerData lockFreezeTicks(final boolean lockFreezeTicks) {
         this.lockFreezeTicks = lockFreezeTicks;
         return this;
     }
 
     @Override
-    public PaperPlayerData mayFly(TriState mayFly) {
+    public PaperPlayerData mayFly(final TriState mayFly) {
         this.mayFly = mayFly;
         return this;
     }
 
     @Override
-    public PaperPlayerData portalCooldown(int cooldown) {
+    public PaperPlayerData portalCooldown(final int cooldown) {
         this.portalCooldown = cooldown;
         return this;
     }
 
     @Override
-    public PaperPlayerData potionEffects(Collection<PotionEffect> effects) {
+    public PaperPlayerData potionEffects(final Collection<PotionEffect> effects) {
         this.potionEffects = List.copyOf(effects);
         return this;
     }
 
     @Override
-    public PaperPlayerData previousGameMode(@Nullable GameMode gameMode) {
+    public PaperPlayerData previousGameMode(@Nullable final GameMode gameMode) {
         this.previousGameMode = gameMode;
         return this;
     }
 
     @Override
-    public PaperPlayerData remainingAir(int remainingAir) {
+    public PaperPlayerData remainingAir(final int remainingAir) {
         this.remainingAir = remainingAir;
         return this;
     }
 
     @Override
-    public PaperPlayerData respawnLocation(@Nullable Location location) {
+    public PaperPlayerData respawnLocation(@Nullable final Location location) {
         this.respawnLocation = location != null && (group == null || group.containsWorld(location.getWorld())) ? location.clone() : null;
         return this;
     }
 
     @Override
-    public PaperPlayerData saturation(float saturation) {
+    public PaperPlayerData saturation(final float saturation) {
         this.saturation = saturation;
         return this;
     }
 
     @Override
-    public PaperPlayerData score(int score) {
+    public PaperPlayerData score(final int score) {
         this.score = score;
         return this;
     }
@@ -1026,7 +1026,7 @@ public final class PaperPlayerData implements PlayerData {
     }
 
     private static Set<AttributeData> defaultAttributes() {
-        var defaults = EntityType.PLAYER.getDefaultAttributes();
+        final var defaults = EntityType.PLAYER.getDefaultAttributes();
         return Registry.ATTRIBUTE.stream()
                 .map(defaults::getAttribute)
                 .filter(Objects::nonNull)

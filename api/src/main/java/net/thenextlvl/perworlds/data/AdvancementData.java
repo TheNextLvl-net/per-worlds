@@ -119,7 +119,7 @@ public interface AdvancementData {
      * @since 1.0.0
      */
     @Contract(value = "_ -> new", pure = true)
-    static AdvancementData of(Advancement advancement) {
+    static AdvancementData of(final Advancement advancement) {
         return new AdvancementDataImpl(advancement, Map.of(), advancement.getCriteria());
     }
 
@@ -134,7 +134,7 @@ public interface AdvancementData {
      * @since 1.0.0
      */
     @Contract(value = "_, _, _ -> new", pure = true)
-    static AdvancementData of(Advancement advancement, Map<String, Instant> awardedCriteria, Collection<String> remainingCriteria) {
+    static AdvancementData of(final Advancement advancement, final Map<String, Instant> awardedCriteria, final Collection<String> remainingCriteria) {
         return new AdvancementDataImpl(advancement, awardedCriteria, remainingCriteria);
     }
 }

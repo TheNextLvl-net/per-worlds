@@ -13,12 +13,12 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public final class AttributeAdapter implements TagAdapter<Attribute> {
     @Override
-    public Attribute deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
+    public Attribute deserialize(final Tag tag, final TagDeserializationContext context) throws ParserException {
         return Registry.ATTRIBUTE.getOrThrow(context.deserialize(tag, Key.class));
     }
 
     @Override
-    public Tag serialize(Attribute attribute, TagSerializationContext context) throws ParserException {
+    public Tag serialize(final Attribute attribute, final TagSerializationContext context) throws ParserException {
         return context.serialize(attribute.key());
     }
 }

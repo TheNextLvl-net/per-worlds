@@ -156,7 +156,7 @@ public interface WorldBorderData {
      */
     @Contract(value = "_ -> new", pure = true)
     @Deprecated(forRemoval = true, since = "1.3.0")
-    default WorldBorderData duration(long duration) throws IllegalArgumentException {
+    default WorldBorderData duration(final long duration) throws IllegalArgumentException {
         return setTransitionDuration(Duration.ofMillis(duration));
     }
 
@@ -263,7 +263,7 @@ public interface WorldBorderData {
      * @since 0.2.2
      */
     @Contract(value = "_ -> new", pure = true)
-    default WorldBorderData warningTime(int seconds) throws IllegalArgumentException {
+    default WorldBorderData warningTime(final int seconds) throws IllegalArgumentException {
         return setWarningTime(Duration.ofSeconds(seconds));
     }
 
@@ -331,7 +331,7 @@ public interface WorldBorderData {
      */
     @Deprecated(forRemoval = true, since = "1.3.0")
     @Contract(value = "_, _, _, _, _, _, _, _ -> new", pure = true)
-    static WorldBorderData create(double centerX, double centerZ, double size, double damageAmount, double damageBuffer, long duration, int warningDistance, int warningTime) {
+    static WorldBorderData create(final double centerX, final double centerZ, final double size, final double damageAmount, final double damageBuffer, final long duration, final int warningDistance, final int warningTime) {
         return create(centerX, centerZ, size, damageAmount, damageBuffer, Duration.ofMillis(duration), warningDistance, Duration.ofSeconds(warningTime));
     }
 
@@ -350,7 +350,7 @@ public interface WorldBorderData {
      * @since 1.3.0
      */
     @Contract(value = "_, _, _, _, _, _, _, _ -> new", pure = true)
-    static WorldBorderData create(double centerX, double centerZ, double size, double damageAmount, double damageBuffer, Duration transitionDuration, int warningDistance, Duration warningTime) {
+    static WorldBorderData create(final double centerX, final double centerZ, final double size, final double damageAmount, final double damageBuffer, final Duration transitionDuration, final int warningDistance, final Duration warningTime) {
         return new WorldBorderDataImpl(centerX, centerZ, size, damageAmount, damageBuffer, transitionDuration, warningDistance, warningTime);
     }
 
@@ -361,7 +361,7 @@ public interface WorldBorderData {
      * @return A new {@code WorldBorderData} instance containing the data from the given {@code WorldBorder}.
      * @since 1.0.0
      */
-    static WorldBorderData of(WorldBorder border) {
+    static WorldBorderData of(final WorldBorder border) {
         return new WorldBorderDataImpl(border);
     }
 }

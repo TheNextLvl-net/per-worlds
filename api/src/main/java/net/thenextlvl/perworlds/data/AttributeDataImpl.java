@@ -6,7 +6,7 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 record AttributeDataImpl(Attribute attribute, double baseValue) implements AttributeData {
     @Override
-    public AttributeData baseValue(double value) {
+    public AttributeData baseValue(final double value) {
         return new AttributeDataImpl(attribute, value);
     }
 }

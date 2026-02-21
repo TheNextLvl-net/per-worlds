@@ -18,12 +18,12 @@ import static net.thenextlvl.perworlds.command.WorldCommand.groupArgument;
 
 @NullMarked
 final class GroupRemoveCommand extends SimpleCommand {
-    private GroupRemoveCommand(PerWorldsPlugin plugin) {
+    private GroupRemoveCommand(final PerWorldsPlugin plugin) {
         super(plugin, "remove", "perworlds.command.group.remove");
     }
 
-    public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
-        var command = new GroupRemoveCommand(plugin);
+    public static ArgumentBuilder<CommandSourceStack, ?> create(final PerWorldsPlugin plugin) {
+        final var command = new GroupRemoveCommand(plugin);
         return command.create().then(command.remove());
     }
 
@@ -34,12 +34,12 @@ final class GroupRemoveCommand extends SimpleCommand {
     }
 
     @Override
-    public int run(CommandContext<CommandSourceStack> context) {
-        var group = context.getArgument("group", WorldGroup.class);
-        var key = context.getArgument("world", Key.class);
-        var world = plugin.getServer().getWorld(key);
-        var success = world != null ? group.removeWorld(world) : group.removeWorld(key);
-        var message = success ? "group.world.removed" : "group.world.remove.failed";
+    public int run(final CommandContext<CommandSourceStack> context) {
+        final var group = context.getArgument("group", WorldGroup.class);
+        final var key = context.getArgument("world", Key.class);
+        final var world = plugin.getServer().getWorld(key);
+        final var success = world != null ? group.removeWorld(world) : group.removeWorld(key);
+        final var message = success ? "group.world.removed" : "group.world.remove.failed";
         plugin.bundle().sendMessage(context.getSource().getSender(), message,
                 Placeholder.unparsed("group", group.getName()),
                 Placeholder.unparsed("world", world != null ? world.getName() : key.asString()));

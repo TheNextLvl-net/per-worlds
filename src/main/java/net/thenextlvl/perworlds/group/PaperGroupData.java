@@ -32,19 +32,19 @@ public final class PaperGroupData implements GroupData {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void forEachGameRule(BiConsumer<GameRule<Object>, Object> action) {
+    public void forEachGameRule(final BiConsumer<GameRule<Object>, Object> action) {
         gameRules.forEach((rule, value) -> action.accept((GameRule<Object>) rule, value));
     }
 
     @Override
-    public <T> Optional<T> getGameRule(GameRule<T> rule) {
-        var object = gameRules.get(rule);
+    public <T> Optional<T> getGameRule(final GameRule<T> rule) {
+        final var object = gameRules.get(rule);
         if (object == null) return Optional.empty();
         return Optional.of(rule.getType().cast(object));
     }
 
     @Override
-    public <T> boolean setGameRule(GameRule<T> rule, @Nullable T value) {
+    public <T> boolean setGameRule(final GameRule<T> rule, @Nullable final T value) {
         if (value == null) return gameRules.remove(rule) != null;
         return !value.equals(gameRules.put(rule, value));
     }
@@ -55,7 +55,7 @@ public final class PaperGroupData implements GroupData {
     }
 
     @Override
-    public void setDifficulty(Difficulty difficulty) {
+    public void setDifficulty(final Difficulty difficulty) {
         this.difficulty = difficulty;
     }
 
@@ -65,7 +65,7 @@ public final class PaperGroupData implements GroupData {
     }
 
     @Override
-    public void setDefaultGameMode(@Nullable GameMode defaultGameMode) {
+    public void setDefaultGameMode(@Nullable final GameMode defaultGameMode) {
         this.defaultGameMode = defaultGameMode;
     }
 
@@ -74,7 +74,7 @@ public final class PaperGroupData implements GroupData {
         return worldBorder;
     }
 
-    public void setWorldBorder(WorldBorderData worldBorder) {
+    public void setWorldBorder(final WorldBorderData worldBorder) {
         this.worldBorder = worldBorder;
     }
 
@@ -84,7 +84,7 @@ public final class PaperGroupData implements GroupData {
     }
 
     @Override
-    public void setSpawnLocation(@Nullable Location location) {
+    public void setSpawnLocation(@Nullable final Location location) {
         this.spawnLocation = location != null ? location.clone() : null;
     }
 
@@ -94,7 +94,7 @@ public final class PaperGroupData implements GroupData {
     }
 
     @Override
-    public void setHardcore(TriState hardcore) {
+    public void setHardcore(final TriState hardcore) {
         this.hardcore = hardcore;
     }
 
@@ -104,7 +104,7 @@ public final class PaperGroupData implements GroupData {
     }
 
     @Override
-    public void setRaining(boolean raining) {
+    public void setRaining(final boolean raining) {
         this.raining = raining;
     }
 
@@ -114,7 +114,7 @@ public final class PaperGroupData implements GroupData {
     }
 
     @Override
-    public void setThundering(boolean thundering) {
+    public void setThundering(final boolean thundering) {
         this.thundering = thundering;
     }
 
@@ -124,7 +124,7 @@ public final class PaperGroupData implements GroupData {
     }
 
     @Override
-    public void clearWeatherDuration(int duration) {
+    public void clearWeatherDuration(final int duration) {
         this.clearWeatherDuration = duration;
     }
 
@@ -134,7 +134,7 @@ public final class PaperGroupData implements GroupData {
     }
 
     @Override
-    public void setThunderDuration(int duration) {
+    public void setThunderDuration(final int duration) {
         this.thunderDuration = duration;
     }
 
@@ -144,7 +144,7 @@ public final class PaperGroupData implements GroupData {
     }
 
     @Override
-    public void setRainDuration(int duration) {
+    public void setRainDuration(final int duration) {
         this.rainDuration = duration;
     }
 
@@ -154,7 +154,7 @@ public final class PaperGroupData implements GroupData {
     }
 
     @Override
-    public void setTime(long time) {
+    public void setTime(final long time) {
         this.time = time;
     }
 }

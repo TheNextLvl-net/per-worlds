@@ -12,16 +12,16 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public final class VectorAdapter implements TagAdapter<Vector> {
     @Override
-    public Vector deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
-        var root = tag.getAsCompound();
-        var x = root.get("x").getAsDouble();
-        var y = root.get("y").getAsDouble();
-        var z = root.get("z").getAsDouble();
+    public Vector deserialize(final Tag tag, final TagDeserializationContext context) throws ParserException {
+        final var root = tag.getAsCompound();
+        final var x = root.get("x").getAsDouble();
+        final var y = root.get("y").getAsDouble();
+        final var z = root.get("z").getAsDouble();
         return new Vector(x, y, z);
     }
 
     @Override
-    public Tag serialize(Vector vector, TagSerializationContext context) throws ParserException {
+    public Tag serialize(final Vector vector, final TagSerializationContext context) throws ParserException {
         return CompoundTag.builder()
                 .put("x", vector.getX())
                 .put("y", vector.getY())

@@ -24,22 +24,22 @@ import org.jspecify.annotations.NullMarked;
 public final class GroupDataAdapter implements TagAdapter<GroupData> {
     private final Server server;
 
-    public GroupDataAdapter(Server server) {
+    public GroupDataAdapter(final Server server) {
         this.server = server;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public GroupData deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
-        var root = tag.getAsCompound();
-        var data = new PaperGroupData();
+    public GroupData deserialize(final Tag tag, final TagDeserializationContext context) throws ParserException {
+        final var root = tag.getAsCompound();
+        final var data = new PaperGroupData();
         root.optional("defaultGameMode").map(tag1 -> context.deserialize(tag1, GameMode.class)).ifPresent(data::setDefaultGameMode);
         root.optional("difficulty").map(tag1 -> context.deserialize(tag1, Difficulty.class)).ifPresent(data::setDifficulty);
         root.optional("spawnLocation").map(tag1 -> context.deserialize(tag1, Location.class)).ifPresent(data::setSpawnLocation);
         root.optional("worldBorder").map(tag1 -> context.deserialize(tag1, WorldBorderData.class)).ifPresent(data::setWorldBorder);
         root.optional("hardcore").map(tag1 -> {
             if (!(tag1 instanceof ByteTag)) return context.deserialize(tag1, TriState.class);
-            var value = tag1.getAsBoolean();
+            final var value = tag1.getAsBoolean();
             return value == server.isHardcore() ? TriState.NOT_SET : TriState.byBoolean(value);
         }).ifPresent(data::setHardcore);
         root.optional("raining").map(Tag::getAsBoolean).ifPresent(data::setRaining);
@@ -49,17 +49,17 @@ public final class GroupDataAdapter implements TagAdapter<GroupData> {
         root.optional("rainDuration").map(Tag::getAsInt).ifPresent(data::setRainDuration);
         root.optional("time").map(Tag::getAsLong).ifPresent(data::setTime);
         root.optional("gameRules").map(Tag::getAsCompound).ifPresent(rules -> rules.entrySet().forEach(entry -> {
-            var key = NamespacedKey.fromString(entry.getKey());
-            var rule = key != null ? (GameRule<Object>) Registry.GAME_RULE.get(key) : null;
+            final var key = NamespacedKey.fromString(entry.getKey());
+            final var rule = key != null ? (GameRule<Object>) Registry.GAME_RULE.get(key) : null;
             if (rule != null) data.setGameRule(rule, context.deserialize(entry.getValue(), rule.getType()));
         }));
         return data;
     }
 
     @Override
-    public Tag serialize(GroupData data, TagSerializationContext context) throws ParserException {
-        var tag = CompoundTag.builder();
-        var rules = CompoundTag.builder();
+    public Tag serialize(final GroupData data, final TagSerializationContext context) throws ParserException {
+        final var tag = CompoundTag.builder();
+        final var rules = CompoundTag.builder();
         data.forEachGameRule((rule, value) -> rules.put(rule.key().asString(), context.serialize(value)));
         data.getSpawnLocation().ifPresent(location -> tag.put("spawnLocation", context.serialize(location)));
         data.getDefaultGameMode().ifPresent(mode -> tag.put("defaultGameMode", context.serialize(mode)));

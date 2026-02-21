@@ -25,16 +25,16 @@ import java.util.HashMap;
 public final class StatisticsAdapter implements TagAdapter<Statistics> {
     private final PerWorldsPlugin plugin;
 
-    public StatisticsAdapter(PerWorldsPlugin plugin) {
+    public StatisticsAdapter(final PerWorldsPlugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
     @SuppressWarnings("PatternValidation")
-    public Statistics deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
-        var values = new HashMap<Statistic, Stat>();
+    public Statistics deserialize(final Tag tag, final TagDeserializationContext context) throws ParserException {
+        final var values = new HashMap<Statistic, Stat>();
         tag.getAsCompound().forEach((key, value) -> {
-            var statistic = Registry.STATISTIC.get(Key.key(key));
+            final var statistic = Registry.STATISTIC.get(Key.key(key));
             if (statistic == null) plugin.getLogger().warning("Unknown statistic: " + key);
             else values.put(statistic, context.deserialize(value, getType(statistic)));
         });
@@ -42,15 +42,15 @@ public final class StatisticsAdapter implements TagAdapter<Statistics> {
     }
 
     @Override
-    public Tag serialize(Statistics statistics, TagSerializationContext context) throws ParserException {
-        var tag = CompoundTag.builder();
+    public Tag serialize(final Statistics statistics, final TagSerializationContext context) throws ParserException {
+        final var tag = CompoundTag.builder();
         statistics.forEachStatistic((statistic, value) -> {
             if (value.hasData()) tag.put(statistic.key().asString(), context.serialize(value));
         });
         return tag.build();
     }
 
-    private static Class<? extends Stat> getType(Statistic statistic) {
+    private static Class<? extends Stat> getType(final Statistic statistic) {
         return switch (statistic.getType()) {
             case UNTYPED -> CustomStat.class;
             case ITEM -> ItemTypeStat.class;

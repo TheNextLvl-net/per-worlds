@@ -35,7 +35,7 @@ final class WorldBorderDataImpl implements WorldBorderData {
         this(0d, 0d, MAX_SIZE, 0.2d, 5.0d, Duration.ZERO, 5, Duration.ofSeconds(15));
     }
 
-    public WorldBorderDataImpl(WorldBorder border) {
+    public WorldBorderDataImpl(final WorldBorder border) {
         this(
                 border.getCenter().getX(),
                 border.getCenter().getZ(),
@@ -49,14 +49,14 @@ final class WorldBorderDataImpl implements WorldBorderData {
     }
 
     public WorldBorderDataImpl(
-            double centerX,
-            double centerZ,
-            double size,
-            double damageAmount,
-            double damageBuffer,
-            Duration transitionDuration,
-            int warningDistance,
-            Duration warningTime
+            final double centerX,
+            final double centerZ,
+            final double size,
+            final double damageAmount,
+            final double damageBuffer,
+            final Duration transitionDuration,
+            final int warningDistance,
+            final Duration warningTime
     ) throws IllegalArgumentException {
         Preconditions.checkArgument(!transitionDuration.isNegative(), "time cannot be lower than 0ms but got %sms", transitionDuration.toMillis());
         Preconditions.checkArgument(!warningTime.isNegative(), "time cannot be lower than 0ms but got %sms", warningTime.toMillis());
@@ -79,7 +79,7 @@ final class WorldBorderDataImpl implements WorldBorderData {
     }
 
     @Override
-    public WorldBorderData centerX(double x) throws IllegalArgumentException {
+    public WorldBorderData centerX(final double x) throws IllegalArgumentException {
         return center(x, centerZ);
     }
 
@@ -89,7 +89,7 @@ final class WorldBorderDataImpl implements WorldBorderData {
     }
 
     @Override
-    public WorldBorderData centerZ(double z) throws IllegalArgumentException {
+    public WorldBorderData centerZ(final double z) throws IllegalArgumentException {
         return center(centerX, z);
     }
 
@@ -99,12 +99,12 @@ final class WorldBorderDataImpl implements WorldBorderData {
     }
 
     @Override
-    public WorldBorderData center(Position position) throws IllegalArgumentException {
+    public WorldBorderData center(final Position position) throws IllegalArgumentException {
         return center(position.x(), position.z());
     }
 
     @Override
-    public WorldBorderData center(double x, double z) throws IllegalArgumentException {
+    public WorldBorderData center(final double x, final double z) throws IllegalArgumentException {
         return new WorldBorderDataImpl(x, z, size, damageAmount, damageBuffer, transitionDuration, warningDistance, warningTime);
     }
 
@@ -114,7 +114,7 @@ final class WorldBorderDataImpl implements WorldBorderData {
     }
 
     @Override
-    public WorldBorderData size(double size) throws IllegalArgumentException {
+    public WorldBorderData size(final double size) throws IllegalArgumentException {
         return new WorldBorderDataImpl(centerX, centerZ, size, damageAmount, damageBuffer, transitionDuration, warningDistance, warningTime);
     }
 
@@ -124,7 +124,7 @@ final class WorldBorderDataImpl implements WorldBorderData {
     }
 
     @Override
-    public WorldBorderData setTransitionDuration(Duration duration) throws IllegalArgumentException {
+    public WorldBorderData setTransitionDuration(final Duration duration) throws IllegalArgumentException {
         return new WorldBorderDataImpl(centerX, centerZ, size, damageAmount, damageBuffer, duration, warningDistance, warningTime);
     }
 
@@ -134,7 +134,7 @@ final class WorldBorderDataImpl implements WorldBorderData {
     }
 
     @Override
-    public WorldBorderData damageAmount(double damage) {
+    public WorldBorderData damageAmount(final double damage) {
         return new WorldBorderDataImpl(centerX, centerZ, size, damage, damageBuffer, transitionDuration, warningDistance, warningTime);
     }
 
@@ -144,7 +144,7 @@ final class WorldBorderDataImpl implements WorldBorderData {
     }
 
     @Override
-    public WorldBorderData damageBuffer(double blocks) {
+    public WorldBorderData damageBuffer(final double blocks) {
         return new WorldBorderDataImpl(centerX, centerZ, size, damageAmount, blocks, transitionDuration, warningDistance, warningTime);
     }
 
@@ -154,7 +154,7 @@ final class WorldBorderDataImpl implements WorldBorderData {
     }
 
     @Override
-    public WorldBorderData warningDistance(int blocks) {
+    public WorldBorderData warningDistance(final int blocks) {
         return new WorldBorderDataImpl(centerX, centerZ, size, damageAmount, damageBuffer, transitionDuration, blocks, warningTime);
     }
 
@@ -164,7 +164,7 @@ final class WorldBorderDataImpl implements WorldBorderData {
     }
 
     @Override
-    public WorldBorderData setWarningTime(Duration duration) throws IllegalArgumentException {
+    public WorldBorderData setWarningTime(final Duration duration) throws IllegalArgumentException {
         return new WorldBorderDataImpl(centerX, centerZ, size, damageAmount, damageBuffer, transitionDuration, warningDistance, duration);
     }
 }

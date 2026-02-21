@@ -17,16 +17,16 @@ import java.util.HashMap;
 public final class ItemTypeStatAdapter extends TypedStatAdapter<ItemTypeStat> {
     private final PerWorldsPlugin plugin;
 
-    public ItemTypeStatAdapter(PerWorldsPlugin plugin) {
+    public ItemTypeStatAdapter(final PerWorldsPlugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
     @SuppressWarnings("PatternValidation")
-    public ItemTypeStat deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
-        var values = new HashMap<ItemType, Integer>();
+    public ItemTypeStat deserialize(final Tag tag, final TagDeserializationContext context) throws ParserException {
+        final var values = new HashMap<ItemType, Integer>();
         tag.getAsCompound().forEach((type, value) -> {
-            var item = Registry.ITEM.get(Key.key(type));
+            final var item = Registry.ITEM.get(Key.key(type));
             if (item != null) values.put(item, value.getAsInt());
             else plugin.getComponentLogger().warn("Failed to deserialize statistic: Unknown ItemType {}", type);
         });

@@ -32,19 +32,19 @@ import java.util.Objects;
 public final class PlayerDataAdapter implements TagAdapter<PlayerData> {
     private final PerWorldsPlugin plugin;
 
-    public PlayerDataAdapter(PerWorldsPlugin plugin) {
+    public PlayerDataAdapter(final PerWorldsPlugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
-    public PlayerData deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
-        var data = new PaperPlayerData(null, null);
-        var root = tag.getAsCompound();
+    public PlayerData deserialize(final Tag tag, final TagDeserializationContext context) throws ParserException {
+        final var data = new PaperPlayerData(null, null);
+        final var root = tag.getAsCompound();
         root.optional("advancements").map(Tag::getAsList).map(list ->
                 list.stream().map(advancement -> {
                     try {
                         return context.deserialize(advancement, AdvancementData.class);
-                    } catch (ParserException e) {
+                    } catch (final ParserException e) {
                         plugin.getComponentLogger().warn(e.getMessage());
                         return null;
                     }
@@ -58,7 +58,7 @@ public final class PlayerDataAdapter implements TagAdapter<PlayerData> {
         root.optional("respawnLocation").map(location -> {
             try {
                 return context.deserialize(location, Location.class);
-            } catch (ParserException e) {
+            } catch (final ParserException e) {
                 return null;
             }
         }).ifPresent(data::respawnLocation);
@@ -88,7 +88,7 @@ public final class PlayerDataAdapter implements TagAdapter<PlayerData> {
         root.optional("flying").map(tag1 -> context.deserialize(tag1, TriState.class)).ifPresent(data::flying);
         root.optional("freezeTicks").map(Tag::getAsInt).ifPresent(data::freezeTicks);
         root.optional("lockFreezeTicks").map(Tag::getAsBoolean).ifPresent(data::lockFreezeTicks);
-        root.optional("visualFire").map(tag1 -> tag1 instanceof ByteTag byteTag
+        root.optional("visualFire").map(tag1 -> tag1 instanceof final ByteTag byteTag
                 ? (byteTag.getAsBoolean() ? TriState.TRUE : TriState.NOT_SET)
                 : context.deserialize(tag1, TriState.class)).ifPresent(data::visualFire);
         root.optional("heldItemSlot").map(Tag::getAsInt).ifPresent(data::heldItemSlot);
@@ -99,14 +99,14 @@ public final class PlayerDataAdapter implements TagAdapter<PlayerData> {
         root.optional("lastDeathLocation").map(location -> {
             try {
                 return context.deserialize(location, Location.class);
-            } catch (ParserException e) {
+            } catch (final ParserException e) {
                 return null;
             }
         }).ifPresent(data::lastDeathLocation);
         root.optional("lastLocation").map(location -> {
             try {
                 return context.deserialize(location, Location.class);
-            } catch (ParserException e) {
+            } catch (final ParserException e) {
                 return null;
             }
         }).ifPresent(data::lastLocation);
@@ -119,23 +119,23 @@ public final class PlayerDataAdapter implements TagAdapter<PlayerData> {
     }
 
     @Override
-    public CompoundTag serialize(PlayerData data, TagSerializationContext context) throws ParserException {
-        var tag = CompoundTag.builder();
+    public CompoundTag serialize(final PlayerData data, final TagSerializationContext context) throws ParserException {
+        final var tag = CompoundTag.builder();
         tag.put("advancements", ListTag.of(CompoundTag.ID, data.advancements().stream().map(context::serialize).toList()));
         tag.put("attributes", ListTag.of(CompoundTag.ID, data.attributes().stream().map(context::serialize).toList()));
         tag.put("enderChest", context.serialize(data.enderChest()));
         tag.put("inventory", context.serialize(data.inventory()));
-        var lastAdvancementTab = data.lastAdvancementTab();
+        final var lastAdvancementTab = data.lastAdvancementTab();
         if (lastAdvancementTab != null) tag.put("lastAdvancementTab", context.serialize(lastAdvancementTab));
-        var respawnLocation = data.respawnLocation();
+        final var respawnLocation = data.respawnLocation();
         if (respawnLocation != null) tag.put("respawnLocation", context.serialize(respawnLocation));
-        var previousGameMode = data.previousGameMode();
+        final var previousGameMode = data.previousGameMode();
         if (previousGameMode != null) tag.put("previousGameMode", context.serialize(previousGameMode));
-        var lastDeathLocation = data.lastDeathLocation();
+        final var lastDeathLocation = data.lastDeathLocation();
         if (lastDeathLocation != null) tag.put("lastDeathLocation", context.serialize(lastDeathLocation));
-        var lastLocation = data.lastLocation();
+        final var lastLocation = data.lastLocation();
         if (lastLocation != null) tag.put("lastLocation", context.serialize(lastLocation));
-        var gameMode = data.gameMode();
+        final var gameMode = data.gameMode();
         if (gameMode != null) tag.put("gameMode", context.serialize(gameMode));
         tag.put("recipes", ListTag.of(StringTag.ID, data.discoveredRecipes().stream().map(context::serialize).toList()));
         tag.put("potionEffects", ListTag.of(CompoundTag.ID, data.potionEffects().stream().map(context::serialize).toList()));

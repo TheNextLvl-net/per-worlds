@@ -58,7 +58,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void enabled(boolean enabled) {
+    public void enabled(final boolean enabled) {
         this.enabled = enabled;
     }
 
@@ -68,7 +68,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void advancementMessages(boolean enabled) {
+    public void advancementMessages(final boolean enabled) {
         this.advancementMessages = enabled;
     }
 
@@ -78,7 +78,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void deathMessages(boolean enabled) {
+    public void deathMessages(final boolean enabled) {
         this.deathMessages = enabled;
     }
 
@@ -88,7 +88,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void joinMessages(boolean enabled) {
+    public void joinMessages(final boolean enabled) {
         this.joinMessages = enabled;
     }
 
@@ -98,7 +98,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void quitMessages(boolean enabled) {
+    public void quitMessages(final boolean enabled) {
         this.quitMessages = enabled;
     }
 
@@ -108,7 +108,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void chat(boolean enabled) {
+    public void chat(final boolean enabled) {
         this.chat = enabled;
     }
 
@@ -118,7 +118,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void difficulty(boolean enabled) {
+    public void difficulty(final boolean enabled) {
         this.difficulty = enabled;
     }
 
@@ -128,7 +128,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void gameRules(boolean enabled) {
+    public void gameRules(final boolean enabled) {
         this.gameRules = enabled;
     }
 
@@ -138,7 +138,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void tabList(boolean enabled) {
+    public void tabList(final boolean enabled) {
         this.tabList = enabled;
     }
 
@@ -148,7 +148,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void time(boolean enabled) {
+    public void time(final boolean enabled) {
         this.time = enabled;
     }
 
@@ -158,7 +158,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void weather(boolean enabled) {
+    public void weather(final boolean enabled) {
         this.weather = enabled;
     }
 
@@ -168,7 +168,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void worldBorder(boolean enabled) {
+    public void worldBorder(final boolean enabled) {
         this.worldBorder = enabled;
     }
 
@@ -178,7 +178,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void absorption(boolean enabled) {
+    public void absorption(final boolean enabled) {
         this.absorption = enabled;
     }
 
@@ -188,7 +188,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void advancements(boolean enabled) {
+    public void advancements(final boolean enabled) {
         this.advancements = enabled;
     }
 
@@ -198,7 +198,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void arrowsInBody(boolean enabled) {
+    public void arrowsInBody(final boolean enabled) {
         this.arrowsInBody = enabled;
     }
 
@@ -208,7 +208,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void attributes(boolean enabled) {
+    public void attributes(final boolean enabled) {
         this.attributes = enabled;
     }
 
@@ -218,7 +218,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void beeStingersInBody(boolean enabled) {
+    public void beeStingersInBody(final boolean enabled) {
         this.beeStingersInBody = enabled;
     }
 
@@ -228,7 +228,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void endCredits(boolean enabled) {
+    public void endCredits(final boolean enabled) {
         this.endCredits = enabled;
     }
 
@@ -238,7 +238,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void enderChest(boolean enabled) {
+    public void enderChest(final boolean enabled) {
         this.enderChest = enabled;
     }
 
@@ -248,7 +248,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void exhaustion(boolean enabled) {
+    public void exhaustion(final boolean enabled) {
         this.exhaustion = enabled;
     }
 
@@ -258,7 +258,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void experience(boolean enabled) {
+    public void experience(final boolean enabled) {
         this.experience = enabled;
     }
 
@@ -268,7 +268,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void fallDistance(boolean enabled) {
+    public void fallDistance(final boolean enabled) {
         this.fallDistance = enabled;
     }
 
@@ -278,7 +278,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void fireTicks(boolean enabled) {
+    public void fireTicks(final boolean enabled) {
         this.fireTicks = enabled;
     }
 
@@ -288,7 +288,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void flySpeed(boolean enabled) {
+    public void flySpeed(final boolean enabled) {
         this.flySpeed = enabled;
     }
 
@@ -298,7 +298,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void flyState(boolean enabled) {
+    public void flyState(final boolean enabled) {
         this.flyState = enabled;
     }
 
@@ -308,7 +308,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void foodLevel(boolean enabled) {
+    public void foodLevel(final boolean enabled) {
         this.foodLevel = enabled;
     }
 
@@ -318,7 +318,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void freezeTicks(boolean enabled) {
+    public void freezeTicks(final boolean enabled) {
         this.freezeTicks = enabled;
     }
 
@@ -328,7 +328,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void gameMode(boolean enabled) {
+    public void gameMode(final boolean enabled) {
         this.gameMode = enabled;
     }
 
@@ -338,7 +338,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void gliding(boolean enabled) {
+    public void gliding(final boolean enabled) {
         this.gliding = enabled;
     }
 
@@ -348,7 +348,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void health(boolean enabled) {
+    public void health(final boolean enabled) {
         this.health = enabled;
     }
 
@@ -358,7 +358,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void hotbarSlot(boolean enabled) {
+    public void hotbarSlot(final boolean enabled) {
         this.hotbarSlot = enabled;
     }
 
@@ -368,7 +368,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void inventory(boolean enabled) {
+    public void inventory(final boolean enabled) {
         this.inventory = enabled;
     }
 
@@ -378,7 +378,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void invulnerable(boolean enabled) {
+    public void invulnerable(final boolean enabled) {
         this.invulnerable = enabled;
     }
 
@@ -388,7 +388,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void lastDeathLocation(boolean enabled) {
+    public void lastDeathLocation(final boolean enabled) {
         this.lastDeathLocation = enabled;
     }
 
@@ -398,7 +398,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void lastLocation(boolean enabled) {
+    public void lastLocation(final boolean enabled) {
         this.lastLocation = enabled;
     }
 
@@ -408,7 +408,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void lockFreezeTicks(boolean enabled) {
+    public void lockFreezeTicks(final boolean enabled) {
         this.lockFreezeTicks = enabled;
     }
 
@@ -418,7 +418,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void portalCooldown(boolean enabled) {
+    public void portalCooldown(final boolean enabled) {
         this.portalCooldown = enabled;
     }
 
@@ -428,7 +428,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void potionEffects(boolean enabled) {
+    public void potionEffects(final boolean enabled) {
         this.potionEffects = enabled;
     }
 
@@ -438,7 +438,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void recipes(boolean enabled) {
+    public void recipes(final boolean enabled) {
         this.recipes = enabled;
     }
 
@@ -448,7 +448,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void remainingAir(boolean enabled) {
+    public void remainingAir(final boolean enabled) {
         this.remainingAir = enabled;
     }
 
@@ -458,7 +458,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void respawnLocation(boolean enabled) {
+    public void respawnLocation(final boolean enabled) {
         this.respawnLocation = enabled;
     }
 
@@ -468,7 +468,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void saturation(boolean enabled) {
+    public void saturation(final boolean enabled) {
         this.saturation = enabled;
     }
 
@@ -478,7 +478,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void score(boolean enabled) {
+    public void score(final boolean enabled) {
         this.score = enabled;
     }
 
@@ -488,7 +488,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void statistics(boolean enabled) {
+    public void statistics(final boolean enabled) {
         this.statistics = enabled;
     }
 
@@ -498,7 +498,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void velocity(boolean enabled) {
+    public void velocity(final boolean enabled) {
         this.velocity = enabled;
     }
 
@@ -508,7 +508,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void visualFire(boolean enabled) {
+    public void visualFire(final boolean enabled) {
         this.visualFire = enabled;
     }
 
@@ -518,7 +518,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void walkSpeed(boolean enabled) {
+    public void walkSpeed(final boolean enabled) {
         this.walkSpeed = enabled;
     }
 
@@ -528,7 +528,7 @@ public final class PaperGroupSettings implements GroupSettings {
     }
 
     @Override
-    public void wardenSpawnTracker(boolean enabled) {
+    public void wardenSpawnTracker(final boolean enabled) {
         this.wardenSpawnTracker = enabled;
     }
 }

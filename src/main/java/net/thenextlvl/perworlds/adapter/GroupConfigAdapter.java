@@ -21,14 +21,14 @@ import java.util.stream.Collectors;
 @NullMarked
 public final class GroupConfigAdapter implements TagAdapter<GroupConfig> {
     @Override
-    public GroupConfig deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
-        var data = tag.getAsCompound().optional("data")
+    public GroupConfig deserialize(final Tag tag, final TagDeserializationContext context) throws ParserException {
+        final var data = tag.getAsCompound().optional("data")
                 .map(tag1 -> context.deserialize(tag1, GroupData.class))
                 .orElseGet(PaperGroupData::new);
-        var settings = tag.getAsCompound().optional("settings")
+        final var settings = tag.getAsCompound().optional("settings")
                 .map(tag1 -> context.deserialize(tag1, GroupSettings.class))
                 .orElseGet(PaperGroupSettings::new);
-        var worlds = tag.getAsCompound().optional("worlds")
+        final var worlds = tag.getAsCompound().optional("worlds")
                 .map(Tag::getAsList).map(tags -> tags.stream()
                         .map(world -> context.deserialize(world, Key.class))
                         .collect(Collectors.toSet()))
@@ -37,8 +37,8 @@ public final class GroupConfigAdapter implements TagAdapter<GroupConfig> {
     }
 
     @Override
-    public Tag serialize(GroupConfig config, TagSerializationContext context) throws ParserException {
-        var tag = CompoundTag.builder();
+    public Tag serialize(final GroupConfig config, final TagSerializationContext context) throws ParserException {
+        final var tag = CompoundTag.builder();
         tag.put("data", context.serialize(config.data()));
         tag.put("settings", context.serialize(config.settings()));
         if (!config.worlds().isEmpty()) tag.put("worlds", ListTag.of(

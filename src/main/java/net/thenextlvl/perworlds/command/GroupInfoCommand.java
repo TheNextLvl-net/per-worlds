@@ -16,25 +16,25 @@ import static net.thenextlvl.perworlds.command.WorldCommand.groupArgument;
 
 @NullMarked
 final class GroupInfoCommand extends SimpleCommand {
-    private GroupInfoCommand(PerWorldsPlugin plugin) {
+    private GroupInfoCommand(final PerWorldsPlugin plugin) {
         super(plugin, "info", "perworlds.command.group.info");
     }
 
-    public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
-        var command = new GroupInfoCommand(plugin);
+    public static ArgumentBuilder<CommandSourceStack, ?> create(final PerWorldsPlugin plugin) {
+        final var command = new GroupInfoCommand(plugin);
         return command.create()
                 .then(groupArgument(plugin, true).executes(command))
                 .executes(command);
     }
 
     @Override
-    public int run(CommandContext<CommandSourceStack> context) {
-        var group = tryGetArgument(context, "group", WorldGroup.class).orElseGet(() -> {
+    public int run(final CommandContext<CommandSourceStack> context) {
+        final var group = tryGetArgument(context, "group", WorldGroup.class).orElseGet(() -> {
             return plugin.groupProvider().getGroup(context.getSource().getLocation().getWorld())
                     .orElse(plugin.groupProvider().getUnownedWorldGroup());
         });
-        var worlds = group.getPersistedWorlds().stream().map(key -> {
-            var world = plugin.getServer().getWorld(key);
+        final var worlds = group.getPersistedWorlds().stream().map(key -> {
+            final var world = plugin.getServer().getWorld(key);
             return world != null ? world.getName() : key.asString();
         }).map(Component::text).toList();
         plugin.bundle().sendMessage(context.getSource().getSender(), "group.info",

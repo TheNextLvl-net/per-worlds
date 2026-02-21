@@ -35,12 +35,12 @@ public final class WorldListener implements Listener {
     private final Map<Type, Set<WorldGroup>> lock = new HashMap<>();
     private final Set<Key> allowed = new HashSet<>();
 
-    public WorldListener(PaperGroupProvider provider) {
+    public WorldListener(final PaperGroupProvider provider) {
         this.provider = provider;
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onWorldInit(WorldLoadEvent event) {
+    public void onWorldInit(final WorldLoadEvent event) {
         provider.getGroup(event.getWorld())
                 .orElse(provider.getUnownedWorldGroup())
                 .updateWorldData(event.getWorld());
@@ -48,12 +48,12 @@ public final class WorldListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onWorldUnload(WorldUnloadEvent event) {
+    public void onWorldUnload(final WorldUnloadEvent event) {
         allowed.remove(event.getWorld().key());
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onWorldDifficultyChange(WorldDifficultyChangeEvent event) {
+    public void onWorldDifficultyChange(final WorldDifficultyChangeEvent event) {
         processWorldDataUpdate(event.getWorld(), Type.DIFFICULTY, data -> {
             data.setDifficulty(event.getDifficulty());
         });
@@ -61,23 +61,23 @@ public final class WorldListener implements Listener {
 
     @SuppressWarnings("unchecked")
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onWorldGameRuleChange(WorldGameRuleChangeEvent event) {
+    public void onWorldGameRuleChange(final WorldGameRuleChangeEvent event) {
         processWorldDataUpdate(event.getWorld(), Type.GAME_RULE, data -> {
-            var gameRule = (GameRule<Object>) event.getGameRule();
-            var value = parseValue(gameRule, event.getValue());
+            final var gameRule = (GameRule<Object>) event.getGameRule();
+            final var value = parseValue(gameRule, event.getValue());
             data.setGameRule(gameRule, value);
         });
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onTimeSkip(TimeSkipEvent event) {
+    public void onTimeSkip(final TimeSkipEvent event) {
         processWorldDataUpdate(event.getWorld(), Type.TIME, data -> {
             data.setTime(event.getWorld().getFullTime() + event.getSkipAmount());
         });
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onWeatherChange(WeatherChangeEvent event) {
+    public void onWeatherChange(final WeatherChangeEvent event) {
         processWorldDataUpdate(event.getWorld(), Type.WEATHER, data -> {
             data.setRaining(event.toWeatherState());
             data.setRainDuration(event.getWorld().getWeatherDuration());
@@ -85,7 +85,7 @@ public final class WorldListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onThunderChange(ThunderChangeEvent event) {
+    public void onThunderChange(final ThunderChangeEvent event) {
         processWorldDataUpdate(event.getWorld(), Type.WEATHER, data -> {
             data.setThundering(event.toThunderState());
             data.setThunderDuration(event.getWorld().getThunderDuration());
@@ -93,7 +93,7 @@ public final class WorldListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onWorldBorderChange(WorldBorderBoundsChangeEvent event) {
+    public void onWorldBorderChange(final WorldBorderBoundsChangeEvent event) {
         processWorldDataUpdate(event.getWorld(), Type.WORLD_BORDER, data -> {
             data.setWorldBorder(data.getWorldBorder()
                     .setTransitionDuration(Ticks.duration(event.getDurationTicks()))
@@ -102,15 +102,15 @@ public final class WorldListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onWorldBorderChange(WorldBorderCenterChangeEvent event) {
+    public void onWorldBorderChange(final WorldBorderCenterChangeEvent event) {
         processWorldDataUpdate(event.getWorld(), Type.WORLD_BORDER, data -> {
             data.setWorldBorder(data.getWorldBorder().center(event.getNewCenter()));
         });
     }
 
-    private void processWorldDataUpdate(World world, Type type, Consumer<GroupData> process) {
+    private void processWorldDataUpdate(final World world, final Type type, final Consumer<GroupData> process) {
         if (!allowed.contains(world.key())) return;
-        var group = provider.getGroup(world).orElse(provider.getUnownedWorldGroup());
+        final var group = provider.getGroup(world).orElse(provider.getUnownedWorldGroup());
         if (!lock.computeIfAbsent(type, ignored -> new HashSet<>()).add(group)) return;
         process.accept(group.getGroupData());
         group.getWorlds()
@@ -122,7 +122,7 @@ public final class WorldListener implements Listener {
         });
     }
 
-    private Object parseValue(GameRule<?> rule, String value) {
+    private Object parseValue(final GameRule<?> rule, final String value) {
         return rule.getType().equals(Integer.class) ? Integer.parseInt(value) : Boolean.parseBoolean(value);
     }
 }

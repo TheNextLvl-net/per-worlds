@@ -3,7 +3,6 @@ package net.thenextlvl.perworlds.model;
 import net.kyori.adventure.key.Keyed;
 import net.thenextlvl.perworlds.statistics.Substatistic;
 import org.jetbrains.annotations.Unmodifiable;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.HashMap;
@@ -13,7 +12,7 @@ import java.util.Map;
 public abstract class PaperSubstatistic<T extends Keyed> implements Substatistic<T> {
     protected final Map<T, Integer> values = new HashMap<>();
 
-    protected PaperSubstatistic(Map<T, Integer> values) {
+    protected PaperSubstatistic(final Map<T, Integer> values) {
         this.values.putAll(values);
     }
 
@@ -26,12 +25,12 @@ public abstract class PaperSubstatistic<T extends Keyed> implements Substatistic
     }
 
     @Override
-    public int getValue(@NonNull T type) {
+    public int getValue(final T type) {
         return values.getOrDefault(type, 0);
     }
 
     @Override
-    public void setValue(@NonNull T type, int value) {
+    public void setValue(final T type, final int value) {
         values.put(type, value);
     }
 

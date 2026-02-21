@@ -13,12 +13,12 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public final class PotionEffectTypeAdapter implements TagAdapter<PotionEffectType> {
     @Override
-    public PotionEffectType deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
+    public PotionEffectType deserialize(final Tag tag, final TagDeserializationContext context) throws ParserException {
         return Registry.MOB_EFFECT.getOrThrow(context.deserialize(tag, Key.class));
     }
 
     @Override
-    public Tag serialize(PotionEffectType effectType, TagSerializationContext context) throws ParserException {
+    public Tag serialize(final PotionEffectType effectType, final TagSerializationContext context) throws ParserException {
         return context.serialize(effectType.key());
     }
 }

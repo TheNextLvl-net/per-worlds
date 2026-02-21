@@ -48,7 +48,7 @@ public interface AttributeData {
      * @since 1.0.0
      */
     @Contract(value = "_, _ -> new", pure = true)
-    static AttributeData of(Attribute attribute, double baseValue) {
+    static AttributeData of(final Attribute attribute, final double baseValue) {
         return new AttributeDataImpl(attribute, baseValue);
     }
 
@@ -60,7 +60,7 @@ public interface AttributeData {
      * @since 1.0.0
      */
     @Contract(value = "_ -> new", pure = true)
-    static AttributeData of(AttributeInstance instance) {
+    static AttributeData of(final AttributeInstance instance) {
         return of(instance.getAttribute(), instance.getBaseValue());
     }
 }

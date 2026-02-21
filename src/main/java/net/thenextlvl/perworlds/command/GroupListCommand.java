@@ -12,19 +12,19 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 final class GroupListCommand extends SimpleCommand {
-    private GroupListCommand(PerWorldsPlugin plugin) {
+    private GroupListCommand(final PerWorldsPlugin plugin) {
         super(plugin, "list", "perworlds.command.group.list");
     }
 
-    public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
-        var command = new GroupListCommand(plugin);
+    public static ArgumentBuilder<CommandSourceStack, ?> create(final PerWorldsPlugin plugin) {
+        final var command = new GroupListCommand(plugin);
         return command.create().executes(command);
     }
 
     @Override
-    public int run(CommandContext<CommandSourceStack> context) {
-        var sender = context.getSource().getSender();
-        var groups = plugin.groupProvider().getAllGroups().stream().map(group ->
+    public int run(final CommandContext<CommandSourceStack> context) {
+        final var sender = context.getSource().getSender();
+        final var groups = plugin.groupProvider().getAllGroups().stream().map(group ->
                 plugin.bundle().component("group.list.component", sender,
                         Placeholder.parsed("group", group.getName()))
         ).toList();

@@ -13,22 +13,22 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 final class GroupCreateCommand extends SimpleCommand {
-    private GroupCreateCommand(PerWorldsPlugin plugin) {
+    private GroupCreateCommand(final PerWorldsPlugin plugin) {
         super(plugin, "create", "perworlds.command.group.create");
     }
 
-    public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
-        var command = new GroupCreateCommand(plugin);
+    public static ArgumentBuilder<CommandSourceStack, ?> create(final PerWorldsPlugin plugin) {
+        final var command = new GroupCreateCommand(plugin);
         return command.create().then(Commands.argument("name", StringArgumentType.string()).executes(command));
     }
 
     @Override
-    public int run(CommandContext<CommandSourceStack> context) {
-        var sender = context.getSource().getSender();
-        var name = context.getArgument("name", String.class);
-        var success = !plugin.groupProvider().hasGroup(name);
+    public int run(final CommandContext<CommandSourceStack> context) {
+        final var sender = context.getSource().getSender();
+        final var name = context.getArgument("name", String.class);
+        final var success = !plugin.groupProvider().hasGroup(name);
         if (success) plugin.groupProvider().createGroup(name);
-        var message = success ? "group.created" : "group.exists";
+        final var message = success ? "group.created" : "group.exists";
         plugin.bundle().sendMessage(sender, message, Placeholder.unparsed("name", name));
         return success ? Command.SINGLE_SUCCESS : 0;
     }

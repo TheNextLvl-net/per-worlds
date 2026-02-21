@@ -331,7 +331,7 @@ public interface WorldGroup {
      */
     @Contract(pure = true)
     @Deprecated(forRemoval = true, since = "1.2.0")
-    default boolean isLoadingData(Player player) {
+    default boolean isLoadingData(final Player player) {
         return getGroupProvider().isLoadingData(player);
     }
 
