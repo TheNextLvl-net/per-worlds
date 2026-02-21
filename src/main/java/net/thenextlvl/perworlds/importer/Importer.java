@@ -6,6 +6,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.WorldGroup;
 import net.thenextlvl.perworlds.data.PlayerData;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.jspecify.annotations.NullMarked;
 
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @NullMarked
 public abstract class Importer {
@@ -43,17 +45,20 @@ public abstract class Importer {
         return name;
     }
 
-    public boolean load(final CommandSender sender) {
-        try {
-            plugin.bundle().sendMessage(sender, "group.data.import.start", Placeholder.parsed("provider", name));
-            final var groups = loadGroups(sender);
-            loadPlayers(groups, sender);
-            groups.forEach(WorldGroup::persist);
-            return true;
-        } catch (final IOException e) {
-            plugin.getComponentLogger().error("Failed to import {}", name, e);
-            return false;
-        }
+    public CompletableFuture<Boolean> load(final CommandSender sender) {
+        return CompletableFuture.supplyAsync(() -> {
+            if (!isAvailable()) return false;
+            try {
+                plugin.bundle().sendMessage(sender, "group.data.import.start", Placeholder.parsed("provider", name));
+                final var groups = loadGroups(sender);
+                loadPlayers(groups, sender);
+                groups.forEach(WorldGroup::persist);
+                return true;
+            } catch (final IOException e) {
+                plugin.getComponentLogger().error("Failed to import {}", name, e);
+                return false;
+            }
+        });
     }
 
     public Set<WorldGroup> loadGroups(final CommandSender sender) throws IOException {
@@ -62,15 +67,19 @@ public abstract class Importer {
         read.forEach((group, worlds) -> {
             final var worldGroup = plugin.groupProvider().getGroup(group).orElseGet(() ->
                     plugin.groupProvider().createGroup(group));
-            worlds.stream().map(plugin.getServer()::getWorld)
+            final var importedWorlds = worlds.stream().map(plugin.getServer()::getWorld)
                     .filter(Objects::nonNull)
-                    .forEach(worldGroup::addWorld);
+                    .peek(worldGroup::addWorld)
+                    .map(World::getName)
+                    .map(Component::text)
+                    .toList();
             groups.add(worldGroup);
-            plugin.bundle().sendMessage(sender, "group.data.import.group.success",
+            final var message = importedWorlds.isEmpty()
+                    ? "group.data.import.group.success.empty"
+                    : "group.data.import.group.success";
+            plugin.bundle().sendMessage(sender, message,
                     Placeholder.parsed("group", group),
-                    Formatter.joining("worlds", worlds.stream()
-                            .map(Component::text)
-                            .toList()));
+                    Formatter.joining("worlds", importedWorlds));
         });
         return groups;
     }
