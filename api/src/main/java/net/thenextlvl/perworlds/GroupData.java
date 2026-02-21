@@ -21,7 +21,7 @@ import java.util.function.BiConsumer;
  */
 @NullMarked
 @ApiStatus.NonExtendable
-public interface GroupData {
+public interface GroupData extends Copyable<GroupData> {
     /**
      * Iterates over each {@link GameRule} associated with the group and applies the given action.
      *

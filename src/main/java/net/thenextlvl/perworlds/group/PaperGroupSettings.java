@@ -531,4 +531,57 @@ public final class PaperGroupSettings implements GroupSettings {
     public void wardenSpawnTracker(final boolean enabled) {
         this.wardenSpawnTracker = enabled;
     }
+
+    @Override
+    public GroupSettings copyFrom(final GroupSettings other) {
+        this.absorption = other.absorption();
+        this.advancementMessages = other.advancementMessages();
+        this.advancements = other.advancements();
+        this.arrowsInBody = other.arrowsInBody();
+        this.attributes = other.attributes();
+        this.beeStingersInBody = other.beeStingersInBody();
+        this.chat = other.chat();
+        this.deathMessages = other.deathMessages();
+        this.difficulty = other.difficulty();
+        this.enabled = other.enabled();
+        this.endCredits = other.endCredits();
+        this.enderChest = other.enderChest();
+        this.exhaustion = other.exhaustion();
+        this.experience = other.experience();
+        this.fallDistance = other.fallDistance();
+        this.fireTicks = other.fireTicks();
+        this.flySpeed = other.flySpeed();
+        this.flyState = other.flyState();
+        this.foodLevel = other.foodLevel();
+        this.freezeTicks = other.freezeTicks();
+        this.gameMode = other.gameMode();
+        this.gameRules = other.gameRules();
+        this.gliding = other.gliding();
+        this.health = other.health();
+        this.hotbarSlot = other.hotbarSlot();
+        this.inventory = other.inventory();
+        this.invulnerable = other.invulnerable();
+        this.joinMessages = other.joinMessages();
+        this.lastDeathLocation = other.lastDeathLocation();
+        this.lastLocation = other.lastLocation();
+        this.lockFreezeTicks = other.lockFreezeTicks();
+        this.portalCooldown = other.portalCooldown();
+        this.potionEffects = other.potionEffects();
+        this.quitMessages = other.quitMessages();
+        this.recipes = other.recipes();
+        this.remainingAir = other.remainingAir();
+        this.respawnLocation = other.respawnLocation();
+        this.saturation = other.saturation();
+        this.score = other.score();
+        this.statistics = other.statistics();
+        this.tabList = other.tabList();
+        this.time = other.time();
+        this.velocity = other.velocity();
+        this.visualFire = other.visualFire();
+        this.walkSpeed = other.walkSpeed();
+        this.wardenSpawnTracker = other.wardenSpawnTracker();
+        this.weather = other.weather();
+        this.worldBorder = other.worldBorder();
+        return this;
+    }
 }

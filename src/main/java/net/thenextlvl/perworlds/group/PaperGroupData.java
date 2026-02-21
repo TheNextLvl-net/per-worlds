@@ -157,4 +157,21 @@ public final class PaperGroupData implements GroupData {
     public void setTime(final long time) {
         this.time = time;
     }
+
+    @Override
+    public GroupData copyFrom(final GroupData other) {
+        this.gameRules.clear();
+        other.forEachGameRule(gameRules::put);
+        this.defaultGameMode = other.getDefaultGameMode().orElse(null);
+        this.worldBorder = other.getWorldBorder();
+        this.difficulty = other.getDifficulty();
+        this.hardcore = other.getHardcore();
+        this.raining = other.isRaining();
+        this.thundering = other.isThundering();
+        this.clearWeatherDuration = other.clearWeatherDuration();
+        this.rainDuration = other.getRainDuration();
+        this.thunderDuration = other.getThunderDuration();
+        this.time = other.getTime();
+        return this;
+    }
 }

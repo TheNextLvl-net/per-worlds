@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Contract;
  * @since 0.1.0
  */
 @ApiStatus.NonExtendable
-public interface GroupSettings {
+public interface GroupSettings extends Copyable<GroupSettings> {
     /**
      * Determines whether the associated group is enabled.
      *
