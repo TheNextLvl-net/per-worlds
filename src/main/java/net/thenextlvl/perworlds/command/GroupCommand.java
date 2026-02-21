@@ -9,12 +9,12 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 final class GroupCommand extends BrigadierCommand {
-    private GroupCommand(PerWorldsPlugin plugin) {
+    private GroupCommand(final PerWorldsPlugin plugin) {
         super(plugin, "group", "perworlds.command.group");
     }
 
-    public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
-        var command = new GroupCommand(plugin);
+    public static ArgumentBuilder<CommandSourceStack, ?> create(final PerWorldsPlugin plugin) {
+        final var command = new GroupCommand(plugin);
         return command.create()
                 .then(GroupAddCommand.create(plugin))
                 .then(GroupAutoCommand.create(plugin))

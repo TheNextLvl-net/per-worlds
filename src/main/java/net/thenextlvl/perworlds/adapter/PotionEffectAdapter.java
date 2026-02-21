@@ -13,19 +13,19 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public final class PotionEffectAdapter implements TagAdapter<PotionEffect> {
     @Override
-    public PotionEffect deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
-        var root = tag.getAsCompound();
-        var type = context.deserialize(root.get("type"), PotionEffectType.class);
-        var duration = root.get("duration").getAsInt();
-        var amplifier = root.get("amplifier").getAsInt();
-        var ambient = root.get("ambient").getAsBoolean();
-        var particles = root.get("particles").getAsBoolean();
-        var icon = root.get("icon").getAsBoolean();
+    public PotionEffect deserialize(final Tag tag, final TagDeserializationContext context) throws ParserException {
+        final var root = tag.getAsCompound();
+        final var type = context.deserialize(root.get("type"), PotionEffectType.class);
+        final var duration = root.get("duration").getAsInt();
+        final var amplifier = root.get("amplifier").getAsInt();
+        final var ambient = root.get("ambient").getAsBoolean();
+        final var particles = root.get("particles").getAsBoolean();
+        final var icon = root.get("icon").getAsBoolean();
         return new PotionEffect(type, duration, amplifier, ambient, particles, icon);
     }
 
     @Override
-    public Tag serialize(PotionEffect effect, TagSerializationContext context) throws ParserException {
+    public Tag serialize(final PotionEffect effect, final TagSerializationContext context) throws ParserException {
         return CompoundTag.builder()
                 .put("type", context.serialize(effect.getType()))
                 .put("duration", effect.getDuration())

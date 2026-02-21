@@ -139,7 +139,7 @@ public interface WorldBorderData {
      * @since 0.2.2
      */
     @Contract(value = "_ -> new", pure = true)
-    WorldBorderData duration(long duration) throws IllegalArgumentException;
+    WorldBorderData duration(final long duration) throws IllegalArgumentException;
 
     /**
      * Gets the current border damage amount.
@@ -219,7 +219,7 @@ public interface WorldBorderData {
      * @since 0.2.2
      */
     @Contract(value = "_ -> new", pure = true)
-    WorldBorderData warningTime(int seconds);
+    WorldBorderData warningTime(final int seconds);
 
     /**
      * Retrieves the maximum allowed size of the border.
@@ -282,7 +282,7 @@ public interface WorldBorderData {
      * @return A new {@code WorldBorderData} instance containing the data from the given {@code WorldBorder}.
      * @since 1.0.0
      */
-    static WorldBorderData of(WorldBorder border) {
+    static WorldBorderData of(final WorldBorder border) {
         return new WorldBorderDataImpl(border);
     }
 }

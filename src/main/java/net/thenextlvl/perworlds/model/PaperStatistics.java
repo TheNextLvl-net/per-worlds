@@ -24,7 +24,7 @@ import java.util.function.BiConsumer;
 public final class PaperStatistics implements Statistics {
     private final Map<Statistic, Stat> statistics;
 
-    public PaperStatistics(HashMap<Statistic, Stat> values) {
+    public PaperStatistics(final HashMap<Statistic, Stat> values) {
         this.statistics = values;
     }
 
@@ -38,76 +38,76 @@ public final class PaperStatistics implements Statistics {
     }
 
     @Override
-    public int getStatistic(Statistic statistic) {
+    public int getStatistic(final Statistic statistic) {
         Preconditions.checkState(statistic.getType() == Statistic.Type.UNTYPED, "Statistic type must be UNTYPED");
-        return statistics.get(statistic) instanceof CustomStat stat ? stat.getValue() : 0;
+        return statistics.get(statistic) instanceof final CustomStat stat ? stat.getValue() : 0;
     }
 
     @Override
-    public int getStatistic(Statistic statistic, BlockType type) {
+    public int getStatistic(final Statistic statistic, final BlockType type) {
         Preconditions.checkState(statistic.getType() == Statistic.Type.BLOCK, "Statistic type must be BLOCK");
-        return statistics.get(statistic) instanceof BlockTypeStat stat ? stat.getValue(type) : 0;
+        return statistics.get(statistic) instanceof final BlockTypeStat stat ? stat.getValue(type) : 0;
     }
 
     @Override
-    public int getStatistic(Statistic statistic, EntityType type) {
+    public int getStatistic(final Statistic statistic, final EntityType type) {
         Preconditions.checkState(statistic.getType() == Statistic.Type.ENTITY, "Statistic type must be ENTITY");
-        return statistics.get(statistic) instanceof EntityTypeStat stat ? stat.getValue(type) : 0;
+        return statistics.get(statistic) instanceof final EntityTypeStat stat ? stat.getValue(type) : 0;
     }
 
     @Override
-    public int getStatistic(Statistic statistic, ItemType type) {
+    public int getStatistic(final Statistic statistic, final ItemType type) {
         Preconditions.checkState(statistic.getType() == Statistic.Type.ITEM, "Statistic type must be ITEM");
-        return statistics.get(statistic) instanceof ItemTypeStat stat ? stat.getValue(type) : 0;
+        return statistics.get(statistic) instanceof final ItemTypeStat stat ? stat.getValue(type) : 0;
     }
 
     @Override
-    public void setStatistic(Statistic statistic, BlockType type, int value) {
+    public void setStatistic(final Statistic statistic, final BlockType type, final int value) {
         Preconditions.checkState(statistic.getType() == Statistic.Type.BLOCK, "Statistic type must be BLOCK");
         ((BlockTypeStat) statistics.computeIfAbsent(statistic, ignored -> new PaperBlockTypeStat())).setValue(type, value);
     }
 
     @Override
-    public void setStatistic(Statistic statistic, EntityType type, int value) {
+    public void setStatistic(final Statistic statistic, final EntityType type, final int value) {
         Preconditions.checkState(statistic.getType() == Statistic.Type.ENTITY, "Statistic type must be ENTITY");
         ((EntityTypeStat) statistics.computeIfAbsent(statistic, ignored -> new PaperEntityTypeStat())).setValue(type, value);
     }
 
     @Override
-    public void setStatistic(Statistic statistic, ItemType type, int value) {
+    public void setStatistic(final Statistic statistic, final ItemType type, final int value) {
         Preconditions.checkState(statistic.getType() == Statistic.Type.ITEM, "Statistic type must be ITEM");
         ((ItemTypeStat) statistics.computeIfAbsent(statistic, ignored -> new PaperItemTypeStat())).setValue(type, value);
     }
 
     @Override
-    public void setStatistic(Statistic statistic, int value) {
+    public void setStatistic(final Statistic statistic, final int value) {
         Preconditions.checkState(statistic.getType() == Statistic.Type.UNTYPED, "Statistic type must be UNTYPED");
         ((CustomStat) statistics.computeIfAbsent(statistic, ignored -> new PaperCustomStat())).setValue(value);
     }
 
     @Override
-    public boolean hasData(Statistic statistic) {
-        var stat = statistics.get(statistic);
+    public boolean hasData(final Statistic statistic) {
+        final var stat = statistics.get(statistic);
         return stat != null && stat.hasData();
     }
 
     @Override
-    public void forEachStatistic(BiConsumer<Statistic, Stat> action) {
+    public void forEachStatistic(final BiConsumer<Statistic, Stat> action) {
         statistics.forEach(action);
     }
 
-    public static PaperStatistics of(Player player) {
-        var stats = new PaperStatistics();
+    public static PaperStatistics of(final Player player) {
+        final var stats = new PaperStatistics();
         Registry.STATISTIC.forEach(statistic -> {
             switch (statistic.getType()) {
                 case UNTYPED -> stats.setStatistic(statistic, player.getStatistic(statistic));
                 case ITEM -> Registry.ITEM.forEach(type -> {
-                    var material = Registry.MATERIAL.get(type.key());
+                    final var material = Registry.MATERIAL.get(type.key());
                     if (material == null) return;
                     stats.setStatistic(statistic, type, player.getStatistic(statistic, material));
                 });
                 case BLOCK -> Registry.BLOCK.forEach(type -> {
-                    var material = Registry.MATERIAL.get(type.key());
+                    final var material = Registry.MATERIAL.get(type.key());
                     if (material == null) return;
                     stats.setStatistic(statistic, type, player.getStatistic(statistic, material));
                 });

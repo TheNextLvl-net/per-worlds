@@ -12,18 +12,18 @@ import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public final class WorldCommand extends BrigadierCommand {
-    private WorldCommand(PerWorldsPlugin plugin) {
+    private WorldCommand(final PerWorldsPlugin plugin) {
         super(plugin, "world", "perworlds.command");
     }
 
-    public static LiteralCommandNode<CommandSourceStack> create(PerWorldsPlugin plugin) {
-        var command = new WorldCommand(plugin);
+    public static LiteralCommandNode<CommandSourceStack> create(final PerWorldsPlugin plugin) {
+        final var command = new WorldCommand(plugin);
         return command.create()
                 .then(GroupCommand.create(plugin))
                 .build();
     }
 
-    public static RequiredArgumentBuilder<CommandSourceStack, WorldGroup> groupArgument(PerWorldsPlugin plugin, boolean listAll) {
+    public static RequiredArgumentBuilder<CommandSourceStack, WorldGroup> groupArgument(final PerWorldsPlugin plugin, final boolean listAll) {
         return Commands.argument("group", new GroupArgument(plugin, listAll));
     }
 }

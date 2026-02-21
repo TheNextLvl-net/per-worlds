@@ -19,20 +19,20 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 final class GroupAutoCommand extends SimpleCommand {
-    private GroupAutoCommand(PerWorldsPlugin plugin) {
+    private GroupAutoCommand(final PerWorldsPlugin plugin) {
         super(plugin, "auto", "perworlds.command.group.auto");
     }
 
-    public static LiteralArgumentBuilder<CommandSourceStack> create(PerWorldsPlugin plugin) {
-        var command = new GroupAutoCommand(plugin);
+    public static LiteralArgumentBuilder<CommandSourceStack> create(final PerWorldsPlugin plugin) {
+        final var command = new GroupAutoCommand(plugin);
         return command.create().executes(command);
     }
 
     @Override
-    public int run(CommandContext<CommandSourceStack> context) {
-        var sender = context.getSource().getSender();
-        var groupCount = new AtomicInteger();
-        var worldCount = new AtomicInteger();
+    public int run(final CommandContext<CommandSourceStack> context) {
+        final var sender = context.getSource().getSender();
+        final var groupCount = new AtomicInteger();
+        final var worldCount = new AtomicInteger();
         autoGroup(plugin.getServer().getWorlds()).forEach((worlds, name) -> {
             if (worlds.size() == 1 || worlds.stream().allMatch(plugin.groupProvider()::hasGroup)) {
                 worlds.forEach(world -> plugin.bundle().sendMessage(sender, "group.auto.skipped",
@@ -40,15 +40,15 @@ final class GroupAutoCommand extends SimpleCommand {
                 return;
             }
 
-            var group = plugin.groupProvider().createGroup(plugin.groupProvider().findFreeName(name));
+            final var group = plugin.groupProvider().createGroup(plugin.groupProvider().findFreeName(name));
             plugin.bundle().sendMessage(sender, "group.auto.created",
                     Placeholder.parsed("group", group.getName()));
             groupCount.incrementAndGet();
 
             worlds.forEach(world -> {
-                var added = group.addWorld(world);
+                final var added = group.addWorld(world);
                 if (added) worldCount.incrementAndGet();
-                var message = added ? "group.world.added" : "group.auto.failed";
+                final var message = added ? "group.world.added" : "group.auto.failed";
                 plugin.bundle().sendMessage(sender, message,
                         Placeholder.parsed("world", world.getName()),
                         Placeholder.parsed("group", group.getName()));
@@ -61,18 +61,18 @@ final class GroupAutoCommand extends SimpleCommand {
     }
 
     @Contract(pure = true)
-    private Map<List<World>, String> autoGroup(List<World> worlds) {
-        var groups = worlds.stream().collect(Collectors.groupingBy(world -> world.key().namespace()));
+    private Map<List<World>, String> autoGroup(final List<World> worlds) {
+        final var groups = worlds.stream().collect(Collectors.groupingBy(world -> world.key().namespace()));
 
-        var result = new HashMap<List<World>, String>();
-        for (var entry : groups.entrySet()) {
-            var nameGroups = new ArrayList<List<World>>();
-            for (var world : entry.getValue()) {
+        final var result = new HashMap<List<World>, String>();
+        for (final var entry : groups.entrySet()) {
+            final var nameGroups = new ArrayList<List<World>>();
+            for (final var world : entry.getValue()) {
                 var added = false;
-                var worldParts = splitParts(world.getName());
-                for (var group : nameGroups) {
-                    var groupParts = splitParts(group.getFirst().getName());
-                    var matches = countMatches(worldParts, groupParts);
+                final var worldParts = splitParts(world.getName());
+                for (final var group : nameGroups) {
+                    final var groupParts = splitParts(group.getFirst().getName());
+                    final var matches = countMatches(worldParts, groupParts);
                     if (matches > 0) {
                         group.add(world);
                         added = true;
@@ -80,13 +80,13 @@ final class GroupAutoCommand extends SimpleCommand {
                     }
                 }
                 if (!added) {
-                    var newGroup = new ArrayList<World>();
+                    final var newGroup = new ArrayList<World>();
                     newGroup.add(world);
                     nameGroups.add(newGroup);
                 }
             }
-            for (var group : nameGroups) {
-                var name = mostCommonPart(group).orElse(entry.getKey());
+            for (final var group : nameGroups) {
+                final var name = mostCommonPart(group).orElse(entry.getKey());
                 result.put(group, name);
             }
         }
@@ -94,15 +94,15 @@ final class GroupAutoCommand extends SimpleCommand {
     }
 
     @Contract(pure = true)
-    private long countMatches(List<String> a, List<String> b) {
+    private long countMatches(final List<String> a, final List<String> b) {
         return a.stream().filter(b::contains).count();
     }
 
     @Contract(pure = true)
-    private Optional<String> mostCommonPart(List<World> worlds) {
-        var partCount = new HashMap<String, Integer>();
-        for (var world : worlds) {
-            for (var part : splitParts(world.getName())) {
+    private Optional<String> mostCommonPart(final List<World> worlds) {
+        final var partCount = new HashMap<String, Integer>();
+        for (final var world : worlds) {
+            for (final var part : splitParts(world.getName())) {
                 partCount.put(part, partCount.getOrDefault(part, 0) + 1);
             }
         }
@@ -112,7 +112,7 @@ final class GroupAutoCommand extends SimpleCommand {
     }
 
     @Contract(pure = true)
-    private List<String> splitParts(String name) {
+    private List<String> splitParts(final String name) {
         return List.of(name.toLowerCase().split("[\\-_\\s]+"));
     }
 }

@@ -15,12 +15,12 @@ import java.util.concurrent.CompletableFuture;
 public final class UnassignedWorldsSuggestionProvider<S> implements SuggestionProvider<S> {
     private final PerWorldsPlugin plugin;
 
-    public UnassignedWorldsSuggestionProvider(PerWorldsPlugin plugin) {
+    public UnassignedWorldsSuggestionProvider(final PerWorldsPlugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
-    public CompletableFuture<Suggestions> getSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+    public CompletableFuture<Suggestions> getSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
         plugin.getServer().getWorlds().stream()
                 .filter(world -> !plugin.groupProvider().hasGroup(world))
                 .map(Keyed::key)

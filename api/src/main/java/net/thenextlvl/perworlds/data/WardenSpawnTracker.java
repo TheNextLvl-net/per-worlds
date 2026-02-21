@@ -72,7 +72,7 @@ public interface WardenSpawnTracker {
      * @since 1.0.0
      */
     @Contract(value = "_ -> new", pure = true)
-    static WardenSpawnTracker of(Player player) {
+    static WardenSpawnTracker of(final Player player) {
         return new WardenSpawnTrackerImpl(player);
     }
 
@@ -97,7 +97,7 @@ public interface WardenSpawnTracker {
      * @since 1.0.0
      */
     @Contract(value = "_, _, _ -> new", pure = true)
-    static WardenSpawnTracker create(int cooldownTicks, int ticksSinceLastWarning, int warningLevel) {
+    static WardenSpawnTracker create(final int cooldownTicks, final int ticksSinceLastWarning, final int warningLevel) {
         return new WardenSpawnTrackerImpl(cooldownTicks, ticksSinceLastWarning, warningLevel);
     }
 }

@@ -19,7 +19,7 @@ class AdvancementDataImpl implements AdvancementData {
     private final Set<String> remainingCriteria = new HashSet<>();
     private final Map<String, Instant> awardedCriteria = new HashMap<>();
     
-    AdvancementDataImpl(Advancement advancement, Map<String, Instant> awardedCriteria, Collection<String> remainingCriteria) {
+    AdvancementDataImpl(final Advancement advancement, final Map<String, Instant> awardedCriteria, final Collection<String> remainingCriteria) {
         this.advancement = advancement;
         this.awardedCriteria.putAll(awardedCriteria);
         this.remainingCriteria.addAll(remainingCriteria);
@@ -41,22 +41,22 @@ class AdvancementDataImpl implements AdvancementData {
     }
 
     @Override
-    public boolean awardCriteria(String criteria) {
+    public boolean awardCriteria(final String criteria) {
         return remainingCriteria.remove(criteria) && awardedCriteria.putIfAbsent(criteria, Instant.now()) == null;
     }
 
     @Override
-    public boolean revokeCriteria(String criteria) {
+    public boolean revokeCriteria(final String criteria) {
         return remainingCriteria.add(criteria) && awardedCriteria.remove(criteria) != null;
     }
 
     @Override
-    public @Nullable Instant getTimeAwarded(String criteria) {
+    public @Nullable Instant getTimeAwarded(final String criteria) {
         return awardedCriteria.get(criteria);
     }
 
     @Override
-    public boolean setTimeAwarded(String criteria, Instant instant) {
+    public boolean setTimeAwarded(final String criteria, final Instant instant) {
         return awardedCriteria.containsKey(criteria) && awardedCriteria.put(criteria, instant) != null;
     }
 
@@ -71,7 +71,7 @@ class AdvancementDataImpl implements AdvancementData {
     }
 
     @Override
-    public void forEachAwardedCriteria(BiConsumer<String, Instant> action) {
+    public void forEachAwardedCriteria(final BiConsumer<String, Instant> action) {
         awardedCriteria.forEach(action);
     }
 }

@@ -11,8 +11,8 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 abstract class TypedStatAdapter<T extends Substatistic<?>> implements TagAdapter<T> {
     @Override
-    public Tag serialize(T stat, TagSerializationContext context) throws ParserException {
-        var tag = CompoundTag.builder();
+    public Tag serialize(final T stat, final TagSerializationContext context) throws ParserException {
+        final var tag = CompoundTag.builder();
         stat.getValues().forEach((type, integer) -> {
             if (integer != 0) tag.put(type.key().asString(), integer);
         });

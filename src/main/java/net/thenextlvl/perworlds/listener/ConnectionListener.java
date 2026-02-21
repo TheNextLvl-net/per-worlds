@@ -12,19 +12,19 @@ import org.jspecify.annotations.NullMarked;
 public final class ConnectionListener implements Listener {
     private final PaperGroupProvider provider;
 
-    public ConnectionListener(PaperGroupProvider provider) {
+    public ConnectionListener(final PaperGroupProvider provider) {
         this.provider = provider;
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerJoin(PlayerJoinEvent event) {
+    public void onPlayerJoin(final PlayerJoinEvent event) {
         provider.getGroup(event.getPlayer().getWorld())
                 .orElse(provider.getUnownedWorldGroup())
                 .loadPlayerData(event.getPlayer(), true);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerQuit(PlayerQuitEvent event) {
+    public void onPlayerQuit(final PlayerQuitEvent event) {
         provider.getGroup(event.getPlayer().getWorld())
                 .orElse(provider.getUnownedWorldGroup())
                 .persistPlayerData(event.getPlayer());

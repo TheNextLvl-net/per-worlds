@@ -37,7 +37,7 @@ public class GroupSettingsAdapterGenerator extends Generator {
     }
 
     private static MethodSpec getDeserializeMethodSpec() {
-        var builder = MethodSpec.methodBuilder("deserialize")
+        final var builder = MethodSpec.methodBuilder("deserialize")
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(GroupSettings.class)
@@ -55,7 +55,7 @@ public class GroupSettingsAdapterGenerator extends Generator {
     }
 
     private static MethodSpec getSerializeMethodSpec() {
-        var builder = MethodSpec.methodBuilder("serialize")
+        final var builder = MethodSpec.methodBuilder("serialize")
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(CompoundTag.class)

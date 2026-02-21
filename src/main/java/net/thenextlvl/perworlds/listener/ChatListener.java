@@ -11,17 +11,17 @@ import org.jspecify.annotations.NullMarked;
 public final class ChatListener implements Listener {
     private final GroupProvider provider;
 
-    public ChatListener(GroupProvider provider) {
+    public ChatListener(final GroupProvider provider) {
         this.provider = provider;
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onChat(AsyncChatEvent event) {
-        var group = provider.getGroup(event.getPlayer().getWorld())
+    public void onChat(final AsyncChatEvent event) {
+        final var group = provider.getGroup(event.getPlayer().getWorld())
                 .orElse(provider.getUnownedWorldGroup());
         if (!group.getSettings().enabled() || !group.getSettings().chat()) return;
         event.viewers().removeIf(audience ->
-                audience instanceof Player player
+                audience instanceof final Player player
                 && !player.equals(event.getPlayer())
                 && !group.containsWorld(player.getWorld())
         );

@@ -17,16 +17,16 @@ import java.util.HashMap;
 public final class BlockTypeStatAdapter extends TypedStatAdapter<BlockTypeStat> {
     private final PerWorldsPlugin plugin;
 
-    public BlockTypeStatAdapter(PerWorldsPlugin plugin) {
+    public BlockTypeStatAdapter(final PerWorldsPlugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
     @SuppressWarnings("PatternValidation")
-    public BlockTypeStat deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
-        var values = new HashMap<BlockType, Integer>();
+    public BlockTypeStat deserialize(final Tag tag, final TagDeserializationContext context) throws ParserException {
+        final var values = new HashMap<BlockType, Integer>();
         tag.getAsCompound().forEach((type, value) -> {
-            var entity = Registry.BLOCK.get(Key.key(type));
+            final var entity = Registry.BLOCK.get(Key.key(type));
             if (entity != null) values.put(entity, value.getAsInt());
             else plugin.getComponentLogger().warn("Failed to deserialize statistic: Unknown BlockType {}", type);
         });

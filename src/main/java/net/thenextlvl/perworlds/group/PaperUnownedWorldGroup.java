@@ -11,13 +11,13 @@ import java.util.stream.Stream;
 
 @NullMarked
 public final class PaperUnownedWorldGroup extends PaperWorldGroup {
-    public PaperUnownedWorldGroup(PaperGroupProvider provider) {
+    public PaperUnownedWorldGroup(final PaperGroupProvider provider) {
         super(provider, "unowned", new PaperGroupData(), new PaperGroupSettings(), Set.of());
     }
 
     @Override
     public boolean delete() {
-        var deleted = delete(getConfigFile()) | delete(getConfigFileBackup()) | delete(getDataFolder());
+        final var deleted = delete(getConfigFile()) | delete(getConfigFileBackup()) | delete(getDataFolder());
         if (deleted) getPlayers().forEach(this::loadPlayerData);
         return deleted;
     }
@@ -35,17 +35,17 @@ public final class PaperUnownedWorldGroup extends PaperWorldGroup {
     }
 
     @Override
-    public boolean addWorld(World world) {
+    public boolean addWorld(final World world) {
         return false;
     }
 
     @Override
-    public boolean removeWorld(World world) {
+    public boolean removeWorld(final World world) {
         return false;
     }
 
     @Override
-    public boolean containsWorld(World world) {
+    public boolean containsWorld(final World world) {
         return !provider.hasGroup(world);
     }
 }

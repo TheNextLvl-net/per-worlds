@@ -17,16 +17,16 @@ import java.util.HashMap;
 public final class EntityTypeStatAdapter extends TypedStatAdapter<EntityTypeStat> {
     private final PerWorldsPlugin plugin;
 
-    public EntityTypeStatAdapter(PerWorldsPlugin plugin) {
+    public EntityTypeStatAdapter(final PerWorldsPlugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
     @SuppressWarnings("PatternValidation")
-    public EntityTypeStat deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
-        var values = new HashMap<EntityType, Integer>();
+    public EntityTypeStat deserialize(final Tag tag, final TagDeserializationContext context) throws ParserException {
+        final var values = new HashMap<EntityType, Integer>();
         tag.getAsCompound().forEach((type, value) -> {
-            var entity = Registry.ENTITY_TYPE.get(Key.key(type));
+            final var entity = Registry.ENTITY_TYPE.get(Key.key(type));
             if (entity != null) values.put(entity, value.getAsInt());
             else plugin.getComponentLogger().warn("Failed to deserialize statistic: Unknown EntityType {}", type);
         });

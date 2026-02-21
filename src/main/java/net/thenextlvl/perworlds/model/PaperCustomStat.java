@@ -8,7 +8,7 @@ import org.jspecify.annotations.NullMarked;
 public final class PaperCustomStat implements CustomStat {
     private int value;
     
-    public PaperCustomStat(int value) {
+    public PaperCustomStat(final int value) {
         this.value = value;
     }
 
@@ -21,7 +21,7 @@ public final class PaperCustomStat implements CustomStat {
     }
 
     @Override
-    public void setValue(int value) {
+    public void setValue(final int value) {
         this.value = value;
     }
 

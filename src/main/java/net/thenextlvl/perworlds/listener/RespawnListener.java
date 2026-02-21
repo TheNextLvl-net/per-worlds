@@ -18,20 +18,20 @@ import java.util.List;
 public final class RespawnListener implements Listener {
     private final PaperGroupProvider provider;
 
-    public RespawnListener(PaperGroupProvider provider) {
+    public RespawnListener(final PaperGroupProvider provider) {
         this.provider = provider;
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerDeath(PlayerDeathEvent event) {
-        var group = provider.getGroup(event.getPlayer().getWorld())
+    public void onPlayerDeath(final PlayerDeathEvent event) {
+        final var group = provider.getGroup(event.getPlayer().getWorld())
                 .orElse(provider.getUnownedWorldGroup());
         group.persistPlayerData(event.getPlayer());
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerRespawn(PlayerRespawnEvent event) {
-        var group = provider.getGroup(event.getPlayer().getWorld())
+    public void onPlayerRespawn(final PlayerRespawnEvent event) {
+        final var group = provider.getGroup(event.getPlayer().getWorld())
                 .orElse(provider.getUnownedWorldGroup());
 
         group.persistPlayerData(event.getPlayer(), playerData -> {
@@ -57,7 +57,7 @@ public final class RespawnListener implements Listener {
             playerData.saturation(20);
             playerData.velocity(new Vector());
 
-            var attribute = event.getPlayer().getAttribute(Attribute.MAX_HEALTH);
+            final var attribute = event.getPlayer().getAttribute(Attribute.MAX_HEALTH);
             playerData.health(attribute != null ? attribute.getValue() : 20);
         });
 
@@ -66,9 +66,9 @@ public final class RespawnListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerPostRespawn(PlayerPostRespawnEvent event) {
-        var location = event.getRespawnedLocation(); // fixme: keep only for 1.21.8 compatibility
-        var world = location.getWorld() != null ? location.getWorld() : event.getPlayer().getWorld();
+    public void onPlayerPostRespawn(final PlayerPostRespawnEvent event) {
+        final var location = event.getRespawnedLocation(); // fixme: keep only for 1.21.8 compatibility
+        final var world = location.getWorld() != null ? location.getWorld() : event.getPlayer().getWorld();
         provider.getGroup(world).orElse(provider.getUnownedWorldGroup()).loadPlayerData(event.getPlayer(), false);
     }
 }

@@ -14,12 +14,12 @@ import java.util.Objects;
 @NullMarked
 public final class NamespacedKeyAdapter implements TagAdapter<NamespacedKey> {
     @Override
-    public NamespacedKey deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
+    public NamespacedKey deserialize(final Tag tag, final TagDeserializationContext context) throws ParserException {
         return Objects.requireNonNull(NamespacedKey.fromString(tag.getAsString()), "Encountered invalid namespaced key: " + tag.getAsString());
     }
 
     @Override
-    public Tag serialize(NamespacedKey key, TagSerializationContext context) throws ParserException {
+    public Tag serialize(final NamespacedKey key, final TagSerializationContext context) throws ParserException {
         return StringTag.of(key.asString());
     }
 }

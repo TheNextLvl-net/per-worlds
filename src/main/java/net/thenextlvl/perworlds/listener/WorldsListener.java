@@ -9,12 +9,12 @@ import org.bukkit.event.Listener;
 public final class WorldsListener implements Listener {
     private final PaperGroupProvider provider;
 
-    public WorldsListener(PaperGroupProvider provider) {
+    public WorldsListener(final PaperGroupProvider provider) {
         this.provider = provider;
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onWorldDelete(WorldDeleteEvent event) {
+    public void onWorldDelete(final WorldDeleteEvent event) {
         provider.getGroup(event.getWorld()).ifPresent(group -> {
             if (group.removeWorld(event.getWorld())) return;
             provider.getLogger().error("Failed to remove deleted world {} from group {}",

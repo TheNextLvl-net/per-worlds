@@ -12,28 +12,28 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public final class WorldBorderAdapter implements TagAdapter<WorldBorderData> {
     @Override
-    public WorldBorderData deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
-        var border = WorldBorderData.DEFAULT;
-        var root = tag.getAsCompound();
-        var x = root.optional("x").map(Tag::getAsDouble)
+    public WorldBorderData deserialize(final Tag tag, final TagDeserializationContext context) throws ParserException {
+        final var border = WorldBorderData.DEFAULT;
+        final var root = tag.getAsCompound();
+        final var x = root.optional("x").map(Tag::getAsDouble)
                 .map(value -> Math.clamp(value, -WorldBorderData.getMaxCenterCoordinate(), WorldBorderData.getMaxCenterCoordinate()))
                 .orElse(border.centerX());
-        var z = root.optional("z").map(Tag::getAsDouble)
+        final var z = root.optional("z").map(Tag::getAsDouble)
                 .map(value -> Math.clamp(value, -WorldBorderData.getMaxCenterCoordinate(), WorldBorderData.getMaxCenterCoordinate()))
                 .orElse(border.centerZ());
-        var size = root.optional("size").map(Tag::getAsDouble)
+        final var size = root.optional("size").map(Tag::getAsDouble)
                 .map(value -> Math.clamp(value, WorldBorderData.getMinSize(), WorldBorderData.getMaxSize()))
                 .orElse(border.size());
-        var duration = root.optional("duration").map(Tag::getAsLong).orElse(border.duration());
-        var damageAmount = root.optional("damageAmount").map(Tag::getAsDouble).orElse(border.damageAmount());
-        var damageBuffer = root.optional("damageBuffer").map(Tag::getAsDouble).orElse(border.damageBuffer());
-        var warningDistance = root.optional("warningDistance").map(Tag::getAsInt).orElse(border.warningDistance());
-        var warningTime = root.optional("warningTime").map(Tag::getAsInt).orElse(border.warningTime());
+        final var duration = root.optional("duration").map(Tag::getAsLong).orElse(border.duration());
+        final var damageAmount = root.optional("damageAmount").map(Tag::getAsDouble).orElse(border.damageAmount());
+        final var damageBuffer = root.optional("damageBuffer").map(Tag::getAsDouble).orElse(border.damageBuffer());
+        final var warningDistance = root.optional("warningDistance").map(Tag::getAsInt).orElse(border.warningDistance());
+        final var warningTime = root.optional("warningTime").map(Tag::getAsInt).orElse(border.warningTime());
         return WorldBorderData.create(x, z, size, damageAmount, damageBuffer, duration, warningDistance, warningTime);
     }
 
     @Override
-    public Tag serialize(WorldBorderData data, TagSerializationContext context) throws ParserException {
+    public Tag serialize(final WorldBorderData data, final TagSerializationContext context) throws ParserException {
         return CompoundTag.builder()
                 .put("x", data.centerX())
                 .put("z", data.centerZ())

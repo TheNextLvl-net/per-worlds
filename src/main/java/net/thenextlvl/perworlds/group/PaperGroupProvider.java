@@ -83,7 +83,7 @@ public final class PaperGroupProvider implements GroupProvider {
     private final PerWorldsPlugin plugin;
     private final PaperWorldGroup unownedWorldGroup;
 
-    public PaperGroupProvider(PerWorldsPlugin plugin) {
+    public PaperGroupProvider(final PerWorldsPlugin plugin) {
         this.plugin = plugin;
         this.dataFolder = plugin.getDataPath().resolve("groups");
         this.nbt = NBT.builder()
@@ -144,7 +144,7 @@ public final class PaperGroupProvider implements GroupProvider {
 
     @Override
     public @Unmodifiable Set<WorldGroup> getAllGroups() {
-        var groups = new HashSet<>(getGroups());
+        final var groups = new HashSet<>(getGroups());
         groups.add(unownedWorldGroup);
         return Set.copyOf(groups);
     }
@@ -155,13 +155,13 @@ public final class PaperGroupProvider implements GroupProvider {
     }
 
     @Override
-    public Optional<WorldGroup> getGroup(String name) {
+    public Optional<WorldGroup> getGroup(final String name) {
         return unownedWorldGroup.getName().equals(name) ? Optional.of(unownedWorldGroup)
                 : groups.stream().filter(group -> group.getName().equals(name)).findAny();
     }
 
     @Override
-    public Optional<WorldGroup> getGroup(World world) {
+    public Optional<WorldGroup> getGroup(final World world) {
         return groups.stream().filter(group -> group.containsWorld(world)).findAny();
     }
 
@@ -171,66 +171,66 @@ public final class PaperGroupProvider implements GroupProvider {
     }
 
     @Override
-    public PaperWorldGroup createGroup(String name, Consumer<GroupData> data, Consumer<GroupSettings> settings, Collection<World> worlds) {
+    public PaperWorldGroup createGroup(final String name, final Consumer<GroupData> data, final Consumer<GroupSettings> settings, final Collection<World> worlds) {
         Preconditions.checkState(!hasGroup(name), "A WorldGroup named '%s' already exists", name);
-        var invalid = worlds.stream().filter(this::hasGroup).map(Keyed::key).map(Key::asString).toList();
+        final var invalid = worlds.stream().filter(this::hasGroup).map(Keyed::key).map(Key::asString).toList();
         Preconditions.checkState(invalid.isEmpty(), "Worlds cannot be in multiple groups: {}", String.join(", ", invalid));
 
-        var groupSettings = new PaperGroupSettings();
-        var groupData = new PaperGroupData();
+        final var groupSettings = new PaperGroupSettings();
+        final var groupData = new PaperGroupData();
         settings.accept(groupSettings);
         data.accept(groupData);
 
-        var group = new PaperWorldGroup(this, name, groupData, groupSettings, Set.copyOf(worlds));
+        final var group = new PaperWorldGroup(this, name, groupData, groupSettings, Set.copyOf(worlds));
         groups.add(group);
         return group;
     }
 
     @Override
-    public PaperWorldGroup createGroup(String name, Collection<World> worlds) throws IllegalStateException {
+    public PaperWorldGroup createGroup(final String name, final Collection<World> worlds) throws IllegalStateException {
         return createGroup(name, data -> {
         }, worlds);
     }
 
     @Override
-    public PaperWorldGroup createGroup(String name, Consumer<GroupData> data, World... worlds) throws IllegalStateException {
+    public PaperWorldGroup createGroup(final String name, final Consumer<GroupData> data, final World... worlds) throws IllegalStateException {
         return createGroup(name, data, settings -> {
         }, worlds);
     }
 
     @Override
-    public PaperWorldGroup createGroup(String name, Consumer<GroupData> data, Collection<World> worlds) throws IllegalStateException {
+    public PaperWorldGroup createGroup(final String name, final Consumer<GroupData> data, final Collection<World> worlds) throws IllegalStateException {
         return createGroup(name, data, settings -> {
         }, worlds);
     }
 
     @Override
-    public PaperWorldGroup createGroup(String name, Consumer<GroupData> data, Consumer<GroupSettings> settings, World... worlds) {
+    public PaperWorldGroup createGroup(final String name, final Consumer<GroupData> data, final Consumer<GroupSettings> settings, final World... worlds) {
         return createGroup(name, data, settings, List.of(worlds));
     }
 
     @Override
-    public PaperWorldGroup createGroup(String name, World... worlds) throws IllegalStateException {
+    public PaperWorldGroup createGroup(final String name, final World... worlds) throws IllegalStateException {
         return createGroup(name, data -> {
         }, worlds);
     }
 
     @Override
-    public boolean hasGroup(String name) {
+    public boolean hasGroup(final String name) {
         return unownedWorldGroup.getName().equals(name)
                 || groups.stream().anyMatch(group -> group.getName().equals(name));
     }
     
-    public String findFreeName(String name) {
-        var usedNames = getAllGroups().stream().map(WorldGroup::getName).toList();
+    public String findFreeName(final String name) {
+        final var usedNames = getAllGroups().stream().map(WorldGroup::getName).toList();
         if (!usedNames.contains(name)) return name;
 
         var baseName = name;
         int suffix = 1;
         String candidate = baseName + " (1)";
 
-        var pattern = Pattern.compile("^(.+) \\((\\d+)\\)$");
-        var matcher = pattern.matcher(name);
+        final var pattern = Pattern.compile("^(.+) \\((\\d+)\\)$");
+        final var matcher = pattern.matcher(name);
 
         if (matcher.matches()) {
             baseName = matcher.group(1);
@@ -247,29 +247,29 @@ public final class PaperGroupProvider implements GroupProvider {
     }
 
     @Override
-    public boolean hasGroup(World world) {
+    public boolean hasGroup(final World world) {
         return groups.stream().anyMatch(group -> group.containsWorld(world));
     }
 
     @Override
-    public boolean hasGroup(WorldGroup group) {
+    public boolean hasGroup(final WorldGroup group) {
         return groups.contains(group);
     }
 
     @Override
-    public boolean removeGroup(String name) {
+    public boolean removeGroup(final String name) {
         return getGroup(name).map(this::removeGroup).orElse(false);
     }
 
     @Override
-    public boolean removeGroup(WorldGroup group) {
+    public boolean removeGroup(final WorldGroup group) {
         if (!groups.remove(group)) return false;
         group.getPlayers().forEach(getUnownedWorldGroup()::loadPlayerData);
         return true;
     }
 
     @Override
-    public boolean isLoadingData(Player player) {
+    public boolean isLoadingData(final Player player) {
         return loadingPlayers.contains(player.getUniqueId());
     }
 }

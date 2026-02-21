@@ -23,21 +23,21 @@ import static net.thenextlvl.perworlds.command.WorldCommand.groupArgument;
 
 @NullMarked
 final class GroupTeleportCommand extends SimpleCommand {
-    private GroupTeleportCommand(PerWorldsPlugin plugin) {
+    private GroupTeleportCommand(final PerWorldsPlugin plugin) {
         super(plugin, "teleport", "perworlds.command.group.teleport");
     }
 
-    public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
-        var command = new GroupTeleportCommand(plugin);
+    public static ArgumentBuilder<CommandSourceStack, ?> create(final PerWorldsPlugin plugin) {
+        final var command = new GroupTeleportCommand(plugin);
         return command.create().then(groupArgument(plugin, true)
                 .then(Commands.argument("players", ArgumentTypes.players()).executes(command))
                 .executes(command));
     }
 
     @Override
-    public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        var sender = context.getSource().getSender();
-        var group = context.getArgument("group", WorldGroup.class);
+    public int run(final CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        final var sender = context.getSource().getSender();
+        final var group = context.getArgument("group", WorldGroup.class);
 
         if (!group.getSettings().enabled()) {
             plugin.bundle().sendMessage(sender, "group.teleport.disabled",
@@ -45,15 +45,15 @@ final class GroupTeleportCommand extends SimpleCommand {
             return 0;
         }
 
-        var resolver = tryGetArgument(context, "players", PlayerSelectorArgumentResolver.class).orElse(null);
-        var players = resolver != null ? resolver.resolve(context.getSource()) : sender instanceof Player player ? List.of(player) : null;
+        final var resolver = tryGetArgument(context, "players", PlayerSelectorArgumentResolver.class).orElse(null);
+        final var players = resolver != null ? resolver.resolve(context.getSource()) : sender instanceof final Player player ? List.of(player) : null;
 
         if (players == null) {
             plugin.bundle().sendMessage(sender, "command.sender");
             return 0;
         }
 
-        var filtered = players.stream()
+        final var filtered = players.stream()
                 .filter(player -> !group.containsWorld(player.getWorld()))
                 .toList();
 
@@ -64,7 +64,7 @@ final class GroupTeleportCommand extends SimpleCommand {
 
         if (filtered.size() == 1 && filtered.getFirst().equals(sender)) return Command.SINGLE_SUCCESS;
 
-        var message = group.getWorlds().findAny().isEmpty() ? "group.teleport.empty"
+        final var message = group.getWorlds().findAny().isEmpty() ? "group.teleport.empty"
                 : filtered.size() == 1 ? "group.teleport.other"
                 : filtered.isEmpty() ? "group.teleport.none" : "group.teleport.others";
         plugin.bundle().sendMessage(sender, message,

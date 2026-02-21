@@ -21,26 +21,26 @@ import java.util.stream.Collectors;
 public final class AdvancementDataAdapter implements TagAdapter<AdvancementData> {
     private final Server server;
 
-    public AdvancementDataAdapter(Server server) {
+    public AdvancementDataAdapter(final Server server) {
         this.server = server;
     }
 
     @Override
-    public AdvancementData deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
-        var root = tag.getAsCompound();
-        var key = context.deserialize(root.get("advancement"), NamespacedKey.class);
-        var advancement = server.getAdvancement(key);
+    public AdvancementData deserialize(final Tag tag, final TagDeserializationContext context) throws ParserException {
+        final var root = tag.getAsCompound();
+        final var key = context.deserialize(root.get("advancement"), NamespacedKey.class);
+        final var advancement = server.getAdvancement(key);
         if (advancement == null) throw new ParserException("Encountered unknown advancement: " + key);
-        var awarded = new HashMap<String, Instant>();
+        final var awarded = new HashMap<String, Instant>();
         root.getAsCompound("awarded").forEach((criteria, instant) -> awarded.put(criteria, context.deserialize(instant, Instant.class)));
-        var remaining = root.getAsList("remaining").stream().map(Tag::getAsString).collect(Collectors.toSet());
+        final var remaining = root.getAsList("remaining").stream().map(Tag::getAsString).collect(Collectors.toSet());
         return AdvancementData.of(advancement, awarded, remaining);
     }
 
     @Override
-    public Tag serialize(AdvancementData data, TagSerializationContext context) throws ParserException {
-        var tag = CompoundTag.builder();
-        var awarded = CompoundTag.builder();
+    public Tag serialize(final AdvancementData data, final TagSerializationContext context) throws ParserException {
+        final var tag = CompoundTag.builder();
+        final var awarded = CompoundTag.builder();
         data.forEachAwardedCriteria((criteria, date) -> {
             awarded.put(criteria, context.serialize(date));
         });

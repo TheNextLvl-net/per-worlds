@@ -13,12 +13,12 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public final class CustomStatAdapter implements TagAdapter<CustomStat> {
     @Override
-    public CustomStat deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
+    public CustomStat deserialize(final Tag tag, final TagDeserializationContext context) throws ParserException {
         return new PaperCustomStat(tag.getAsInt());
     }
 
     @Override
-    public Tag serialize(CustomStat stat, TagSerializationContext context) throws ParserException {
+    public Tag serialize(final CustomStat stat, final TagSerializationContext context) throws ParserException {
         return IntTag.of(stat.getValue());
     }
 }

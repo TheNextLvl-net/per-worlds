@@ -14,12 +14,12 @@ import java.util.concurrent.CompletableFuture;
 
 @NullMarked
 public final class GroupSpawnCommand extends SimpleCommand {
-    private GroupSpawnCommand(PerWorldsPlugin plugin) {
+    private GroupSpawnCommand(final PerWorldsPlugin plugin) {
         super(plugin, "spawn", "perworlds.command.group.spawn");
     }
 
-    public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
-        var command = new GroupSpawnCommand(plugin);
+    public static ArgumentBuilder<CommandSourceStack, ?> create(final PerWorldsPlugin plugin) {
+        final var command = new GroupSpawnCommand(plugin);
         return command.create()
                 .then(GroupSpawnSetCommand.create(plugin))
                 .then(GroupSpawnUnsetCommand.create(plugin))
@@ -27,18 +27,18 @@ public final class GroupSpawnCommand extends SimpleCommand {
     }
 
     @Override
-    public int run(CommandContext<CommandSourceStack> context) {
-        var sender = context.getSource().getSender();
-        if (!(sender instanceof Player player)) {
+    public int run(final CommandContext<CommandSourceStack> context) {
+        final var sender = context.getSource().getSender();
+        if (!(sender instanceof final Player player)) {
             plugin.bundle().sendMessage(sender, "command.sender");
             return 0;
         }
-        var group = plugin.groupProvider().getGroup(player.getWorld())
+        final var group = plugin.groupProvider().getGroup(player.getWorld())
                 .orElse(plugin.groupProvider().getUnownedWorldGroup());
         group.getSpawnLocation().map(player::teleportAsync)
                 .orElseGet(() -> CompletableFuture.completedFuture(false))
                 .thenAccept(success -> {
-                    var message = success ? "group.teleport.self" : "group.teleport.failed";
+                    final var message = success ? "group.teleport.self" : "group.teleport.failed";
                     plugin.bundle().sendMessage(player, message, Placeholder.parsed("group", group.getName()));
                 });
         return Command.SINGLE_SUCCESS;

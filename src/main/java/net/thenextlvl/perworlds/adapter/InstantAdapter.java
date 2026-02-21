@@ -13,12 +13,12 @@ import java.time.Instant;
 @NullMarked
 public final class InstantAdapter implements TagAdapter<Instant> {
     @Override
-    public Instant deserialize(Tag tag, TagDeserializationContext context) throws ParserException {
+    public Instant deserialize(final Tag tag, final TagDeserializationContext context) throws ParserException {
         return Instant.ofEpochMilli(tag.getAsLong());
     }
 
     @Override
-    public Tag serialize(Instant instant, TagSerializationContext context) throws ParserException {
+    public Tag serialize(final Instant instant, final TagSerializationContext context) throws ParserException {
         return LongTag.of(instant.toEpochMilli());
     }
 }

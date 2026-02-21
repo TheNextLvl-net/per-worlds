@@ -21,12 +21,12 @@ import static net.thenextlvl.perworlds.command.WorldCommand.groupArgument;
 
 @NullMarked
 final class GroupOptionCommand extends BrigadierCommand {
-    private GroupOptionCommand(PerWorldsPlugin plugin) {
+    private GroupOptionCommand(final PerWorldsPlugin plugin) {
         super(plugin, "option", "perworlds.command.group.option");
     }
 
-    public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
-        var command = new GroupOptionCommand(plugin);
+    public static ArgumentBuilder<CommandSourceStack, ?> create(final PerWorldsPlugin plugin) {
+        final var command = new GroupOptionCommand(plugin);
         return command.create()
                 .then(command.option("absorption", GroupSettings::absorption, GroupSettings::absorption))
                 .then(command.option("advancementMessages", GroupSettings::advancementMessages, GroupSettings::advancementMessages))
@@ -78,20 +78,20 @@ final class GroupOptionCommand extends BrigadierCommand {
                 .then(command.option("worldBorder", GroupSettings::worldBorder, GroupSettings::worldBorder));
     }
 
-    private ArgumentBuilder<CommandSourceStack, ?> option(String name, Function<GroupSettings, Boolean> getter, BiConsumer<GroupSettings, Boolean> setter) {
+    private ArgumentBuilder<CommandSourceStack, ?> option(final String name, final Function<GroupSettings, Boolean> getter, final BiConsumer<GroupSettings, Boolean> setter) {
         return Commands.literal(name).then(groupArgument(plugin, true)
                 .then(Commands.argument("value", BoolArgumentType.bool())
                         .executes(context -> set(context, name, getter, setter)))
                 .executes(context -> query(context, name, getter)));
     }
 
-    private int set(CommandContext<CommandSourceStack> context, String option, Function<GroupSettings, Boolean> getter,
-                    BiConsumer<GroupSettings, Boolean> setter) {
-        var value = context.getArgument("value", boolean.class);
-        var group = context.getArgument("group", WorldGroup.class);
-        var success = !getter.apply(group.getSettings()).equals(value);
+    private int set(final CommandContext<CommandSourceStack> context, final String option, final Function<GroupSettings, Boolean> getter,
+                    final BiConsumer<GroupSettings, Boolean> setter) {
+        final var value = context.getArgument("value", boolean.class);
+        final var group = context.getArgument("group", WorldGroup.class);
+        final var success = !getter.apply(group.getSettings()).equals(value);
         if (success) setter.accept(group.getSettings(), value);
-        var message = success ? "group.option.set" : "nothing.changed";
+        final var message = success ? "group.option.set" : "nothing.changed";
         plugin.bundle().sendMessage(context.getSource().getSender(), message,
                 Formatter.booleanChoice("value", value),
                 Placeholder.unparsed("group", group.getName()),
@@ -99,9 +99,9 @@ final class GroupOptionCommand extends BrigadierCommand {
         return Command.SINGLE_SUCCESS;
     }
 
-    private int query(CommandContext<CommandSourceStack> context, String option, Function<GroupSettings, Boolean> getter) {
-        var group = context.getArgument("group", WorldGroup.class);
-        var value = getter.apply(group.getSettings());
+    private int query(final CommandContext<CommandSourceStack> context, final String option, final Function<GroupSettings, Boolean> getter) {
+        final var group = context.getArgument("group", WorldGroup.class);
+        final var value = getter.apply(group.getSettings());
         plugin.bundle().sendMessage(context.getSource().getSender(), "group.option",
                 Formatter.booleanChoice("value", value),
                 Placeholder.unparsed("group", group.getName()),

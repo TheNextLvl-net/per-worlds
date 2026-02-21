@@ -10,7 +10,7 @@ import java.util.function.BiConsumer;
 
 @NullMarked
 public final class PaperItemTypeStat extends PaperSubstatistic<ItemType> implements ItemTypeStat {
-    public PaperItemTypeStat(Map<ItemType, Integer> values) {
+    public PaperItemTypeStat(final Map<ItemType, Integer> values) {
         super(values);
     }
 
@@ -18,7 +18,7 @@ public final class PaperItemTypeStat extends PaperSubstatistic<ItemType> impleme
     }
 
     @Override
-    public void forEachValue(BiConsumer<ItemType, Integer> action) {
+    public void forEachValue(final BiConsumer<ItemType, Integer> action) {
         values.forEach(action);
     }
 

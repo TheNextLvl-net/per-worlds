@@ -18,12 +18,12 @@ import static net.thenextlvl.perworlds.command.WorldCommand.groupArgument;
 
 @NullMarked
 final class GroupAddCommand extends SimpleCommand {
-    private GroupAddCommand(PerWorldsPlugin plugin) {
+    private GroupAddCommand(final PerWorldsPlugin plugin) {
         super(plugin, "add", "perworlds.command.group.add");
     }
 
-    public static ArgumentBuilder<CommandSourceStack, ?> create(PerWorldsPlugin plugin) {
-        var command = new GroupAddCommand(plugin);
+    public static ArgumentBuilder<CommandSourceStack, ?> create(final PerWorldsPlugin plugin) {
+        final var command = new GroupAddCommand(plugin);
         return command.create().then(command.add());
     }
 
@@ -34,11 +34,11 @@ final class GroupAddCommand extends SimpleCommand {
     }
 
     @Override
-    public int run(CommandContext<CommandSourceStack> context) {
-        var group = context.getArgument("group", WorldGroup.class);
-        var world = context.getArgument("world", World.class);
-        var success = group.addWorld(world);
-        var message = success ? "group.world.added" : "group.world.add.failed";
+    public int run(final CommandContext<CommandSourceStack> context) {
+        final var group = context.getArgument("group", WorldGroup.class);
+        final var world = context.getArgument("world", World.class);
+        final var success = group.addWorld(world);
+        final var message = success ? "group.world.added" : "group.world.add.failed";
         plugin.bundle().sendMessage(context.getSource().getSender(), message,
                 Placeholder.unparsed("group", group.getName()),
                 Placeholder.unparsed("world", world.getName()));
