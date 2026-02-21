@@ -48,6 +48,7 @@ public abstract class Importer {
             plugin.bundle().sendMessage(sender, "group.data.import.start", Placeholder.parsed("provider", name));
             final var groups = loadGroups(sender);
             loadPlayers(groups, sender);
+            groups.forEach(WorldGroup::persist);
             return true;
         } catch (final IOException e) {
             plugin.getComponentLogger().error("Failed to import {}", name, e);
