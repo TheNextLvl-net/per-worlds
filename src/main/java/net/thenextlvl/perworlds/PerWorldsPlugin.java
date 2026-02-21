@@ -4,7 +4,7 @@ import core.file.FileIO;
 import core.file.formats.GsonFile;
 import dev.faststats.bukkit.BukkitMetrics;
 import dev.faststats.core.ErrorTracker;
-import dev.faststats.core.chart.Chart;
+import dev.faststats.core.data.Metric;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.key.Key;
 import net.thenextlvl.i18n.ComponentBundle;
@@ -68,7 +68,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
     private final Metrics metrics = new Metrics(this, 25295);
     private final dev.faststats.core.Metrics fastStats = BukkitMetrics.factory()
             .token("aadc507be90ffc99bfab023066c651ae")
-            .addChart(worldManagementPlugins())
+            .addMetric(worldManagementPlugins())
             .errorTracker(ERROR_TRACKER)
             .create(this);
 
@@ -249,8 +249,8 @@ public final class PerWorldsPlugin extends JavaPlugin {
         }));
     }
 
-    private Chart<String[]> worldManagementPlugins() {
-        return Chart.stringArray("world_management_plugins", () -> {
+    private Metric<String[]> worldManagementPlugins() {
+        return Metric.stringArray("world_management_plugins", () -> {
             if (worldManagementPlugins != null) return worldManagementPlugins;
             final var worldManagers = knownWorldManagers.stream()
                     .filter(name -> getServer().getPluginManager().getPlugin(name) != null)
