@@ -138,7 +138,7 @@ public interface WorldBorderData {
      * Retrieves the current transition duration of the world's border.
      *
      * @return the duration
-     * @see WorldBorder#changeSize(double, long)
+     * @see WorldBorder#setSize(double, TimeUnit, long)
      * @since 1.3.0
      */
     @Contract(pure = true)
@@ -166,7 +166,7 @@ public interface WorldBorderData {
      * @param duration the duration to be set
      * @return the current WorldBorderData instance for chaining
      * @throws IllegalArgumentException if the duration is negative
-     * @see WorldBorder#changeSize(double, long)
+     * @see WorldBorder#setSize(double, TimeUnit, long)
      * @since 1.3.0
      */
     @Contract(value = "_ -> new", pure = true)
@@ -236,7 +236,7 @@ public interface WorldBorderData {
      * Gets the current border warning time in seconds.
      *
      * @return The current border warning time in seconds.
-     * @see WorldBorder#getWarningTimeTicks()
+     * @see WorldBorder#getWarningTime()
      */
     @Contract(pure = true)
     @Deprecated(forRemoval = true, since = "1.3.0")
@@ -248,7 +248,7 @@ public interface WorldBorderData {
      * Gets the current border warning time.
      *
      * @return The current border warning time.
-     * @see WorldBorder#getWarningTimeTicks()
+     * @see WorldBorder#getWarningTime()
      */
     @Contract(pure = true)
     Duration getWarningTime();
@@ -273,7 +273,7 @@ public interface WorldBorderData {
      * @param duration The amount of time.
      * @return the current WorldBorderData instance for chaining
      * @throws IllegalArgumentException if the duration is negative
-     * @see WorldBorder#setWarningTimeTicks(int)
+     * @see WorldBorder#setWarningTime(int)
      * @since 1.3.0
      */
     @Contract(value = "_ -> new", pure = true)
