@@ -18,6 +18,11 @@ public class MWImporter extends Importer {
     }
 
     @Override
+    public boolean isAvailable() {
+        return false; // todo
+    }
+
+    @Override
     public Map<String, Set<String>> readGroups() throws IOException {
         return Map.of(); // todo
     }
