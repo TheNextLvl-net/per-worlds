@@ -33,6 +33,7 @@ import org.jspecify.annotations.Nullable;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
@@ -122,20 +123,22 @@ public final class PerWorldsPlugin extends JavaPlugin {
     }
 
     private void scheduleDelayedInitTask() {
-        final var pluginsFolder = getServer().getPluginsFolder().toPath();
         if (!groupsExist || config().migrateToGroup == null)
             getServer().getGlobalRegionScheduler().execute(this, this::setupNotice);
-        final var importers = this.importers.stream().filter(Importer::isAvailable).map(Importer::getName).toList();
-        for (final var importer : importers) {
-            getServer().getGlobalRegionScheduler().execute(this, () -> importNotice(importer));
-        }
+        getServer().getGlobalRegionScheduler().execute(this, () -> {
+            this.importers.stream().filter(Importer::isAvailable).forEach(this::importNotice);
+        });
     }
 
-    private void importNotice(final String pluginName) {
-        final var separator = "-".repeat(86);
+    private void importNotice(final Importer importer) {
+        final var notice = List.of(
+                "It appears you have been using " + importer.getName() + " before!",
+                "To migrate your data to PerWorlds, run '/world group import " + importer.getName() + "'",
+                "This message will disappear as soon as you delete the folder '" + importer.getDataPath() + "'"
+        );
+        final var separator = "-".repeat(notice.stream().mapToInt(String::length).max().orElse(0));
         getComponentLogger().info(separator);
-        getComponentLogger().info("It appears you have been using {} before!", pluginName);
-        getComponentLogger().info("To migrate your data to PerWorlds, run '/world group import {}'", pluginName);
+        notice.forEach(getComponentLogger()::info);
         getComponentLogger().info(separator);
     }
 
@@ -215,7 +218,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
             event.registrar().register(command, "The main command to interact with this plugin");
         });
     }
-    
+
     public Set<Importer> importers() {
         return importers;
     }
