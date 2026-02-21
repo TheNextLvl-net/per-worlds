@@ -96,7 +96,7 @@ public final class WorldListener implements Listener {
     public void onWorldBorderChange(final WorldBorderBoundsChangeEvent event) {
         processWorldDataUpdate(event.getWorld(), Type.WORLD_BORDER, data -> {
             data.setWorldBorder(data.getWorldBorder()
-                    .setTransitionDuration(Ticks.duration(event.getDurationTicks()))
+                    .setTransitionDuration(Ticks.duration(event.getDuration()))
                     .size(event.getNewSize()));
         });
     }

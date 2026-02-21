@@ -15,8 +15,6 @@ import org.bukkit.Difficulty;
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;
 import org.bukkit.Location;
-import org.bukkit.NamespacedKey;
-import org.bukkit.Registry;
 import org.bukkit.Server;
 import org.jspecify.annotations.NullMarked;
 
@@ -49,8 +47,7 @@ public final class GroupDataAdapter implements TagAdapter<GroupData> {
         root.optional("rainDuration").map(Tag::getAsInt).ifPresent(data::setRainDuration);
         root.optional("time").map(Tag::getAsLong).ifPresent(data::setTime);
         root.optional("gameRules").map(Tag::getAsCompound).ifPresent(rules -> rules.entrySet().forEach(entry -> {
-            final var key = NamespacedKey.fromString(entry.getKey());
-            final var rule = key != null ? (GameRule<Object>) Registry.GAME_RULE.get(key) : null;
+            final var rule = (GameRule<Object>) GameRule.getByName(entry.getKey());
             if (rule != null) data.setGameRule(rule, context.deserialize(entry.getValue(), rule.getType()));
         }));
         return data;
@@ -60,7 +57,7 @@ public final class GroupDataAdapter implements TagAdapter<GroupData> {
     public Tag serialize(final GroupData data, final TagSerializationContext context) throws ParserException {
         final var tag = CompoundTag.builder();
         final var rules = CompoundTag.builder();
-        data.forEachGameRule((rule, value) -> rules.put(rule.key().asString(), context.serialize(value)));
+        data.forEachGameRule((rule, value) -> rules.put(rule.getName(), context.serialize(value)));
         data.getSpawnLocation().ifPresent(location -> tag.put("spawnLocation", context.serialize(location)));
         data.getDefaultGameMode().ifPresent(mode -> tag.put("defaultGameMode", context.serialize(mode)));
         tag.put("difficulty", context.serialize(data.getDifficulty()));

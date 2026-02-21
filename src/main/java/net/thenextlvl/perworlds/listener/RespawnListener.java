@@ -2,7 +2,7 @@ package net.thenextlvl.perworlds.listener;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import net.thenextlvl.perworlds.group.PaperGroupProvider;
-import org.bukkit.GameRules;
+import org.bukkit.GameRule;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -39,7 +39,7 @@ public final class RespawnListener implements Listener {
 
             // The PlayerRespawnEvent is fired before the player data is reset,
             // so to prevent duplication and preserve data integrity, we have to reset everything manually
-            if (Boolean.FALSE.equals(event.getPlayer().getWorld().getGameRuleValue(GameRules.KEEP_INVENTORY))) {
+            if (Boolean.FALSE.equals(event.getPlayer().getWorld().getGameRuleValue(GameRule.KEEP_INVENTORY))) {
                 playerData.experience(0);
                 playerData.level(0);
                 playerData.score(0);

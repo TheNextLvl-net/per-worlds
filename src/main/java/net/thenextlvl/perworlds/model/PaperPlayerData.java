@@ -6,8 +6,8 @@ import net.kyori.adventure.util.TriState;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.network.protocol.game.ClientboundRecipeBookAddPacket;
-import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.ServerRecipeBook;
@@ -223,7 +223,7 @@ public final class PaperPlayerData implements PlayerData {
         return data;
     }
 
-    private boolean isEnabled(final Identifier location) {
+    private boolean isEnabled(final ResourceLocation location) {
         final var disabled = SpigotConfig.disabledAdvancements;
         if (disabled == null || disabled.isEmpty()) return true;
         if (disabled.contains("*")) return false;
@@ -504,7 +504,7 @@ public final class PaperPlayerData implements PlayerData {
             advancements.flushDirty(handle, false);
 
             if (settings.advancements()) {
-                final var tab = lastAdvancementTab != null ? Identifier.fromNamespaceAndPath(
+                final var tab = lastAdvancementTab != null ? ResourceLocation.fromNamespaceAndPath(
                         lastAdvancementTab.namespace(),
                         lastAdvancementTab.value()
                 ) : null;
