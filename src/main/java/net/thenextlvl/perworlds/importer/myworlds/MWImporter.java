@@ -33,7 +33,7 @@ public class MWImporter extends Importer {
     }
 
     @Override
-    public void readPlayer(final UUID uuid, final String name, final WorldGroup group, final PlayerData data) throws IOException {
-        // todo
+    public boolean readPlayer(final UUID uuid, final String name, final WorldGroup group, final PlayerData data) throws IOException {
+        return false; // todo
     }
 }

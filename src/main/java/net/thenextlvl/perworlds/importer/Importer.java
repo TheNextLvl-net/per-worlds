@@ -87,10 +87,17 @@ public abstract class Importer {
     public void loadPlayers(final Set<WorldGroup> groups, final CommandSender sender) throws IOException {
         readPlayers().forEach((uuid, name) -> groups.forEach(group -> {
             final var offlinePlayer = plugin.getServer().getOfflinePlayer(uuid);
-            group.persistPlayerData(offlinePlayer, playerData -> {
+            if (group.hasPlayerData(offlinePlayer)) {
+                plugin.bundle().sendMessage(sender, "group.data.import.player.nothing",
+                        Placeholder.parsed("group", group.getName()),
+                        Placeholder.parsed("player", name));
+            } else group.persistPlayerData(offlinePlayer, playerData -> {
                 try {
-                    readPlayer(uuid, name, group, playerData);
-                    plugin.bundle().sendMessage(sender, "group.data.import.player.success",
+                    final var success = readPlayer(uuid, name, group, playerData);
+                    final var message = success
+                            ? "group.data.import.player.success"
+                            : "group.data.import.player.nothing";
+                    plugin.bundle().sendMessage(sender, message,
                             Placeholder.parsed("group", group.getName()),
                             Placeholder.parsed("player", name));
                 } catch (final IOException e) {
@@ -108,5 +115,5 @@ public abstract class Importer {
 
     public abstract Map<UUID, String> readPlayers() throws IOException;
 
-    public abstract void readPlayer(UUID uuid, String name, WorldGroup group, PlayerData data) throws IOException;
+    public abstract boolean readPlayer(UUID uuid, String name, WorldGroup group, PlayerData data) throws IOException;
 }

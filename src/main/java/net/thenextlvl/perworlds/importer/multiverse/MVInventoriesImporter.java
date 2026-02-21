@@ -98,22 +98,26 @@ public class MVInventoriesImporter extends Importer {
     }
 
     @Override
-    public void readPlayer(final UUID uuid, final String name, final WorldGroup group, final PlayerData data) throws IOException {
+    public boolean readPlayer(final UUID uuid, final String name, final WorldGroup group, final PlayerData data) throws IOException {
         final var path = group.getWorlds().map(WorldInfo::getName)
                 .map(getDataPath().resolve("worlds")::resolve)
                 .map(worlds -> worlds.resolve(name + ".json"))
                 .filter(Files::isRegularFile)
                 .findAny().orElse(null);
-        if (path == null) return;
+        if (path == null) return false;
         try (final var reader = new JsonReader(new InputStreamReader(
                 Files.newInputStream(path, READ),
                 StandardCharsets.UTF_8
         ))) {
-            Optional.ofNullable(JsonParser.parseReader(reader))
+            return Optional.ofNullable(JsonParser.parseReader(reader))
                     .map(this::asObject).flatMap(this::selectBestSnapshot)
-                    .ifPresent(snapshot -> applySnapshot(snapshot, group, data));
+                    .map(snapshot -> {
+                        applySnapshot(snapshot, group, data);
+                        return true;
+                    }).orElse(false);
         } catch (final RuntimeException e) {
             plugin.getComponentLogger().warn("Failed to import player data for {} in group {} from {}", name, group, path, e);
+            return false;
         }
     }
 
