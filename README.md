@@ -25,3 +25,5 @@ Define which data is synced between groups:
 
 [Download now](https://modrinth.com/project/lpfQmSV2)  
 For detailed setup and configurations, visit the [Wiki](https://thenextlvl.net/docs/perworlds).
+
+[![Usage](https://faststats.dev/embed/2fc9364f-696e-4522-892d-170a305a7943)](https://faststats.dev/project/per-worlds)
