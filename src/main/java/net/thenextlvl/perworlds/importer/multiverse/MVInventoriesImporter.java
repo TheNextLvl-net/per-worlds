@@ -202,7 +202,7 @@ public class MVInventoriesImporter extends Importer {
             return Optional.ofNullable(decodeBytes(string))
                     .map(ItemStack::deserializeBytes);
         } catch (final Exception e) {
-            plugin.getComponentLogger().warn("Failed to deserialize item from bytes '{}'", node, e);
+            plugin.getComponentLogger().warn("Failed to deserialize item from bytes '{}': {}", node, e.getMessage());
             return Optional.empty();
         }
 
@@ -214,7 +214,7 @@ public class MVInventoriesImporter extends Importer {
             final var unsafe = plugin.getServer().getUnsafe();
             return Optional.of(unsafe.deserializeItemFromJson(object));
         } catch (final Exception e) {
-            plugin.getComponentLogger().warn("Failed to deserialize item from json '{}'", node, e);
+            plugin.getComponentLogger().warn("Failed to deserialize item from json '{}': {}", node, e.getMessage());
             return Optional.empty();
         }
 
@@ -258,7 +258,7 @@ public class MVInventoriesImporter extends Importer {
         try {
             return Base64.getDecoder().decode(string);
         } catch (final Exception e) {
-            plugin.getComponentLogger().warn("Failed to deserialize item from base64 '{}'", string, e);
+            plugin.getComponentLogger().warn("Failed to deserialize item from base64 '{}': {}", string, e.getMessage());
             return null;
         }
     }
