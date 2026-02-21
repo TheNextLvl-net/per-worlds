@@ -132,8 +132,9 @@ public final class PerWorldsPlugin extends JavaPlugin {
 
     private void importNotice(final Importer importer) {
         final var notice = List.of(
-                "It appears you have been using " + importer.getName() + " before!",
+                "It appears you have been using " + importer.getName() + " before",
                 "To migrate your data to PerWorlds, run '/world group import " + importer.getName() + "'",
+                "The import process does not delete or override any existing data!",
                 "This message will disappear as soon as you delete the folder '" + importer.getDataPath() + "'"
         );
         final var separator = "-".repeat(notice.stream().mapToInt(String::length).max().orElse(0));
