@@ -1,7 +1,6 @@
 package net.thenextlvl.perworlds.group;
 
 import com.google.common.base.Preconditions;
-import io.papermc.paper.util.Tick;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.TriState;
 import net.thenextlvl.nbt.NBTInputStream;
@@ -18,7 +17,6 @@ import org.bukkit.GameRule;
 import org.bukkit.Keyed;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Registry;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.entity.Player;
@@ -30,6 +28,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -395,7 +394,7 @@ public class PaperWorldGroup implements WorldGroup {
         getGroupData().setDifficulty(world.getDifficulty());
         getGroupData().setTime(world.getFullTime());
 
-        Registry.GAME_RULE.stream()
+        Arrays.stream(GameRule.values())
                 .filter(gameRule -> world.getFeatureFlags().containsAll(gameRule.requiredFeatures()))
                 .map(gameRule -> (GameRule<Object>) gameRule)
                 .forEach(rule -> getGroupData().setGameRule(rule, world.getGameRuleValue(rule)));
@@ -434,7 +433,7 @@ public class PaperWorldGroup implements WorldGroup {
 
     @SuppressWarnings("unchecked")
     private void applyGameRules(final World world) {
-        Registry.GAME_RULE.stream()
+        Arrays.stream(GameRule.values())
                 .map(gameRule -> (GameRule<Object>) gameRule)
                 .filter(gameRule -> world.getFeatureFlags().containsAll(gameRule.requiredFeatures()))
                 .forEach(rule -> getGroupData().getGameRule(rule)
@@ -445,12 +444,12 @@ public class PaperWorldGroup implements WorldGroup {
     private void applyWorldBorder(final World world) {
         final var border = getGroupData().getWorldBorder();
         final var worldBorder = world.getWorldBorder();
-        worldBorder.changeSize(border.size(), Tick.tick().fromDuration(border.getTransitionDuration()));
+        worldBorder.setSize(border.size(), border.getTransitionDuration().toSeconds());
         worldBorder.setCenter(border.centerX(), border.centerZ());
         worldBorder.setDamageAmount(border.damageAmount());
         worldBorder.setDamageBuffer(border.damageBuffer());
         worldBorder.setWarningDistance(border.warningDistance());
-        worldBorder.setWarningTimeTicks(Tick.tick().fromDuration(border.getWarningTime()));
+        worldBorder.setWarningTime((int) border.getWarningTime().toSeconds());
     }
 
     @Override

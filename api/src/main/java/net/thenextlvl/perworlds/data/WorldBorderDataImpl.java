@@ -44,7 +44,7 @@ final class WorldBorderDataImpl implements WorldBorderData {
                 border.getDamageBuffer(),
                 Duration.ZERO,
                 border.getWarningDistance(),
-                Ticks.duration(border.getWarningTimeTicks())
+                Ticks.duration(border.getWarningTime())
         );
     }
 
