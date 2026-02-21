@@ -119,7 +119,7 @@ public class MVInventoriesImporter extends Importer {
         final var stats = asObject(node.getValue().get("stats"));
         if (stats != null) applyStats(data, stats);
 
-        data.gameMode(GameMode.valueOf(node.getKey().toUpperCase(Locale.ROOT)));
+        data.gameMode(matchGameMode(node.getKey()));
         data.respawnLocation(readLocation(node.getValue().get("bedSpawnLocation"), group)); // DataStrings#PLAYER_BED_SPAWN_LOCATION
 
         final var potions = asArray(node.getValue().get("potions"));
@@ -141,6 +141,13 @@ public class MVInventoriesImporter extends Importer {
 
         final var enderChest = asObject(node.getValue().get("enderChestContents")); // DataStrings#ENDER_CHEST_CONTENTS
         if (enderChest != null) data.enderChest(readStorageContents(data.enderChest(), enderChest));
+    }
+
+    private @Nullable GameMode matchGameMode(final String name) {
+        for (final var value : GameMode.values()) {
+            if (value.name().equalsIgnoreCase(name)) return value;
+        }
+        return null;
     }
 
     private void readArmorContents(final PlayerData data, final JsonObject contents) {
