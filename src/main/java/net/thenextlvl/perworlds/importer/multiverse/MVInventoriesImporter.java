@@ -7,6 +7,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.stream.JsonReader;
+import net.kyori.adventure.key.Key;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.WorldGroup;
 import net.thenextlvl.perworlds.data.PlayerData;
@@ -18,6 +19,7 @@ import org.bukkit.Registry;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.generator.WorldInfo;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.potion.PotionEffect;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -194,25 +196,70 @@ public class MVInventoriesImporter extends Importer {
 
     @SuppressWarnings("deprecation")
     private Optional<ItemStack> readItem(@Nullable final JsonElement node) {
-        try {
-            if (node == null) return Optional.empty();
-            final var string = asString(node);
-            if (string != null) {
-                final var bytes = Base64.getDecoder().decode(string);
-                return Optional.of(ItemStack.deserializeBytes(bytes));
-            }
-
-            final var object = asObject(node);
-            if (object != null) {
-                final var unsafe = plugin.getServer().getUnsafe();
-                return Optional.of(unsafe.deserializeItemFromJson(object));
-            }
-
-            plugin.getComponentLogger().warn("Don't know how to turn '{}' into an item", node);
-            return Optional.empty();
+        if (node == null) return Optional.empty();
+        final var string = asString(node);
+        if (string != null) try {
+            return Optional.ofNullable(decodeBytes(string))
+                    .map(ItemStack::deserializeBytes);
         } catch (final Exception e) {
-            plugin.getComponentLogger().warn("Failed to deserialize item '{}'", node, e);
+            plugin.getComponentLogger().warn("Failed to deserialize item from bytes '{}'", node, e);
             return Optional.empty();
+        }
+
+        final var object = sanitize(asObject(node));
+        if (object != null) try {
+            final var id = object.get("id");
+            if (id != null && id.isJsonPrimitive() && id.getAsString().equals("minecraft:air"))
+                return Optional.empty();
+            final var unsafe = plugin.getServer().getUnsafe();
+            return Optional.of(unsafe.deserializeItemFromJson(object));
+        } catch (final Exception e) {
+            plugin.getComponentLogger().warn("Failed to deserialize item from json '{}'", node, e);
+            return Optional.empty();
+        }
+
+        plugin.getComponentLogger().warn("Don't know how to turn '{}' into an item", node);
+        return Optional.empty();
+    }
+
+    private @Nullable JsonObject sanitize(@Nullable final JsonObject object) {
+        if (object == null) return null;
+        if (object.has("v") && !object.has("DataVersion")) {
+            object.add("DataVersion", object.get("v"));
+        }
+        final var type = asString(object.get("type"));
+        if (type != null && !object.has("id")) {
+            findItem(type).map(Key::asString).ifPresent(id -> object.addProperty("id", id));
+        }
+        final var components = asObject(object.get("components"));
+        if (components != null) sanitizeComponents(components);
+        return object;
+    }
+
+    private void sanitizeComponents(final JsonObject object) {
+        object.entrySet().forEach(entry -> {
+            if (!(entry.getValue() instanceof final JsonPrimitive primitive) || !primitive.isString()) return;
+            try {
+                entry.setValue(JsonParser.parseString(primitive.getAsString()));
+            } catch (final JsonParseException ignored) {
+            }
+        });
+    }
+
+    private Optional<Key> findItem(final String name) {
+        return Registry.ITEM.stream().filter(itemType -> {
+            //noinspection deprecation
+            final var material = itemType.asMaterial();
+            return material != null && material.name().equalsIgnoreCase(name);
+        }).map(ItemType::key).findAny();
+    }
+
+    private byte @Nullable [] decodeBytes(final String string) {
+        try {
+            return Base64.getDecoder().decode(string);
+        } catch (final Exception e) {
+            plugin.getComponentLogger().warn("Failed to deserialize item from base64 '{}'", string, e);
+            return null;
         }
     }
 
