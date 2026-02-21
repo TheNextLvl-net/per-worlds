@@ -471,8 +471,8 @@ public class PaperWorldGroup implements WorldGroup {
     }
 
     @Override
-    public void persistPlayerData(OfflinePlayer player, Consumer<PlayerData> data) {
-        var playerData = new PaperPlayerData(player.getUniqueId(), this);
+    public void persistPlayerData(final OfflinePlayer player, final Consumer<PlayerData> data) {
+        final var playerData = new PaperPlayerData(player.getUniqueId(), this);
         data.accept(playerData);
         writePlayerData(player, playerData);
     }
