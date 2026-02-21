@@ -10,32 +10,34 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
 import net.thenextlvl.perworlds.command.brigadier.SimpleCommand;
 import net.thenextlvl.perworlds.command.suggestion.DataImportSuggestionProvider;
-import net.thenextlvl.perworlds.importer.Importer;
 
 final class GroupImportCommand extends SimpleCommand {
-    private GroupImportCommand(PerWorldsPlugin plugin) {
+    private GroupImportCommand(final PerWorldsPlugin plugin) {
         super(plugin, "import", "perworlds.command.group.import");
     }
 
-    public static LiteralArgumentBuilder<CommandSourceStack> create(PerWorldsPlugin plugin) {
-        var command = new GroupImportCommand(plugin);
+    public static LiteralArgumentBuilder<CommandSourceStack> create(final PerWorldsPlugin plugin) {
+        final var command = new GroupImportCommand(plugin);
         return command.create().then(Commands.argument("provider", StringArgumentType.string())
                 .suggests(new DataImportSuggestionProvider<>(plugin))
                 .executes(command));
     }
 
     @Override
-    public int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        var provider = context.getArgument("provider", String.class);
-        var importer = plugin.importers().stream()
-                .filter(i -> i.getName().equals(provider))
-                .filter(Importer::isAvailable)
-                .findAny()
-                .orElse(null);
-        var success = importer != null && importer.load(context.getSource().getSender());
-        var message = success ? "group.data.import.success" : "group.data.import.failed";
-        plugin.bundle().sendMessage(context.getSource().getSender(), message,
-                Placeholder.parsed("provider", provider));
-        return success ? 1 : 0;
+    public int run(final CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+        final var provider = context.getArgument("provider", String.class);
+        final var sender = context.getSource().getSender();
+        final var optional = plugin.importers().stream()
+                .filter(i -> i.getName().equalsIgnoreCase(provider))
+                .findAny();
+        optional.ifPresentOrElse(importer -> {
+            importer.load(sender).thenAccept(success -> {
+                final var message = success ? "group.data.import.success" : "group.data.import.failed";
+                plugin.bundle().sendMessage(sender, message, Placeholder.parsed("provider", importer.getName()));
+            });
+        }, () -> {
+            plugin.bundle().sendMessage(sender, "group.data.import.failed", Placeholder.parsed("provider", provider));
+        });
+        return SINGLE_SUCCESS;
     }
 }
