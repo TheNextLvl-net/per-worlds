@@ -22,18 +22,18 @@ import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 import org.jspecify.annotations.NullMarked;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Consumer;
 
 @NullMarked
 public final class WorldListener implements Listener {
     private final PaperGroupProvider provider;
 
-    private final Map<Type, Set<WorldGroup>> lock = new HashMap<>();
-    private final Set<Key> allowed = new HashSet<>();
+    private final Map<Type, Set<WorldGroup>> lock = new ConcurrentHashMap<>();
+    private final Set<Key> allowed = new CopyOnWriteArraySet<>();
 
     public WorldListener(final PaperGroupProvider provider) {
         this.provider = provider;
@@ -111,7 +111,7 @@ public final class WorldListener implements Listener {
     private void processWorldDataUpdate(final World world, final Type type, final Consumer<GroupData> process) {
         if (!allowed.contains(world.key())) return;
         final var group = provider.getGroup(world).orElse(provider.getUnownedWorldGroup());
-        if (!lock.computeIfAbsent(type, ignored -> new HashSet<>()).add(group)) return;
+        if (!lock.computeIfAbsent(type, ignored -> ConcurrentHashMap.newKeySet()).add(group)) return;
         process.accept(group.getGroupData());
         group.getWorlds()
                 .filter(target -> !target.equals(world))
