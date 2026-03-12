@@ -62,7 +62,8 @@ public final class PerWorldsPlugin extends JavaPlugin {
             "WorldMagic", // https://github.com/hotwopik/WorldMagic
             "BulMultiverse", // https://github.com/BulPlugins/BulMultiverse
             "MultiWorlds999", // https://modrinth.com/project/BHWwXJ13
-            "worldmgr" // https://dev.bukkit.org/projects/worldmgr
+            "worldmgr", // https://dev.bukkit.org/projects/worldmgr
+            "MegaVerse" // https://modrinth.com/plugin/megaverse
     );
 
     private final PluginVersionChecker versionChecker = new PluginVersionChecker(this);
