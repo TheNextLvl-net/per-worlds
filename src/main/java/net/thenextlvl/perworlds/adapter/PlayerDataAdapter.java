@@ -25,6 +25,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -40,28 +41,15 @@ public final class PlayerDataAdapter implements TagAdapter<PlayerData> {
     public PlayerData deserialize(final Tag tag, final TagDeserializationContext context) throws ParserException {
         final var data = new PaperPlayerData(null, null);
         final var root = tag.getAsCompound();
-        root.optional("advancements").map(Tag::getAsList).map(list ->
-                list.stream().map(advancement -> {
-                    try {
-                        return context.deserialize(advancement, AdvancementData.class);
-                    } catch (final ParserException e) {
-                        plugin.getComponentLogger().warn(e.getMessage());
-                        return null;
-                    }
-                }).filter(Objects::nonNull).toList()
-        ).ifPresent(data::advancements);
+        root.optional("advancements").map(Tag::getAsList).map(list -> list.stream().map(advancement -> {
+            return parse(context, advancement, AdvancementData.class);
+        }).filter(Objects::nonNull).toList()).ifPresent(data::advancements);
         root.optional("attributes").map(Tag::getAsList).map(list ->
                 list.stream().map(attribute -> context.deserialize(attribute, AttributeData.class)).toList()
         ).ifPresent(data::attributes);
-        root.optional("enderChest").map(items -> context.deserialize(items, ItemStack[].class)).ifPresent(data::enderChest);
-        root.optional("inventory").map(items -> context.deserialize(items, ItemStack[].class)).ifPresent(data::inventory);
-        root.optional("respawnLocation").map(location -> {
-            try {
-                return context.deserialize(location, Location.class);
-            } catch (final ParserException e) {
-                return null;
-            }
-        }).ifPresent(data::respawnLocation);
+        root.optional("enderChest").map(items -> parse(context, items, ItemStack[].class)).ifPresent(data::enderChest);
+        root.optional("inventory").map(items -> parse(context, items, ItemStack[].class)).ifPresent(data::inventory);
+        root.optional("respawnLocation").map(location -> parse(context, location, Location.class)).ifPresent(data::respawnLocation);
         root.optional("recipes").map(Tag::getAsList).map(list ->
                 list.stream().map(recipe -> context.deserialize(recipe, NamespacedKey.class)).toList()
         ).ifPresent(data::discoveredRecipes);
@@ -96,20 +84,8 @@ public final class PlayerDataAdapter implements TagAdapter<PlayerData> {
         root.optional("remainingAir").map(Tag::getAsInt).ifPresent(data::remainingAir);
         root.optional("score").map(Tag::getAsInt).ifPresent(data::score);
         root.optional("previousGameMode").map(mode -> context.deserialize(mode, GameMode.class)).ifPresent(data::previousGameMode);
-        root.optional("lastDeathLocation").map(location -> {
-            try {
-                return context.deserialize(location, Location.class);
-            } catch (final ParserException e) {
-                return null;
-            }
-        }).ifPresent(data::lastDeathLocation);
-        root.optional("lastLocation").map(location -> {
-            try {
-                return context.deserialize(location, Location.class);
-            } catch (final ParserException e) {
-                return null;
-            }
-        }).ifPresent(data::lastLocation);
+        root.optional("lastDeathLocation").map(location -> parse(context, location, Location.class)).ifPresent(data::lastDeathLocation);
+        root.optional("lastLocation").map(location -> parse(context, location, Location.class)).ifPresent(data::lastLocation);
         root.optional("gliding").map(Tag::getAsBoolean).ifPresent(data::gliding);
         root.optional("invulnerable").map(Tag::getAsBoolean).ifPresent(data::invulnerable);
         root.optional("portalCooldown").map(Tag::getAsInt).ifPresent(data::portalCooldown);
@@ -168,5 +144,14 @@ public final class PlayerDataAdapter implements TagAdapter<PlayerData> {
         tag.put("remainingAir", data.remainingAir());
         tag.put("score", data.score());
         return tag.build();
+    }
+
+    private <T> @Nullable T parse(final TagDeserializationContext context, final Tag tag, final Class<T> type) {
+        try {
+            return context.deserialize(tag, type);
+        } catch (final ParserException e) {
+            plugin.getComponentLogger().warn(e.getMessage(), e);
+            return null;
+        }
     }
 }
