@@ -15,12 +15,12 @@ import java.util.concurrent.CompletableFuture;
 public final class DataImportSuggestionProvider<S> implements SuggestionProvider<S> {
     private final PerWorldsPlugin plugin;
 
-    public DataImportSuggestionProvider(PerWorldsPlugin plugin) {
+    public DataImportSuggestionProvider(final PerWorldsPlugin plugin) {
         this.plugin = plugin;
     }
 
     @Override
-    public CompletableFuture<Suggestions> getSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+    public CompletableFuture<Suggestions> getSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
         plugin.importers().stream()
                 .filter(Importer::isAvailable)
                 .map(Importer::getName)
