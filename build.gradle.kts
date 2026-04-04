@@ -30,7 +30,7 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("26.1.1.build.14-alpha")
 
     compileOnly("net.thenextlvl:worlds:3.12.4") { isTransitive = false }
 
