@@ -102,7 +102,7 @@ public final class PaperGroupProvider implements GroupProvider {
                 .registerTypeHierarchyAdapter(GroupData.class, new GroupDataAdapter(getServer()))
                 .registerTypeHierarchyAdapter(GroupSettings.class, new GroupSettingsAdapter())
                 .registerTypeHierarchyAdapter(Instant.class, new InstantAdapter())
-                .registerTypeHierarchyAdapter(ItemStack[].class, new ItemStackArrayAdapter())
+                .registerTypeHierarchyAdapter(ItemStack[].class, new ItemStackArrayAdapter(plugin))
                 .registerTypeHierarchyAdapter(ItemTypeStat.class, new ItemTypeStatAdapter(plugin))
                 .registerTypeHierarchyAdapter(Key.class, new KeyAdapter())
                 .registerTypeHierarchyAdapter(Location.class, new LocationAdapter())
