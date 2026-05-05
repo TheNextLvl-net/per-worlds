@@ -39,7 +39,7 @@ public final class RespawnListener implements Listener {
 
             // The PlayerRespawnEvent is fired before the player data is reset,
             // so to prevent duplication and preserve data integrity, we have to reset everything manually
-            if (Boolean.FALSE.equals(event.getPlayer().getWorld().getGameRuleValue(GameRules.KEEP_INVENTORY))) {
+            if (!event.getPlayer().getWorld().getGameRuleValue(GameRules.KEEP_INVENTORY)) {
                 playerData.experience(0);
                 playerData.level(0);
                 playerData.score(0);

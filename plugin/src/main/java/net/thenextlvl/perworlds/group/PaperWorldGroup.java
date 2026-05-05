@@ -442,9 +442,11 @@ public class PaperWorldGroup implements WorldGroup {
         Registry.GAME_RULE.stream()
                 .map(gameRule -> (GameRule<Object>) gameRule)
                 .filter(gameRule -> world.getFeatureFlags().containsAll(gameRule.requiredFeatures()))
-                .forEach(rule -> getGroupData().getGameRule(rule)
-                        .or(() -> Optional.ofNullable(world.getGameRuleDefault(rule)))
-                        .ifPresent(value -> world.setGameRule(rule, value)));
+                .forEach(rule -> {
+                    final var value = getGroupData().getGameRule(rule)
+                            .orElse(rule.getDefaultValue());
+                    world.setGameRule(rule, value);
+                });
     }
 
     private void applyWorldBorder(final World world) {

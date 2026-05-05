@@ -86,6 +86,6 @@ public final class MessageListener implements Listener {
     }
 
     private boolean canReceive(@Nullable final GameRule<Boolean> gameRule, final World world) {
-        return gameRule == null || Boolean.TRUE.equals(world.getGameRuleValue(gameRule));
+        return gameRule == null || world.getGameRuleValue(gameRule);
     }
 }
