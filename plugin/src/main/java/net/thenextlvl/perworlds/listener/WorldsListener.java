@@ -1,7 +1,7 @@
 package net.thenextlvl.perworlds.listener;
 
 import net.thenextlvl.perworlds.group.PaperGroupProvider;
-import net.thenextlvl.worlds.api.event.WorldDeleteEvent;
+import net.thenextlvl.worlds.event.WorldDeleteEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
