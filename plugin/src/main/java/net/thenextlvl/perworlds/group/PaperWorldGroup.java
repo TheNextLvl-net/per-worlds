@@ -368,14 +368,14 @@ public class PaperWorldGroup implements WorldGroup {
 
     @Override
     public void updateWorldData(final World world) throws IllegalArgumentException {
-        Preconditions.checkArgument(containsWorld(world), "World '%s' is not part of group '%s'", world.getName(), getName());
+        Preconditions.checkArgument(containsWorld(world), "World '%s' is not part of group '%s'", world.key().asString(), getName());
         if (!getSettings().enabled()) return;
         for (final var type : GroupData.Type.values()) updateWorldData(world, type);
     }
 
     @Override
     public void updateWorldData(final World world, final GroupData.Type type) throws IllegalArgumentException {
-        Preconditions.checkArgument(containsWorld(world), "World '%s' is not part of group '%s'", world.getName(), getName());
+        Preconditions.checkArgument(containsWorld(world), "World '%s' is not part of group '%s'", world.key().asString(), getName());
         if (isEnabled(type)) switch (type) {
             case DIFFICULTY -> world.setDifficulty(getGroupData().getDifficulty());
             case TIME -> world.setFullTime(getGroupData().getTime());

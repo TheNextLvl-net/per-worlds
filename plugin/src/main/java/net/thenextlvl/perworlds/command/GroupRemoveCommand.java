@@ -42,7 +42,7 @@ final class GroupRemoveCommand extends SimpleCommand {
         final var message = success ? "group.world.removed" : "group.world.remove.failed";
         plugin.bundle().sendMessage(context.getSource().getSender(), message,
                 Placeholder.unparsed("group", group.getName()),
-                Placeholder.unparsed("world", world != null ? world.getName() : key.asString()));
+                Placeholder.unparsed("world", key.asString()));
         return success ? Command.SINGLE_SUCCESS : 0;
     }
 }

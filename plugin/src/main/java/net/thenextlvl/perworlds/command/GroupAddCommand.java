@@ -41,7 +41,7 @@ final class GroupAddCommand extends SimpleCommand {
         final var message = success ? "group.world.added" : "group.world.add.failed";
         plugin.bundle().sendMessage(context.getSource().getSender(), message,
                 Placeholder.unparsed("group", group.getName()),
-                Placeholder.unparsed("world", world.getName()));
+                Placeholder.unparsed("world", world.key().asString()));
         return success ? Command.SINGLE_SUCCESS : 0;
     }
 }

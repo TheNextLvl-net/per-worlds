@@ -98,6 +98,7 @@ public class MVInventoriesImporter extends Importer {
     }
 
     @Override
+    @SuppressWarnings("UsagesOfObsoleteApi")
     public boolean readPlayer(final UUID uuid, final String name, final WorldGroup group, final PlayerData data) throws IOException {
         final var path = group.getWorlds().map(WorldInfo::getName)
                 .map(getDataPath().resolve("worlds")::resolve)

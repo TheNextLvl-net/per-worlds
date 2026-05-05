@@ -69,7 +69,7 @@ final class GroupSpawnSetCommand extends SimpleCommand {
         group.getGroupData().setSpawnLocation(location);
         plugin.bundle().sendMessage(context.getSource().getSender(), "group.spawn.set",
                 Placeholder.parsed("group", group.getName()),
-                Placeholder.parsed("world", location.getWorld().getName()),
+                Placeholder.parsed("world", location.getWorld().key().asString()),
                 Formatter.number("x", location.x()),
                 Formatter.number("y", location.y()),
                 Formatter.number("z", location.z()),

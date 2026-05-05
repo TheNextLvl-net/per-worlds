@@ -36,7 +36,7 @@ final class GroupAutoCommand extends SimpleCommand {
         autoGroup(plugin.getServer().getWorlds()).forEach((worlds, name) -> {
             if (worlds.size() == 1 || worlds.stream().allMatch(plugin.groupProvider()::hasGroup)) {
                 worlds.forEach(world -> plugin.bundle().sendMessage(sender, "group.auto.skipped",
-                        Placeholder.parsed("world", world.getName())));
+                        Placeholder.parsed("world", world.key().asString())));
                 return;
             }
 
@@ -50,7 +50,7 @@ final class GroupAutoCommand extends SimpleCommand {
                 if (added) worldCount.incrementAndGet();
                 final var message = added ? "group.world.added" : "group.auto.failed";
                 plugin.bundle().sendMessage(sender, message,
-                        Placeholder.parsed("world", world.getName()),
+                        Placeholder.parsed("world", world.key().asString()),
                         Placeholder.parsed("group", group.getName()));
             });
         });
@@ -61,6 +61,7 @@ final class GroupAutoCommand extends SimpleCommand {
     }
 
     @Contract(pure = true)
+    @SuppressWarnings("UsagesOfObsoleteApi")
     private Map<List<World>, String> autoGroup(final List<World> worlds) {
         final var groups = worlds.stream().collect(Collectors.groupingBy(world -> world.key().namespace()));
 
@@ -99,6 +100,7 @@ final class GroupAutoCommand extends SimpleCommand {
     }
 
     @Contract(pure = true)
+    @SuppressWarnings("UsagesOfObsoleteApi")
     private Optional<String> mostCommonPart(final List<World> worlds) {
         final var partCount = new HashMap<String, Integer>();
         for (final var world : worlds) {

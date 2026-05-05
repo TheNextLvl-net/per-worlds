@@ -18,7 +18,7 @@ public final class WorldsListener implements Listener {
         provider.getGroup(event.getWorld()).ifPresent(group -> {
             if (group.removeWorld(event.getWorld())) return;
             provider.getLogger().error("Failed to remove deleted world {} from group {}",
-                    event.getWorld().getName(), group.getName());
+                    event.getWorld().key().asString(), group.getName());
         });
     }
 }
