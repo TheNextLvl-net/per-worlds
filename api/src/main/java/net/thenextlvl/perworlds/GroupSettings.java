@@ -31,9 +31,9 @@ public interface GroupSettings extends Copyable<GroupSettings> {
     @Contract(mutates = "this")
     void enabled(boolean enabled);
 
-    ///
-    /// Chat-related settings
-    ///
+    //
+    // Chat-related settings
+    //
 
     /**
      * Determines whether advancement messages should only be sent to players within the current group context.
@@ -79,9 +79,9 @@ public interface GroupSettings extends Copyable<GroupSettings> {
     @Contract(mutates = "this")
     void quitMessages(boolean enabled);
 
-    ///
-    /// Server-related settings
-    ///
+    //
+    // Server-related settings
+    //
 
     /**
      * Determines whether chat messages should only be sent to players within the current group context.
@@ -160,9 +160,9 @@ public interface GroupSettings extends Copyable<GroupSettings> {
     @Contract(mutates = "this")
     void worldBorder(boolean enabled);
 
-    ///
-    /// Player-related settings
-    ///
+    //
+    // Player-related settings
+    //
 
     /**
      * Determines whether players' absorption amount should be restored for the current group context.

@@ -7,7 +7,6 @@ import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NullMarked;
 
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This interface represents a world border.
@@ -125,7 +124,7 @@ public interface WorldBorderData {
      * Retrieves the current transition duration of the world's border.
      *
      * @return the duration in milliseconds
-     * @see WorldBorder#setSize(double, TimeUnit, long)
+     * @see WorldBorder#changeSize(double, long)
      * @deprecated use {@link #getTransitionDuration()}
      */
     @Contract(pure = true)
@@ -150,7 +149,7 @@ public interface WorldBorderData {
      * @param duration the duration to be set, in milliseconds
      * @return the current WorldBorderData instance for chaining
      * @throws IllegalArgumentException if the duration is less than 0
-     * @see WorldBorder#setSize(double, TimeUnit, long)
+     * @see WorldBorder#changeSize(double, long)
      * @since 0.2.2
      * @deprecated use {@link #setTransitionDuration(Duration)}
      */
@@ -259,7 +258,7 @@ public interface WorldBorderData {
      * @param seconds The amount of time in seconds.
      * @return the current WorldBorderData instance for chaining
      * @throws IllegalArgumentException if the seconds are negative
-     * @see WorldBorder#setWarningTime(int)
+     * @see WorldBorder#setWarningTimeTicks(int)
      * @since 0.2.2
      */
     @Contract(value = "_ -> new", pure = true)

@@ -1,29 +1,14 @@
 plugins {
-    id("java")
     id("maven-publish")
 }
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
     withSourcesJar()
     withJavadocJar()
 }
 
-tasks.compileJava {
-    options.release.set(21)
-}
-
-group = rootProject.group
-version = rootProject.version
-
-repositories {
-    mavenCentral()
-    maven("https://repo.thenextlvl.net/releases")
-    maven("https://repo.papermc.io/repository/maven-public/")
-}
-
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.11-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:26.1.2.build.+")
 }
 
 publishing {
