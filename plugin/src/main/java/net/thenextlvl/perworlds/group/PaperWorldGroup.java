@@ -21,6 +21,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.Registry;
 import org.bukkit.World;
 import org.bukkit.World.Environment;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
@@ -378,7 +379,11 @@ public class PaperWorldGroup implements WorldGroup {
         Preconditions.checkArgument(containsWorld(world), "World '%s' is not part of group '%s'", world.key().asString(), getName());
         if (isEnabled(type)) switch (type) {
             case DIFFICULTY -> world.setDifficulty(getGroupData().getDifficulty());
-            case TIME -> world.setFullTime(getGroupData().getTime());
+            case TIME -> {
+                if (((CraftWorld) world).getHandle().dimensionType().defaultClock().isPresent()) {
+                    world.setFullTime(getGroupData().getTime());
+                }
+            }
             case GAME_RULE -> applyGameRules(world);
             case WORLD_BORDER -> applyWorldBorder(world);
             case HARDCORE -> {
