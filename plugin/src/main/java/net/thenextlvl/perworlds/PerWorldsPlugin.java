@@ -94,9 +94,6 @@ public final class PerWorldsPlugin extends JavaPlugin {
             new MWImporter(this)
     );
 
-    public PerWorldsPlugin() throws IOException {
-    }
-
     @Override
     public void onLoad() {
         versionChecker.checkVersion();
