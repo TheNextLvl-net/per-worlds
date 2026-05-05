@@ -13,11 +13,11 @@ plugins {
 }
 
 java {
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
 }
 
 tasks.compileJava {
-    options.release.set(21)
+    options.release.set(25)
 }
 
 group = "net.thenextlvl.perworlds"
@@ -30,7 +30,7 @@ repositories {
 }
 
 dependencies {
-    paperweight.paperDevBundle("1.21.11-R0.1-SNAPSHOT")
+    paperweight.paperDevBundle("26.1.2.build.+")
 
     compileOnly("net.thenextlvl:worlds:3.12.4") { isTransitive = false }
 
@@ -76,7 +76,7 @@ tasks.compileJava {
 paper {
     name = "PerWorlds"
     main = "net.thenextlvl.perworlds.PerWorldsPlugin"
-    apiVersion = "1.21.8"
+    apiVersion = "26.1.2"
     description = "Per-world customization for gameplay and settings"
     load = BukkitPluginDescription.PluginLoadOrder.STARTUP
     website = "https://thenextlvl.net"
