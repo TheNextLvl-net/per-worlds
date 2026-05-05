@@ -5,6 +5,7 @@ import net.kyori.adventure.key.Key;
 import net.kyori.adventure.util.TriState;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.protocol.game.ClientboundRecipeBookAddPacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -35,7 +36,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.advancement.CraftAdvancement;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
-import org.bukkit.craftbukkit.inventory.CraftRecipe;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -433,7 +434,8 @@ public final class PaperPlayerData implements PlayerData {
         final var manager = ((CraftServer) player.getServer()).getServer().getRecipeManager();
         final var recipeBook = handle.getRecipeBook();
 
-        final var recipeHolders = recipes.stream().map(CraftRecipe::toMinecraft)
+        final var recipeHolders = recipes.stream()
+                .map(key -> CraftNamespacedKey.toResourceKey(Registries.RECIPE, key))
                 .map(manager::byKey)
                 .map(recipeHolder -> recipeHolder.orElse(null))
                 .filter(Objects::nonNull);
