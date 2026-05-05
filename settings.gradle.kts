@@ -5,3 +5,5 @@ plugins {
 rootProject.name = "per-worlds"
 include("api")
 include("source-generator")
+
+include("plugin")

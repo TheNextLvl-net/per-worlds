@@ -1,0 +1,136 @@
+import io.papermc.hangarpublishplugin.model.Platforms
+import net.minecrell.pluginyml.bukkit.BukkitPluginDescription
+import net.minecrell.pluginyml.paper.PaperPluginDescription
+
+plugins {
+    id("idea")
+    id("com.gradleup.shadow") version "9.4.1"
+    id("com.modrinth.minotaur") version "2.+"
+    id("de.eldoria.plugin-yml.paper") version "0.9.0"
+    id("io.papermc.hangar-publish-plugin") version "0.1.4"
+    id("io.papermc.paperweight.userdev") version "2.0.0-beta.21"
+}
+
+dependencies {
+    paperweight.paperDevBundle("26.1.2.build.+")
+
+    compileOnly("net.thenextlvl:worlds:3.12.4") { isTransitive = false }
+
+    implementation("net.thenextlvl.core:files:4.0.0-pre1")
+    implementation("net.thenextlvl.version-checker:modrinth-paper:1.0.1")
+    implementation("net.thenextlvl:i18n:1.2.0")
+    implementation("net.thenextlvl:nbt:4.3.4")
+
+    implementation("dev.faststats.metrics:bukkit:0.22.0")
+    implementation("org.bstats:bstats-bukkit:3.2.1")
+
+    implementation(project(":api"))
+}
+
+val generatedPath: java.nio.file.Path = layout.projectDirectory.dir("src/generated/java").asFile.toPath()
+idea.module.generatedSourceDirs.add(generatedPath.toFile())
+sourceSets.main {
+    java.srcDir(generatedPath)
+}
+
+tasks.shadowJar {
+    archiveBaseName.set("per-worlds")
+    relocate("org.bstats", "net.thenextlvl.perworlds.bstats")
+}
+
+tasks.compileJava {
+    dependsOn(":source-generator:generateSources")
+}
+
+paper {
+    name = "PerWorlds"
+    main = "net.thenextlvl.perworlds.PerWorldsPlugin"
+    apiVersion = "26.1.2"
+    description = "Per-world customization for gameplay and settings"
+    load = BukkitPluginDescription.PluginLoadOrder.STARTUP
+    website = "https://thenextlvl.net/docs/perworlds"
+    authors = listOf("NonSwag")
+    // foliaSupported = true // way too many events still not being called on folia
+    permissions {
+        register("perworlds.admin") { children = listOf("perworlds.commands.group") }
+
+        register("perworlds.commands.group") {
+            description = "Allows access to all group commands"
+            children = listOf(
+                "perworlds.command.group.add",
+                "perworlds.command.group.auto",
+                "perworlds.command.group.clone",
+                "perworlds.command.group.create",
+                "perworlds.command.group.delete",
+                "perworlds.command.group.info",
+                "perworlds.command.group.list",
+                "perworlds.command.group.migrate",
+                "perworlds.command.group.option",
+                "perworlds.command.group.remove",
+                "perworlds.command.group.spawn.set",
+                "perworlds.command.group.spawn.unset",
+                "perworlds.command.group.teleport",
+            )
+        }
+
+        register("perworlds.command.group") { children = listOf("perworlds.command") }
+        register("perworlds.command.group.add") { children = listOf("perworlds.command.group") }
+        register("perworlds.command.group.auto") { children = listOf("perworlds.command.group") }
+        register("perworlds.command.group.clone") { children = listOf("perworlds.command.group") }
+        register("perworlds.command.group.create") { children = listOf("perworlds.command.group") }
+        register("perworlds.command.group.delete") { children = listOf("perworlds.command.group") }
+        register("perworlds.command.group.info") { children = listOf("perworlds.command.group") }
+        register("perworlds.command.group.list") { children = listOf("perworlds.command.group") }
+        register("perworlds.command.group.migrate") { children = listOf("perworlds.command.group") }
+        register("perworlds.command.group.option") { children = listOf("perworlds.command.group") }
+        register("perworlds.command.group.remove") { children = listOf("perworlds.command.group") }
+        register("perworlds.command.group.spawn") { children = listOf("perworlds.command.group") }
+        register("perworlds.command.group.spawn.set") { children = listOf("perworlds.command.group.spawn") }
+        register("perworlds.command.group.spawn.unset") { children = listOf("perworlds.command.group.spawn") }
+        register("perworlds.command.group.teleport") { children = listOf("perworlds.command.group") }
+    }
+
+    serverDependencies {
+        register("Worlds") {
+            load = PaperPluginDescription.RelativeLoadOrder.AFTER
+            required = false
+        }
+    }
+}
+
+val versionString: String = project.version as String
+val isRelease: Boolean = !versionString.contains("-pre")
+
+val versions: List<String> = (property("gameVersions") as String)
+    .split(",")
+    .map { it.trim() }
+
+hangarPublish { // docs - https://docs.papermc.io/misc/hangar-publishing
+    publications.register("per-worlds") {
+        id.set("PerWorlds")
+        version.set(versionString)
+        changelog = System.getenv("CHANGELOG")
+        channel.set(if (isRelease) "Release" else "Snapshot")
+        apiKey.set(System.getenv("HANGAR_API_TOKEN"))
+        platforms.register(Platforms.PAPER) {
+            jar.set(tasks.shadowJar.flatMap { it.archiveFile })
+            platformVersions.set(versions)
+            dependencies {
+                hangar("Worlds") { required.set(false) }
+            }
+        }
+    }
+}
+
+modrinth {
+    token.set(System.getenv("MODRINTH_TOKEN"))
+    projectId.set("lpfQmSV2")
+    changelog = System.getenv("CHANGELOG")
+    versionType = if (isRelease) "release" else "beta"
+    uploadFile.set(tasks.shadowJar)
+    gameVersions.set(versions)
+    loaders.add("paper")
+    dependencies {
+        optional.project("worlds-1")
+    }
+}
