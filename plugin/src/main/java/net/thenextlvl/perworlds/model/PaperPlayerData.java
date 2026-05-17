@@ -673,7 +673,7 @@ public final class PaperPlayerData implements PlayerData {
 
     @Override
     public PaperPlayerData enderChest(@Nullable final ItemStack[] contents) {
-        this.enderChest = contents;
+        this.enderChest = contents.clone();
         return this;
     }
 
@@ -753,7 +753,7 @@ public final class PaperPlayerData implements PlayerData {
 
     @Override
     public PaperPlayerData inventory(@Nullable final ItemStack[] contents) {
-        this.inventory = contents;
+        this.inventory = contents.clone();
         return this;
     }
 
