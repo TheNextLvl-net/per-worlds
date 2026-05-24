@@ -4,7 +4,7 @@ import net.thenextlvl.nbt.serialization.ParserException;
 import net.thenextlvl.nbt.serialization.TagAdapter;
 import net.thenextlvl.nbt.serialization.TagDeserializationContext;
 import net.thenextlvl.nbt.serialization.TagSerializationContext;
-import net.thenextlvl.nbt.tag.StringTag;
+import net.thenextlvl.nbt.tag.ByteArrayTag;
 import net.thenextlvl.nbt.tag.Tag;
 import net.thenextlvl.perworlds.PerWorldsPlugin;
 import org.bukkit.inventory.ItemStack;
@@ -26,14 +26,13 @@ public final class ItemStackArrayAdapter implements TagAdapter<@Nullable ItemSta
 
     @Override
     public @Nullable ItemStack[] deserialize(final Tag tag, final TagDeserializationContext context) throws ParserException {
-        final var bytes = Base64.getDecoder().decode(tag.getAsString());
+        final var bytes = tag.isByteArray() ? tag.getAsByteArray() : Base64.getDecoder().decode(tag.getAsString());
         return deserializeItemsFromBytes(bytes);
     }
 
     @Override
     public Tag serialize(@Nullable final ItemStack[] itemStacks, final TagSerializationContext context) throws ParserException {
-        final var bytes = ItemStack.serializeItemsAsBytes(itemStacks);
-        return StringTag.of(Base64.getEncoder().encodeToString(bytes));
+        return ByteArrayTag.of(ItemStack.serializeItemsAsBytes(itemStacks));
     }
 
     /**
