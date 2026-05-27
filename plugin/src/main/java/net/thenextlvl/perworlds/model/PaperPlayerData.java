@@ -39,6 +39,7 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.util.Vector;
@@ -50,6 +51,7 @@ import org.spigotmc.SpigotConfig;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -301,8 +303,8 @@ public final class PaperPlayerData implements PlayerData {
         player.setPortalCooldown(settings.portalCooldown() ? portalCooldown : DEFAULT_PORTAL_COOLDOWN);
 
         player.getInventory().setHeldItemSlot(settings.hotbarSlot() ? heldItemSlot : DEFAULT_HELD_ITEM_SLOT);
-        player.getInventory().setContents(settings.inventory() ? inventory : DEFAULT_INVENTORY);
-        player.getEnderChest().setContents(settings.enderChest() ? enderChest : DEFAULT_ENDERCHEST);
+        setContents(player.getInventory(), settings.inventory() ? inventory : DEFAULT_INVENTORY);
+        setContents(player.getEnderChest(), settings.enderChest() ? enderChest : DEFAULT_ENDERCHEST);
 
         player.setHasSeenWinScreen(settings.endCredits() ? seenCredits : DEFAULT_SEEN_CREDITS);
 
@@ -358,6 +360,12 @@ public final class PaperPlayerData implements PlayerData {
 
         applyAdvancements(player, settings);
         applyRecipes(player, settings);
+    }
+
+    private void setContents(final Inventory inventory, @Nullable final ItemStack[] items) {
+        if (items.length > inventory.getSize()) {
+            inventory.setContents(Arrays.copyOf(items, inventory.getSize()));
+        } else inventory.setContents(items);
     }
 
     @SuppressWarnings({"DataFlowIssue", "deprecation"})
