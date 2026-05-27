@@ -280,11 +280,12 @@ public final class PaperPlayerData implements PlayerData {
             handle.reset();
             handle.unsetRemoved();
         }
+        final var finalGroup = group;
         return player.teleportAsync(location).thenApply(success -> {
             if (!success) return false;
             player.setFallDistance(settings.fallDistance() ? fallDistance : DEFAULT_FALL_DISTANCE);
             player.setVelocity(settings.velocity() ? velocity : DEFAULT_VELOCITY);
-            load(player, group);
+            load(player, finalGroup);
             return true;
         });
     }
