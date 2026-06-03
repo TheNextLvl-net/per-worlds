@@ -12,7 +12,7 @@ plugins {
 }
 
 dependencies {
-    paperweight.paperDevBundle("26.1.2.build.67-stable")
+    paperweight.paperDevBundle("26.1.2.build.69-stable")
 
     compileOnly("net.thenextlvl:worlds:4.2.2") { isTransitive = false }
 
