@@ -2,9 +2,9 @@ package net.thenextlvl.perworlds;
 
 import core.file.FileIO;
 import core.file.formats.GsonFile;
-import dev.faststats.bukkit.BukkitMetrics;
-import dev.faststats.core.ErrorTracker;
-import dev.faststats.core.data.Metric;
+import dev.faststats.ErrorTracker;
+import dev.faststats.bukkit.BukkitContext;
+import dev.faststats.data.Metric;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.key.Key;
 import net.thenextlvl.i18n.ComponentBundle;
@@ -68,11 +68,12 @@ public final class PerWorldsPlugin extends JavaPlugin {
 
     private final PluginVersionChecker versionChecker = new PluginVersionChecker(this);
     private final Metrics metrics = new Metrics(this, 25295);
-    private final dev.faststats.core.Metrics fastStats = BukkitMetrics.factory()
-            .token("aadc507be90ffc99bfab023066c651ae")
-            .addMetric(worldManagementPlugins())
-            .errorTracker(ERROR_TRACKER)
-            .create(this);
+    private final BukkitContext context = new BukkitContext.Factory(this, "aadc507be90ffc99bfab023066c651ae")
+            .metrics(factory -> factory
+                    .addMetric(worldManagementPlugins())
+                    .create())
+            .errorTrackerService(ERROR_TRACKER)
+            .create();
 
     private final Key key = Key.key("perworlds", "translations");
     private final Path translations = getDataPath().resolve("translations");
@@ -104,6 +105,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        context.ready();
         scheduleDelayedInitTask();
         registerListeners();
         warnWorldManager();
@@ -112,6 +114,7 @@ public final class PerWorldsPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        context.shutdown();
         metrics.shutdown();
         persistGroups();
     }
