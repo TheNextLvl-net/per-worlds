@@ -14,7 +14,7 @@ plugins {
 dependencies {
     paperweight.paperDevBundle("26.1.2.build.69-stable")
 
-    compileOnly("net.thenextlvl:worlds:4.2.2") { isTransitive = false }
+    compileOnly("net.thenextlvl:worlds:4.3.0-pre1") { isTransitive = false }
 
     implementation("net.thenextlvl.core:files:4.0.0-pre1")
     implementation("net.thenextlvl.version-checker:modrinth-paper:1.0.1")
