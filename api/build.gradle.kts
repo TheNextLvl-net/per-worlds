@@ -8,7 +8,7 @@ java {
 }
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:26.2.build.26.+")
+    compileOnly("io.papermc.paper:paper-api:26.2.build.+")
 }
 
 publishing {
