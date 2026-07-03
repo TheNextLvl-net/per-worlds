@@ -45,10 +45,10 @@ public final class WorldListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onWorldSave(final WorldSaveEvent event) {
-        var group = provider.getGroup(event.getWorld())
+        final var group = provider.getGroup(event.getWorld())
                 .orElse(provider.getUnownedWorldGroup());
         cooldown.compute(group, (worldGroup, instant) -> {
-            var now = Instant.now();
+            final var now = Instant.now();
             if (instant == null || instant.isAfter(now)) {
                 worldGroup.getPlayers().forEach(worldGroup::persistPlayerData);
                 worldGroup.persist();
