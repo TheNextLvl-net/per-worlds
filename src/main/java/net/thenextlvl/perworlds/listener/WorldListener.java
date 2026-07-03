@@ -19,11 +19,14 @@ import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.TimeSkipEvent;
 import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.event.world.WorldSaveEvent;
 import org.bukkit.event.world.WorldUnloadEvent;
 import org.jspecify.annotations.NullMarked;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.function.Consumer;
@@ -33,6 +36,7 @@ public final class WorldListener implements Listener {
     private final PaperGroupProvider provider;
 
     private final Map<Type, Set<WorldGroup>> lock = new ConcurrentHashMap<>();
+    private final Map<WorldGroup, Instant> cooldown = new WeakHashMap<>();
     private final Set<Key> allowed = new CopyOnWriteArraySet<>();
 
     public WorldListener(final PaperGroupProvider provider) {
@@ -40,7 +44,21 @@ public final class WorldListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.MONITOR)
-    public void onWorldInit(final WorldLoadEvent event) {
+    public void onWorldSave(final WorldSaveEvent event) {
+        var group = provider.getGroup(event.getWorld())
+                .orElse(provider.getUnownedWorldGroup());
+        cooldown.compute(group, (worldGroup, instant) -> {
+            var now = Instant.now();
+            if (instant == null || instant.isAfter(now)) {
+                worldGroup.getPlayers().forEach(worldGroup::persistPlayerData);
+                worldGroup.persist();
+                return now.plusSeconds(10);
+            } else return instant;
+        });
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onWorldLoad(final WorldLoadEvent event) {
         provider.getGroup(event.getWorld())
                 .orElse(provider.getUnownedWorldGroup())
                 .updateWorldData(event.getWorld());
